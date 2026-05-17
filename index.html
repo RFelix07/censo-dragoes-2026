@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)file:///C:/Users/roger/Downloads/index_6.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Censo 2026 — Dragões da Real</title>
+<link href="./index_files/css2" rel="stylesheet">
+<style>
+:root {
+  --creme:       #F2EAD8;
+  --creme-brd:   #D8C8A8;
+  --creme-txt:   #8B6040;
+  --branco:      #FFFFFF;
+  --preto:       #1A0A00;
+  --vermelho:    #C8102E;
+  --verm-esc:    #8B0015;
+  --verm-bg:     #FFF0EE;
+  --dourado:     #D4A843;
+  --dour-escuro: #A07820;
+  --borda:       #E0D0B8;
+  --borda-foc:   #C8102E;
+  --txt:         #1A0A00;
+  --txt-sec:     #6B5040;
+  --txt-hint:    #B0A090;
+  --sel-bg:      #FFF8F0;
+  --sel-bd:      #D4A843;
+  --verde:       #2D6A3A;
+  --verde-bg:    #E8F5EE;
+  --bg:          #F7F4EF;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+
+/* ── PROGRESS ── */
+.prog-wrap{position:sticky;top:0;z-index:100;height:3px;background:var(--borda)}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--verm-esc),var(--vermelho),var(--dourado));width:0%;transition:width .5s ease}
+
+/* ── HEADER ── */
+.header{background:var(--creme);border-bottom:1px solid var(--creme-brd)}
+.header-top{display:flex;height:6px}
+.header-top span{flex:1}
+.header-body{padding:18px 20px 16px;text-align:center;max-width:580px;margin:0 auto}
+.header-ornamento{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:14px;width:100%}
+.orn-line{height:2px;flex:1;max-width:80px;background:var(--creme-brd)}
+.orn-diamond{width:6px;height:6px;background:var(--dourado);transform:rotate(45deg);opacity:.8}
+.orn-gold{background:var(--dourado) !important}
+.header-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--creme-txt);margin-bottom:12px}
+.header-titulo-wrap{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:2px}
+.header-logo-box{flex-shrink:0}
+.header-logo-inline{width:72px;height:72px;object-fit:contain;display:block;flex-shrink:0}
+.header-logo-fallback{width:52px;height:52px;align-items:center;justify-content:center}
+.header-title{font-family:'Playfair Display',serif;font-size:clamp(28px,7vw,42px);font-weight:900;color:var(--preto);line-height:1;letter-spacing:.5px}
+.header-title em{color:var(--vermelho);font-style:normal;display:block}
+.header-mid-line{width:80px;height:2px;background:var(--dourado);margin:12px auto}
+.header-mid-orn{display:flex;align-items:center;gap:12px;justify-content:center;margin:12px auto;width:100%}
+.header-mid-orn-line{height:2px;flex:1;max-width:80px;background:var(--dourado)}
+.header-sub{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--creme-txt)}
+.header-enredo{font-family:'Playfair Display',serif;font-style:italic;font-size:12px;color:var(--creme-txt);margin-top:6px;opacity:.8}
+.header-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.header-pill{background:rgba(26,10,0,.06);border:1px solid var(--creme-brd);padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:600;letter-spacing:2px;color:var(--creme-txt);text-transform:uppercase}
+.header-bot{display:flex;height:4px}
+.header-bot span{flex:1}
+
+/* ── CONTAINER ── */
+.container{max-width:580px;margin:0 auto;padding:24px 16px 80px}
+
+/* ── SECTION ── */
+.sec-hdr{display:flex;align-items:center;gap:10px;margin:32px 0 16px}
+.sec-num{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--vermelho);flex-shrink:0}
+.sec-dot{width:4px;height:4px;background:var(--dourado);border-radius:50%;flex-shrink:0}
+.sec-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--creme-txt)}
+.sec-line{flex:1;height:1px;background:var(--borda)}
+
+/* ── FIELD ── */
+.field{margin-bottom:14px}
+label.lbl{display:block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt-sec);margin-bottom:6px}
+label.lbl .req{color:var(--vermelho);margin-left:2px}
+label.lbl .opt{color:var(--txt-hint);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;margin-left:6px}
+
+/* ── INPUTS ── */
+input[type="text"],input[type="tel"],input[type="date"],select{
+  width:100%;background:var(--branco);border:1px solid var(--borda);
+  color:var(--txt);font-family:'Barlow',sans-serif;font-size:15px;
+  padding:12px 14px;transition:border-color .15s,box-shadow .15s;
+  outline:none;-webkit-appearance:none;appearance:none;border-radius:4px;
+  border-left:3px solid transparent;
+}
+input[type="date"]{color-scheme:light}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238B6040'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+input::placeholder{color:var(--txt-hint)}
+input:focus,select:focus{border-color:var(--dourado);border-left-color:var(--vermelho);box-shadow:0 0 0 3px rgba(212,168,67,.1)}
+input.error,select.error{border-color:var(--vermelho);border-left-color:var(--vermelho);background:var(--verm-bg)}
+.error-msg{font-size:11px;color:var(--vermelho);margin-top:4px;font-weight:600;display:none}
+
+/* ── RADIO ── */
+.radio-group{display:flex;flex-direction:column;gap:5px}
+.radio-opt{display:flex;align-items:center;gap:11px;background:var(--branco);border:1px solid var(--borda);border-left:3px solid transparent;border-radius:4px;padding:11px 14px;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.radio-opt:hover{background:var(--creme);border-color:var(--creme-brd)}
+.radio-opt.sel{background:var(--sel-bg);border-color:var(--sel-bd);border-left-color:var(--vermelho)}
+.radio-opt input{display:none}
+.radio-mk{width:16px;height:16px;border:1.5px solid var(--borda);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.radio-opt.sel .radio-mk{border-color:var(--vermelho);background:var(--vermelho)}
+.radio-opt.sel .radio-mk::after{content:'';width:5px;height:5px;background:white;border-radius:50%}
+.opt-lbl{font-size:14px;font-weight:400;color:var(--txt-sec);transition:color .15s}
+.radio-opt.sel .opt-lbl{color:var(--txt);font-weight:500}
+
+/* ── CHECK ── */
+.check-group{display:flex;flex-direction:column;gap:5px}
+.check-opt{display:flex;align-items:center;gap:11px;background:var(--branco);border:1px solid var(--borda);border-left:3px solid transparent;border-radius:4px;padding:11px 14px;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.check-opt:hover{background:var(--creme);border-color:var(--creme-brd)}
+.check-opt.sel{background:var(--sel-bg);border-color:var(--sel-bd);border-left-color:var(--vermelho)}
+.check-opt input{display:none}
+.check-mk{width:16px;height:16px;border:1.5px solid var(--borda);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.check-opt.sel .check-mk{border-color:var(--vermelho);background:var(--vermelho)}
+.check-opt.sel .check-mk::after{content:'✓';color:white;font-size:10px;font-weight:700;line-height:1}
+.check-opt.sel .opt-lbl{color:var(--txt);font-weight:500}
+
+/* ── PILLS ── */
+.pill-group{display:flex;flex-wrap:wrap;gap:5px}
+.pill-opt{flex:1;min-width:52px;text-align:center;background:var(--branco);border:1px solid var(--borda);border-radius:4px;padding:10px 6px;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.pill-opt input{display:none}
+.pill-day{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt-sec);transition:color .15s}
+.pill-opt.sel{background:var(--preto);border-color:var(--preto)}
+.pill-opt.sel .pill-day{color:var(--dourado)}
+
+/* ── CHANCE ── */
+.chance-group{display:flex;gap:5px}
+.chance-opt{flex:1;text-align:center;background:var(--branco);border:1px solid var(--borda);border-radius:4px;padding:13px 4px;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.chance-opt input{display:none}
+.chance-pct{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--txt-sec);display:block;transition:color .15s}
+.chance-opt.sel{background:var(--creme);border-color:var(--dourado)}
+.chance-opt.sel .chance-pct{color:var(--preto)}
+
+/* ── CONDITIONAL ── */
+.cond{overflow:hidden;max-height:0;opacity:0;transition:max-height .4s ease,opacity .3s ease,margin .3s ease;margin-bottom:0}
+.cond.open{max-height:600px;opacity:1;margin-bottom:14px}
+
+/* ── INFO BOX ── */
+.info-box{background:var(--creme);border:1px solid var(--creme-brd);border-left:3px solid var(--dourado);border-radius:4px;padding:11px 14px;font-size:12px;color:var(--txt-sec);line-height:1.5;margin-bottom:16px}
+.info-box strong{color:var(--txt)}
+
+/* ── SUBMIT ── */
+.btn-submit{width:100%;background:var(--preto);border:none;border-bottom:3px solid var(--dour-escuro);border-radius:4px;color:var(--dourado);font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:4px;text-transform:uppercase;padding:17px 24px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:54px;margin-top:24px}
+.btn-submit::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(212,168,67,.08),transparent);transition:left .5s ease}
+.btn-submit:hover::before{left:100%}
+.btn-submit:hover{background:#2A1000}
+.btn-submit:active{transform:scale(.99)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.lgpd{margin-top:10px;font-size:11px;color:var(--txt-hint);text-align:center;line-height:1.5}
+
+/* ── SUCCESS ── */
+.success-screen{display:none;text-align:center;padding:56px 24px}
+.success-screen.show{display:block}
+.success-icon{width:64px;height:64px;background:var(--preto);display:flex;align-items:center;justify-content:center;border-radius:50%;margin:0 auto 16px;font-size:28px}
+.success-div{width:48px;height:2px;background:var(--dourado);margin:14px auto}
+.success-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--preto);margin-bottom:8px}
+.success-sub{font-size:15px;color:var(--txt-sec);line-height:1.6}
+
+/* ── SPINNER ── */
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(212,168,67,.3);border-top-color:var(--dourado);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="prog-wrap"><div class="prog-fill" id="progFill"></div></div>
+
+<header class="header">
+  <div class="header-top">
+    <span style="background:#C8102E"></span><span style="background:#1A0A00"></span>
+    <span style="background:#D4A843"></span><span style="background:#1A0A00"></span>
+    <span style="background:#C8102E"></span><span style="background:#1A0A00"></span>
+    <span style="background:#D4A843"></span><span style="background:#1A0A00"></span>
+  </div>
+  <div class="header-body">
+    <div class="header-titulo-wrap">
+      <img src="./index_files/logo.png" alt="Dragões da Real" class="header-logo-inline">
+      <h1 class="header-title">Dragões <em>da Real</em></h1>
+    </div>
+    <p class="header-sub">Censo Carnaval 2026</p>
+  </div>
+  <div class="header-bot">
+    <span style="background:#1A0A00"></span><span style="background:#D4A843"></span>
+    <span style="background:#1A0A00"></span><span style="background:#C8102E"></span>
+    <span style="background:#1A0A00"></span><span style="background:#D4A843"></span>
+    <span style="background:#1A0A00"></span><span style="background:#C8102E"></span>
+  </div>
+</header>
+
+<div class="container">
+<form id="censoForm" novalidate="">
+
+  <div class="sec-hdr">
+    <span class="sec-num">I.</span><div class="sec-dot"></div>
+    <span class="sec-title">Identificação</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Nome Completo <span class="req">*</span></label>
+    <input type="text" id="nome" placeholder="Seu nome completo" autocomplete="name">
+    <div class="error-msg" id="nomeError">Informe seu nome completo.</div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">WhatsApp <span class="req">*</span></label>
+    <input type="tel" id="whatsapp" placeholder="(11) 99999-9999" autocomplete="tel">
+    <div class="error-msg" id="whatsappError">Informe um número válido com DDD.</div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Gênero <span class="req">*</span></label>
+    <div class="radio-group" id="grp-genero">
+      <label class="radio-opt"><input type="radio" name="genero" value="Feminino"><span class="radio-mk"></span><span class="opt-lbl">Feminino</span></label>
+      <label class="radio-opt"><input type="radio" name="genero" value="Masculino"><span class="radio-mk"></span><span class="opt-lbl">Masculino</span></label>
+      <label class="radio-opt"><input type="radio" name="genero" value="Não-binário"><span class="radio-mk"></span><span class="opt-lbl">Não-binário</span></label>
+      <label class="radio-opt"><input type="radio" name="genero" value="Outro"><span class="radio-mk"></span><span class="opt-lbl">Outro</span></label>
+      <label class="radio-opt"><input type="radio" name="genero" value="Prefiro não informar"><span class="radio-mk"></span><span class="opt-lbl">Prefiro não informar</span></label>
+    </div>
+    <div class="error-msg" id="generoError">Selecione uma opção.</div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Data de Nascimento <span class="req">*</span></label>
+    <input type="date" id="dataNascimento">
+    <div class="error-msg" id="nascError">Informe sua data de nascimento.</div>
+  </div>
+
+  <div class="sec-hdr">
+    <span class="sec-num">II.</span><div class="sec-dot"></div>
+    <span class="sec-title">Vínculo com a Escola</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Ano de Entrada na Escola <span class="req">*</span></label>
+    <select id="anoEntrada"><option value="">Selecione o ano...</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option></select>
+    <div class="error-msg" id="anoError">Selecione o ano de entrada.</div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Departamento / Ala <span class="req">*</span></label>
+    <select id="departamento">
+      <option value="">Selecione seu departamento...</option>
+      <option>Comissão de Frente</option><option>Dep. Casais</option>
+      <option>Destaque de Chão</option><option>Composição</option>
+      <option>Destaques</option><option>Diretoria</option><option>Harmonia</option>
+      <option>Ala Carnareal</option><option>Ala Comunidade</option><option>Bateria</option>
+      <option>Ala Guardiões</option><option>Ala Baianas</option><option>Ala Jovens</option>
+      <option>Ala Zona Sul</option><option>Ala Pirituba</option><option>Ala Oz</option>
+      <option>Ala Atibaia</option><option>Ala Caverna</option><option>Ala Amigos da Vila</option>
+      <option>Ala Explosão</option><option>Ala Tamujuntu</option><option>Ala Avalanche</option>
+      <option>Ala Portal</option><option>Ala Sítio</option><option>Ala Anastácio</option>
+      <option>Ala Ziriguidum</option><option>Ala Passistas</option><option>Ala Convidados</option>
+    </select>
+    <div class="error-msg" id="depError">Selecione seu departamento.</div>
+  </div>
+
+  <div class="cond" id="condCasal">
+    <div class="field">
+      <label class="lbl">Função no Casal <span class="req">*</span></label>
+      <div class="radio-group" id="grp-funcaoCasal">
+        <label class="radio-opt"><input type="radio" name="funcaoCasal" value="Mestre-Sala"><span class="radio-mk"></span><span class="opt-lbl">Mestre-Sala</span></label>
+        <label class="radio-opt"><input type="radio" name="funcaoCasal" value="Porta-Bandeira"><span class="radio-mk"></span><span class="opt-lbl">Porta-Bandeira</span></label>
+        <label class="radio-opt"><input type="radio" name="funcaoCasal" value="Apresentador(a)"><span class="radio-mk"></span><span class="opt-lbl">Apresentador(a)</span></label>
+        <label class="radio-opt"><input type="radio" name="funcaoCasal" value="Reserva/Suplente"><span class="radio-mk"></span><span class="opt-lbl">Reserva / Suplente</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="cond" id="condBateria">
+    <div class="field">
+      <label class="lbl">Naipe na Bateria <span class="req">*</span></label>
+      <div class="radio-group" id="grp-naipeBateria">
+        <label class="radio-opt"><input type="radio" name="naipeBateria" value="Surdo"><span class="radio-mk"></span><span class="opt-lbl">Surdo</span></label>
+        <label class="radio-opt"><input type="radio" name="naipeBateria" value="Caixa"><span class="radio-mk"></span><span class="opt-lbl">Caixa</span></label>
+        <label class="radio-opt"><input type="radio" name="naipeBateria" value="Tamborim"><span class="radio-mk"></span><span class="opt-lbl">Tamborim</span></label>
+        <label class="radio-opt"><input type="radio" name="naipeBateria" value="Repinique"><span class="radio-mk"></span><span class="opt-lbl">Repinique</span></label>
+        <label class="radio-opt"><input type="radio" name="naipeBateria" value="Agogô"><span class="radio-mk"></span><span class="opt-lbl">Agogô</span></label>
+        <label class="radio-opt"><input type="radio" name="naipeBateria" value="Chocalho"><span class="radio-mk"></span><span class="opt-lbl">Chocalho</span></label>
+        <label class="radio-opt"><input type="radio" name="naipeBateria" value="Cuíca"><span class="radio-mk"></span><span class="opt-lbl">Cuíca</span></label>
+        <label class="radio-opt"><input type="radio" name="naipeBateria" value="Outro"><span class="radio-mk"></span><span class="opt-lbl">Outro</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Carteirinha da Escola <span class="req">*</span></label>
+    <div class="radio-group" id="grp-carteirinha">
+      <label class="radio-opt"><input type="radio" name="carteirinha" value="Sim, tenho"><span class="radio-mk"></span><span class="opt-lbl">Sim, tenho</span></label>
+      <label class="radio-opt"><input type="radio" name="carteirinha" value="Não tenho, mas quero"><span class="radio-mk"></span><span class="opt-lbl">Não tenho, mas quero</span></label>
+      <label class="radio-opt"><input type="radio" name="carteirinha" value="Não tenho interesse"><span class="radio-mk"></span><span class="opt-lbl">Não tenho interesse</span></label>
+    </div>
+    <div class="error-msg" id="cartError">Selecione uma opção.</div>
+  </div>
+
+  <div class="sec-hdr">
+    <span class="sec-num">III.</span><div class="sec-dot"></div>
+    <span class="sec-title">Logística e Disponibilidade</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Chance de Desfilar em 2026 <span class="req">*</span></label>
+    <div class="chance-group" id="grp-chance">
+      <label class="chance-opt"><input type="radio" name="chanceDesfile" value="0%"><span class="chance-pct">0%</span></label>
+      <label class="chance-opt"><input type="radio" name="chanceDesfile" value="25%"><span class="chance-pct">25%</span></label>
+      <label class="chance-opt"><input type="radio" name="chanceDesfile" value="50%"><span class="chance-pct">50%</span></label>
+      <label class="chance-opt"><input type="radio" name="chanceDesfile" value="75%"><span class="chance-pct">75%</span></label>
+      <label class="chance-opt"><input type="radio" name="chanceDesfile" value="100%"><span class="chance-pct">100%</span></label>
+    </div>
+    <div class="error-msg" id="chanceError">Selecione sua chance de desfile.</div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Cidade <span class="req">*</span></label>
+    <input type="text" id="cidade" placeholder="Ex: São Paulo">
+    <div class="error-msg" id="cidadeError">Informe sua cidade.</div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Zona <span class="req">*</span></label>
+    <select id="bairro">
+      <option value="">Selecione sua zona...</option>
+      <option>Zona Leste</option>
+      <option>Zona Norte</option>
+      <option>Zona Sul</option>
+      <option>Zona Oeste</option>
+      <option>Centro</option>
+      <option>Grande São Paulo</option>
+      <option>Outro Estado</option>
+    </select>
+    <div class="error-msg" id="bairroError">Selecione sua zona.</div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Dias Disponíveis para Ensaio <span class="req">*</span></label>
+    <div class="pill-group" id="grp-dias">
+      <label class="pill-opt"><input type="checkbox" name="diasEnsaio" value="Segunda"><span class="pill-day">Seg</span></label>
+      <label class="pill-opt"><input type="checkbox" name="diasEnsaio" value="Terça"><span class="pill-day">Ter</span></label>
+      <label class="pill-opt"><input type="checkbox" name="diasEnsaio" value="Quarta"><span class="pill-day">Qua</span></label>
+      <label class="pill-opt"><input type="checkbox" name="diasEnsaio" value="Quinta"><span class="pill-day">Qui</span></label>
+      <label class="pill-opt"><input type="checkbox" name="diasEnsaio" value="Sexta"><span class="pill-day">Sex</span></label>
+      <label class="pill-opt"><input type="checkbox" name="diasEnsaio" value="Sábado"><span class="pill-day">Sáb</span></label>
+      <label class="pill-opt"><input type="checkbox" name="diasEnsaio" value="Domingo"><span class="pill-day">Dom</span></label>
+    </div>
+    <div class="error-msg" id="diasError">Selecione pelo menos um dia.</div>
+  </div>
+
+  <div class="sec-hdr">
+    <span class="sec-num">IV.</span><div class="sec-dot"></div>
+    <span class="sec-title">Desenvolvimento</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Interesses <span class="opt">— opcional</span></label>
+    <div class="check-group" id="grp-interesses">
+      <label class="check-opt"><input type="checkbox" name="interesses" value="Aprender mais sobre Carnaval"><span class="check-mk"></span><span class="opt-lbl">Aprender mais sobre Carnaval</span></label>
+      <label class="check-opt"><input type="checkbox" name="interesses" value="Ser Coordenador de Ala"><span class="check-mk"></span><span class="opt-lbl">Ser Coordenador de Ala</span></label>
+      <label class="check-opt"><input type="checkbox" name="interesses" value="Participar da Harmonia"><span class="check-mk"></span><span class="opt-lbl">Participar da Harmonia</span></label>
+      <label class="check-opt"><input type="checkbox" name="interesses" value="Integrar Ala Cênica/Coreografada"><span class="check-mk"></span><span class="opt-lbl">Integrar Ala Cênica / Coreografada</span></label>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>Privacidade:</strong> Seus dados são protegidos pela LGPD e usados exclusivamente para planejamento interno da Escola de Samba Dragões da Real.
+  </div>
+
+  <button type="submit" class="btn-submit" id="btnSubmit">Enviar meu Censo</button>
+  <p class="lgpd">Ao enviar, você concorda com o uso dos dados para fins de planejamento da escola.</p>
+
+</form>
+
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">
+    <svg width="28" height="22" viewBox="0 0 52 38" fill="none">
+      <path d="M4 30L10 10L19 20L26 4L33 20L42 10L48 30H4Z" fill="#D4A843"></path>
+      <rect x="4" y="30" width="44" height="6" rx="1" fill="#D4A843"></rect>
+    </svg>
+  </div>
+  <div class="success-div"></div>
+  <h2 class="success-title">Obrigado!</h2>
+  <p class="success-sub">Sua participação no Censo 2026 foi registrada com sucesso.<br><br>
+  <em style="color:var(--dourado)">Dragões da Real — Uma vida de amor ao samba!</em></p>
+</div>
+</div>
+
+<script>
+const URL_SCRIPT='https://script.google.com/macros/s/AKfycbzfHZhoIOlmLu180vyBYyedrF6m6RTnbJCa6DozTXSd_6b4qMEkM6FHf_gCQjttEQg4Jw/exec';
+
+(function(){
+  const s=document.getElementById('anoEntrada');
+  for(let y=2026;y>=2000;y--){const o=document.createElement('option');o.value=y;o.textContent=y;s.appendChild(o)}
+})();
+
+function updateProg(){
+  const ts=['nome','whatsapp','dataNascimento','cidade'],ss2=['bairro'],ss=['anoEntrada','departamento'],rs=['genero','carteirinha','chanceDesfile'],cs=['diasEnsaio'];
+  const total=ts.length+(typeof ss2!='undefined'?ss2.length:0)+ss.length+rs.length+cs.length;let f=0;
+  ts.forEach(id=>{if(document.getElementById(id)?.value.trim())f++});
+  if(typeof ss2!='undefined')ss2.forEach(id=>{if(document.getElementById(id)?.value)f++});
+  ss.forEach(id=>{if(document.getElementById(id)?.value)f++});
+  rs.forEach(n=>{if(document.querySelector(`input[name="${n}"]:checked`))f++});
+  cs.forEach(n=>{if(document.querySelector(`input[name="${n}"]:checked`))f++});
+  document.getElementById('progFill').style.width=Math.round((f/total)*100)+'%';
+}
+document.getElementById('censoForm').addEventListener('input',updateProg);
+document.getElementById('censoForm').addEventListener('change',updateProg);
+
+document.querySelectorAll('.radio-group').forEach(function(grp){
+  grp.querySelectorAll('.radio-opt').forEach(function(el){
+    el.addEventListener('click',function(e){
+      e.preventDefault();
+      grp.querySelectorAll('.radio-opt').forEach(o=>o.classList.remove('sel'));
+      el.classList.add('sel');el.querySelector('input').checked=true;updateProg();
+    });
+  });
+});
+
+document.querySelectorAll('.chance-opt').forEach(function(el){
+  el.addEventListener('click',function(e){
+    e.preventDefault();
+    document.querySelectorAll('.chance-opt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel');el.querySelector('input').checked=true;updateProg();
+  });
+});
+
+document.querySelectorAll('.pill-opt').forEach(function(el){
+  el.addEventListener('click',function(e){
+    e.preventDefault();
+    const novo=!el.classList.contains('sel');
+    el.classList.toggle('sel',novo);el.querySelector('input').checked=novo;updateProg();
+  });
+});
+
+document.querySelectorAll('.check-opt').forEach(function(el){
+  el.addEventListener('click',function(e){
+    e.preventDefault();
+    const novo=!el.classList.contains('sel');
+    el.classList.toggle('sel',novo);el.querySelector('input').checked=novo;
+  });
+});
+
+document.getElementById('departamento').addEventListener('change',function(){
+  const v=this.value;
+  document.getElementById('condCasal').classList.toggle('open',v==='Dep. Casais');
+  document.getElementById('condBateria').classList.toggle('open',v==='Bateria');
+});
+
+document.getElementById('whatsapp').addEventListener('input',function(e){
+  let v=e.target.value.replace(/\D/g,'').slice(0,11);
+  if(v.length>10)v=`(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+  else if(v.length>6)v=`(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+  else if(v.length>2)v=`(${v.slice(0,2)}) ${v.slice(2)}`;
+  else if(v.length>0)v=`(${v}`;
+  e.target.value=v;
+});
+
+function showErr(id,s){const e=document.getElementById(id);if(e)e.style.display=s?'block':'none'}
+function setErr(id,h){const e=document.getElementById(id);if(e)e.classList.toggle('error',h)}
+
+function validate(){
+  let ok=true;
+  const nome=document.getElementById('nome').value.trim();setErr('nome',!nome);showErr('nomeError',!nome);if(!nome)ok=false;
+  const wa=document.getElementById('whatsapp').value.replace(/\D/g,'');setErr('whatsapp',wa.length<10);showErr('whatsappError',wa.length<10);if(wa.length<10)ok=false;
+  const nasc=document.getElementById('dataNascimento').value;setErr('dataNascimento',!nasc);showErr('nascError',!nasc);if(!nasc)ok=false;
+  const ano=document.getElementById('anoEntrada').value;setErr('anoEntrada',!ano);showErr('anoError',!ano);if(!ano)ok=false;
+  const dep=document.getElementById('departamento').value;setErr('departamento',!dep);showErr('depError',!dep);if(!dep)ok=false;
+  const cidade=document.getElementById('cidade').value.trim();setErr('cidade',!cidade);showErr('cidadeError',!cidade);if(!cidade)ok=false;
+  const bairro=document.getElementById('bairro').value;setErr('bairro',!bairro);showErr('bairroError',!bairro);if(!bairro)ok=false;
+  if(!document.querySelector('input[name="genero"]:checked')){showErr('generoError',true);ok=false;}else showErr('generoError',false);
+  if(!document.querySelector('input[name="carteirinha"]:checked')){showErr('cartError',true);ok=false;}else showErr('cartError',false);
+  if(!document.querySelector('input[name="chanceDesfile"]:checked')){showErr('chanceError',true);ok=false;}else showErr('chanceError',false);
+  if(!document.querySelector('input[name="diasEnsaio"]:checked')){showErr('diasError',true);ok=false;}else showErr('diasError',false);
+  if(dep==='Dep. Casais'&&!document.querySelector('input[name="funcaoCasal"]:checked'))ok=false;
+  if(dep==='Bateria'&&!document.querySelector('input[name="naipeBateria"]:checked'))ok=false;
+  return ok;
+}
+
+document.getElementById('censoForm').addEventListener('submit',async function(e){
+  e.preventDefault();
+  if(!validate()){document.querySelector('.error,[style*="block"]')?.scrollIntoView({behavior:'smooth',block:'center'});return}
+  const btn=document.getElementById('btnSubmit');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Enviando...';
+  const p={
+    nome:document.getElementById('nome').value.trim(),
+    whatsapp:document.getElementById('whatsapp').value.trim(),
+    genero:document.querySelector('input[name="genero"]:checked')?.value||'',
+    dataNascimento:document.getElementById('dataNascimento').value,
+    anoEntrada:document.getElementById('anoEntrada').value,
+    departamento:document.getElementById('departamento').value,
+    funcaoCasal:document.querySelector('input[name="funcaoCasal"]:checked')?.value||'',
+    naipeBateria:document.querySelector('input[name="naipeBateria"]:checked')?.value||'',
+    carteirinha:document.querySelector('input[name="carteirinha"]:checked')?.value||'',
+    chanceDesfile:document.querySelector('input[name="chanceDesfile"]:checked')?.value||'',
+    cidade:document.getElementById('cidade').value.trim(),
+    bairro:document.getElementById('bairro').value,
+    diasEnsaio:[...document.querySelectorAll('input[name="diasEnsaio"]:checked')].map(i=>i.value).join(', '),
+    interesses:[...document.querySelectorAll('input[name="interesses"]:checked')].map(i=>i.value).join(', '),
+    dataResposta:new Date().toLocaleString('pt-BR')
+  };
+  try{
+    await fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+    document.getElementById('censoForm').style.display='none';
+    document.getElementById('successScreen').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(err){
+    btn.disabled=false;btn.innerHTML='Enviar meu Censo';
+    alert('Erro ao enviar. Verifique sua conexão e tente novamente.');
+  }
+});
+
+document.querySelectorAll('input,select').forEach(el=>{
+  el.addEventListener('input',()=>el.classList.remove('error'));
+  el.addEventListener('change',()=>el.classList.remove('error'));
+});
+</script>
+
+
+</body></html>

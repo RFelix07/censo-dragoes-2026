@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Users/roger/Downloads/dashboard_1.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Censo 2026 — Dragões da Real</title>
+<link href="./dashboard_files/css2" rel="stylesheet">
+<style>
+:root{
+  --creme:#F2EAD8;--creme-brd:#D8C8A8;--creme-txt:#8B6040;
+  --branco:#FFFFFF;--preto:#1A0A00;--vermelho:#C8102E;--verm-esc:#8B0015;
+  --verm-bg:#FFF0EE;--dourado:#D4A843;--dour-esc:#A07820;
+  --borda:#E0D0B8;--txt:#1A0A00;--txt-sec:#6B5040;--txt-hint:#B0A090;
+  --verde:#2D6A3A;--verde-bg:#E8F5EE;--bg:#F7F4EF;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--creme);border-bottom:1px solid var(--creme-brd);position:sticky;top:0;z-index:100}
+.topbar-stripe{display:flex;height:4px}
+.topbar-stripe span{flex:1}
+.topbar-body{padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:1100px;margin:0 auto}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-logo{width:32px;height:32px;object-fit:contain}
+.topbar-title{font-family:'Playfair Display',serif;font-weight:700;font-size:16px;color:var(--preto);line-height:1.1}
+.topbar-title small{display:block;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--creme-txt)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.topbar-time{font-size:11px;color:var(--txt-hint);font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px}
+.btn-atualizar{background:transparent;border:1px solid var(--creme-brd);border-radius:4px;color:var(--creme-txt);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;cursor:pointer;transition:all .2s}
+.btn-atualizar:hover{background:var(--creme);border-color:var(--creme-txt)}
+.btn-atualizar.spin span{display:inline-block;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* ── TABS ── */
+.tabs-wrap{background:var(--branco);border-bottom:1px solid var(--borda);position:sticky;top:60px;z-index:99}
+.tabs{display:flex;max-width:1100px;margin:0 auto;padding:0 20px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:12px 16px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt-hint);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;user-select:none}
+.tab:hover{color:var(--txt-sec)}
+.tab.ativo{color:var(--vermelho);border-bottom-color:var(--vermelho)}
+
+/* ── MAIN ── */
+.main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+.tab-content{display:none}
+.tab-content.ativo{display:block}
+
+/* ── ALERT ── */
+.alert-banner{background:var(--creme);border:1px solid var(--creme-brd);border-left:3px solid var(--dourado);border-radius:4px;padding:10px 14px;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--creme-txt)}
+.alert-banner a{color:var(--vermelho);font-weight:600;text-decoration:none}
+
+/* ── SECTION LABEL ── */
+.sec-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--creme-txt);margin-bottom:12px;margin-top:24px;display:flex;align-items:center;gap:10px}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--borda)}
+
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:600px){.kpi-grid{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--branco);border:1px solid var(--borda);border-top:2px solid var(--borda);border-radius:4px;padding:14px 14px}
+.kpi.red{border-top-color:var(--vermelho)}
+.kpi.gold{border-top-color:var(--dourado)}
+.kpi.green{border-top-color:var(--verde)}
+.kpi.dark{border-top-color:var(--preto)}
+.kpi-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--txt-hint);margin-bottom:5px}
+.kpi-val{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,30px);font-weight:900;line-height:1;color:var(--txt)}
+.kpi-val.red{color:var(--vermelho)}
+.kpi-val.gold{color:var(--dour-esc)}
+.kpi-val.green{color:var(--verde)}
+.kpi-sub{font-size:11px;color:var(--txt-hint);margin-top:3px}
+
+/* ── ACCORDION ── */
+.acc-list{display:flex;flex-direction:column;gap:6px}
+.acc-item{background:var(--branco);border:1px solid var(--borda);border-radius:4px;overflow:hidden}
+.acc-item.aberto{border-color:var(--creme-brd)}
+.acc-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;transition:background .15s}
+.acc-hdr:hover{background:var(--creme)}
+.acc-item.aberto .acc-hdr{background:var(--creme);border-bottom:1px solid var(--borda)}
+.acc-hdr-left{display:flex;align-items:center;gap:10px}
+.acc-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.acc-nome{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:.3px;color:var(--txt)}
+.acc-hdr-right{display:flex;align-items:center;gap:10px}
+.acc-pct-badge{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;padding:2px 10px;border-radius:3px;border:1px solid}
+.acc-pct-badge.green{background:var(--verde-bg);color:var(--verde);border-color:rgba(45,106,58,.2)}
+.acc-pct-badge.yellow{background:#FDF6E3;color:var(--dour-esc);border-color:rgba(160,120,32,.2)}
+.acc-pct-badge.red{background:var(--verm-bg);color:var(--vermelho);border-color:rgba(200,16,46,.2)}
+.acc-chevron{font-size:13px;color:var(--txt-hint);transition:transform .3s}
+.acc-item.aberto .acc-chevron{transform:rotate(180deg)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.acc-item.aberto .acc-body{max-height:1000px}
+.acc-inner{padding:14px 16px}
+
+/* Barra de progresso dentro do accordion */
+.dep-prog{margin-bottom:14px}
+.dep-prog-hdr{display:flex;justify-content:space-between;margin-bottom:6px}
+.dep-prog-txt{font-size:12px;color:var(--txt-sec)}
+.dep-prog-pct{font-family:'Playfair Display',serif;font-size:14px;font-weight:700}
+.dep-prog-track{height:5px;background:var(--borda);border-radius:3px;overflow:hidden}
+.dep-prog-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.dep-prog-fill.green{background:var(--verde)}
+.dep-prog-fill.yellow{background:var(--dourado)}
+.dep-prog-fill.red{background:var(--vermelho)}
+
+/* Naipes dentro do accordion da bateria */
+.naipes-inner{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.naipe-box{background:var(--bg);border:1px solid var(--borda);border-radius:3px;padding:8px;text-align:center}
+.naipe-num{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--vermelho)}
+.naipe-lbl{font-size:10px;color:var(--txt-hint);margin-top:1px}
+
+/* Casal dentro do accordion */
+.funcoes-inner{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:10px}
+.funcao-box{background:var(--bg);border:1px solid var(--borda);border-radius:3px;padding:8px;text-align:center}
+.funcao-num{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--preto)}
+.funcao-lbl{font-size:10px;color:var(--txt-hint);margin-top:1px}
+
+/* ── ALERTAS ── */
+.alert-list{display:flex;flex-direction:column;gap:6px}
+.alert-item{display:flex;align-items:center;gap:12px;background:var(--branco);border:1px solid var(--borda);border-left:3px solid var(--borda);border-radius:4px;padding:11px 14px}
+.alert-item.red{border-left-color:var(--vermelho)}
+.alert-item.yellow{border-left-color:var(--dourado)}
+.alert-item.green{border-left-color:var(--verde)}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.alert-dot.red{background:var(--vermelho)}
+.alert-dot.yellow{background:var(--dourado)}
+.alert-dot.green{background:var(--verde)}
+.alert-txt{font-size:13px;flex:1;color:var(--txt-sec)}
+.alert-txt strong{color:var(--txt);font-weight:600}
+.alert-btn{background:transparent;border:1px solid var(--borda);border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--vermelho);padding:3px 10px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.alert-btn:hover{background:var(--verm-bg);border-color:rgba(200,16,46,.3)}
+
+/* ── ANÁLISES (aba 3) ── */
+.charts-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:600px){.charts-grid{grid-template-columns:1fr 1fr}}
+.chart-card{background:var(--branco);border:1px solid var(--borda);border-radius:4px;padding:16px}
+.chart-ttl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--txt-hint);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--borda)}
+
+/* Donut */
+.donut-wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.legend{display:flex;flex-direction:column;gap:7px;flex:1}
+.leg-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.leg-lbl{flex:1;color:var(--txt-sec)}
+.leg-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--txt);font-size:13px}
+
+/* Barras */
+.bar-list{display:flex;flex-direction:column;gap:9px}
+.bar-row{display:flex;align-items:center;gap:8px}
+.bar-lbl{font-size:11px;color:var(--txt-sec);width:40px;text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:6px;background:var(--borda);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 1.2s ease}
+.bar-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--txt);width:28px}
+
+/* Dias */
+.dias-bars{display:flex;align-items:flex-end;justify-content:space-between;gap:5px;height:80px;margin-bottom:8px}
+.dia-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.dia-bar{width:100%;background:var(--vermelho);min-height:4px;border-radius:2px 2px 0 0;transition:height 1.2s ease}
+.dia-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:var(--txt-hint);letter-spacing:.5px}
+.dia-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--vermelho)}
+
+/* ── STATS ── */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:500px){.stats-row{grid-template-columns:repeat(4,1fr)}}
+.stat-item{background:var(--branco);border:1px solid var(--borda);border-radius:4px;padding:12px;text-align:center}
+.stat-num{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--preto)}
+.stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--txt-hint);margin-top:2px}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:32px 20px;color:var(--txt-hint)}
+.empty-icon{font-size:28px;margin-bottom:8px}
+.empty-txt{font-size:13px}
+
+/* ── MODAL CONFIG ── */
+.modal-ov{position:fixed;inset:0;background:rgba(26,10,0,.6);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal{background:var(--branco);border:1px solid var(--borda);border-top:3px solid var(--dourado);border-radius:4px;padding:28px;width:100%;max-width:480px}
+.modal h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;margin-bottom:6px;color:var(--preto)}
+.modal p{font-size:13px;color:var(--txt-sec);margin-bottom:18px;line-height:1.5}
+.modal input{width:100%;background:var(--bg);border:1px solid var(--borda);border-left:3px solid var(--vermelho);border-radius:4px;color:var(--preto);font-family:'Barlow',sans-serif;font-size:14px;padding:11px 13px;outline:none;margin-bottom:12px}
+.modal input:focus{border-color:var(--dourado)}
+.modal-btns{display:flex;gap:10px}
+.btn-p{flex:1;background:var(--preto);border:none;border-bottom:2px solid var(--dour-esc);border-radius:4px;color:var(--dourado);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:12px;cursor:pointer;transition:all .2s}
+.btn-p:hover{background:#2A1000}
+.btn-s{background:transparent;border:1px solid var(--borda);border-radius:4px;color:var(--txt-sec);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;padding:12px 18px;cursor:pointer;transition:all .2s}
+.btn-s:hover{border-color:var(--preto);color:var(--preto)}
+.cfg-note{background:var(--creme);border:1px solid var(--creme-brd);border-left:3px solid var(--dourado);border-radius:4px;padding:10px 13px;font-size:11px;color:var(--creme-txt);line-height:1.5;margin-bottom:16px}
+.cfg-note strong{color:var(--preto)}
+
+/* ── LOADING ── */
+.loading-ov{position:fixed;inset:0;background:rgba(247,244,239,.92);display:flex;align-items:center;justify-content:center;z-index:300}
+.loading-box{text-align:center}
+.loading-logo{width:48px;height:48px;animation:float 1.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.loading-txt{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--creme-txt);margin-top:14px}
+
+/* ── EXPORT CSV BTN ── */
+.btn-export{background:transparent;border:1px solid var(--borda);border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dour-esc);padding:4px 12px;cursor:pointer;transition:all .2s}
+.btn-export:hover{background:var(--creme);border-color:var(--dourado)}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-ov" id="loadingOv" style="display: none;">
+  <div class="loading-box">
+    <img class="loading-logo" src="./dashboard_files/Dragoes_da_Real_logo.png" alt="" onerror="this.style.display=&#39;none&#39;">
+    <div class="loading-txt">Carregando dados...</div>
+  </div>
+</div>
+
+<!-- CONFIG MODAL -->
+<div class="modal-ov" id="configModal" style="display:none">
+  <div class="modal">
+    <h2>Configurar Dashboard</h2>
+    <p>Cole a URL do Google Apps Script para conectar com sua planilha.</p>
+    <div class="cfg-note">
+      <strong>Como obter:</strong> Apps Script → Implantar → Nova implantação → App da Web → copie a URL gerada.
+    </div>
+    <input type="url" id="configUrl" placeholder="https://script.google.com/macros/s/..." autocomplete="off">
+    <div class="modal-btns">
+      <button class="btn-s" onclick="closeConfig()">Cancelar</button>
+      <button class="btn-p" onclick="saveConfig()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-stripe">
+    <span style="background:#C8102E"></span><span style="background:#1A0A00"></span>
+    <span style="background:#D4A843"></span><span style="background:#1A0A00"></span>
+    <span style="background:#C8102E"></span><span style="background:#1A0A00"></span>
+    <span style="background:#D4A843"></span><span style="background:#1A0A00"></span>
+  </div>
+  <div class="topbar-body">
+    <div class="topbar-left">
+      <img class="topbar-logo" src="./dashboard_files/Dragoes_da_Real_logo.png" alt="" onerror="this.style.display=&#39;none&#39;">
+      <div class="topbar-title">
+        Dragões da Real
+        <small>Censo 2026 · Dashboard</small>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-time" id="lastUpdate">Atualizado às 20:06</span>
+      <button class="btn-atualizar" id="btnAtualizar" onclick="loadData()">
+        <span>↻</span> Atualizar
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <div class="tab ativo" onclick="mudarAba(0)">Visão Geral</div>
+    <div class="tab" onclick="mudarAba(1)">Departamentos</div>
+    <div class="tab" onclick="mudarAba(2)">Análises</div>
+    <div class="tab" onclick="mudarAba(3)">Alertas<span class="badge-cnt" style="background: var(--vermelho); color: white; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 6px;">28</span></div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- ALERT CONFIG -->
+  <div class="alert-banner" id="alertConfig" style="display: none;">
+    ✦ <span>Configure o dashboard: <a href="file:///C:/Users/roger/Downloads/dashboard_1.html#" onclick="openConfig();return false;">clique aqui</a> para conectar com sua planilha.</span>
+  </div>
+
+  <!-- ── ABA 0: VISÃO GERAL ── -->
+  <div class="tab-content ativo" id="aba-0">
+    <div class="sec-lbl">Resumo</div>
+    <div class="kpi-grid">
+      <div class="kpi red"><div class="kpi-lbl">Total Respostas</div><div class="kpi-val red" id="kpiTotal">1</div><div class="kpi-sub" id="kpiMeta">de 1820 esperados</div></div>
+      <div class="kpi gold"><div class="kpi-lbl">Taxa Geral</div><div class="kpi-val gold" id="kpiTaxa">0%</div><div class="kpi-sub" id="kpiTaxaSub">1 de 1820</div></div>
+      <div class="kpi green"><div class="kpi-lbl">Chance Média Desfile</div><div class="kpi-val green" id="kpiChance">0%</div><div class="kpi-sub">probabilidade média</div></div>
+      <div class="kpi dark"><div class="kpi-lbl">Querem Carteirinha</div><div class="kpi-val" id="kpiCart">0</div><div class="kpi-sub">sem carteirinha</div></div>
+    </div>
+
+    <div class="sec-lbl" style="margin-top:24px">Progresso Geral</div>
+    <div class="acc-list" id="resumoDeps"><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Comissão de Frente</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/15</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 15 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 15 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Dep. Casais</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/10</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 10 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 10 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Destaque de Chão</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/8</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 8 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 8 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Composição</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/6</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 6 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 6 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Destaques</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/20</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 20 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 20 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Diretoria</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/12</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 12 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 12 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Harmonia</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">3% · 1/35</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">1 de 35 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">3%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:3%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 34 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Carnareal</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/40</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 40 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 40 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Comunidade</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/50</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 50 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 50 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Bateria</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/250</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 250 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 250 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Guardiões</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Baianas</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Jovens</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Zona Sul</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Pirituba</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Oz</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Atibaia</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Caverna</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Amigos da Vila</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Explosão</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Tamujuntu</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Avalanche</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Portal</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Sítio</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Anastácio</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Ziriguidum</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Passistas</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 72 respostas</div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Convidados</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">0% · 0/150</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 150 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">Atenção — faltam 150 respostas</div>
+        </div>
+      </div>
+    </div></div>
+
+    <div class="sec-lbl" style="margin-top:24px">Dados Extras</div>
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num" id="stCidades">1</div><div class="stat-lbl">Cidades</div></div>
+      <div class="stat-item"><div class="stat-num" id="stBairros">1</div><div class="stat-lbl">Zonas</div></div>
+      <div class="stat-item"><div class="stat-num" id="stCart">1</div><div class="stat-lbl">Com Carteirinha</div></div>
+      <div class="stat-item"><div class="stat-num" id="stInt">1</div><div class="stat-lbl">Querem Crescer</div></div>
+    </div>
+  </div>
+
+  <!-- ── ABA 1: DEPARTAMENTOS ── -->
+  <div class="tab-content" id="aba-1">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;margin-bottom:12px">
+      <div class="sec-lbl" style="margin:0;flex:1">Todos os Departamentos</div>
+      <button class="btn-export" onclick="exportCSV()">↓ Exportar CSV</button>
+    </div>
+    <div class="acc-list" id="depsAccordion"><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Comissão de Frente</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/15</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 15 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Dep. Casais</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/10</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 10 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:&#39;Barlow Condensed&#39;,sans-serif;letter-spacing:1px;text-transform:uppercase">Funções</div>
+      <div class="funcoes-inner"><div class="funcao-box"><div class="funcao-num">0</div><div class="naipe-lbl">Mestre-Sala</div></div><div class="funcao-box"><div class="funcao-num">0</div><div class="naipe-lbl">Porta-Bandeira</div></div><div class="funcao-box"><div class="funcao-num">0</div><div class="naipe-lbl">Apresentador(a)</div></div><div class="funcao-box"><div class="funcao-num">0</div><div class="naipe-lbl">Reserva/Suplente</div></div></div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Destaque de Chão</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/8</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 8 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Composição</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/6</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 6 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Destaques</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/20</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 20 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Diretoria</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/12</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 12 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Harmonia</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">1/35</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">1 de 35 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">3%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:3%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Carnareal</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/40</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 40 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Comunidade</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/50</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 50 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Bateria</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/250</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 250 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          <div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:&#39;Barlow Condensed&#39;,sans-serif;letter-spacing:1px;text-transform:uppercase">Naipes</div>
+      <div class="naipes-inner"><div class="naipe-box"><div class="naipe-num">0</div><div class="naipe-lbl">Surdo</div></div><div class="naipe-box"><div class="naipe-num">0</div><div class="naipe-lbl">Caixa</div></div><div class="naipe-box"><div class="naipe-num">0</div><div class="naipe-lbl">Tamborim</div></div><div class="naipe-box"><div class="naipe-num">0</div><div class="naipe-lbl">Repinique</div></div><div class="naipe-box"><div class="naipe-num">0</div><div class="naipe-lbl">Agogô</div></div><div class="naipe-box"><div class="naipe-num">0</div><div class="naipe-lbl">Chocalho</div></div><div class="naipe-box"><div class="naipe-num">0</div><div class="naipe-lbl">Cuíca</div></div><div class="naipe-box"><div class="naipe-num">0</div><div class="naipe-lbl">Outro</div></div></div>
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Guardiões</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Baianas</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Jovens</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Zona Sul</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Pirituba</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Oz</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Atibaia</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Caverna</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Amigos da Vila</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Explosão</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Tamujuntu</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Avalanche</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Portal</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Sítio</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Anastácio</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Ziriguidum</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Passistas</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/72</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 72 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div><div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:#C8102E"></div>
+          <span class="acc-nome">Ala Convidados</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge red">Atenção</span>
+          <span style="font-size:12px;color:var(--txt-sec)">0/150</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">0 de 150 respostas</span>
+              <span class="dep-prog-pct" style="color:#C8102E">0%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill red" style="width:0%"></div></div>
+          </div>
+          
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ── ABA 2: ANÁLISES ── -->
+  <div class="tab-content" id="aba-2">
+    <div class="sec-lbl">Distribuições</div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-ttl">Gênero</div>
+        <div class="donut-wrap" id="generoChart"><svg width="100" height="100" viewBox="0 0 100 100" style="flex-shrink:0"><path d="M50 10 A40 40 0 1 1 49.99999999999999 10 L49.99999999999999 28 A22 22 0 1 0 50 28 Z" fill="#1A0A00"></path><text x="50" y="55" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#1A0A00">1</text></svg><div class="legend"><div class="leg-item"><span class="leg-dot" style="background:#1A0A00"></span><span class="leg-lbl">Masculino</span><span class="leg-val">1 (100%)</span></div></div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-ttl">Chance de Desfile</div>
+        <div id="chanceChart"><div class="bar-list"><div class="bar-row"><span class="bar-lbl">100%</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:#1A0A00"></div></div><span class="bar-num">0</span></div><div class="bar-row"><span class="bar-lbl">75%</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:#8B0015"></div></div><span class="bar-num">0</span></div><div class="bar-row"><span class="bar-lbl">50%</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:#C8102E"></div></div><span class="bar-num">0</span></div><div class="bar-row"><span class="bar-lbl">25%</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:#D4A843"></div></div><span class="bar-num">0</span></div><div class="bar-row"><span class="bar-lbl">0%</span><div class="bar-track"><div class="bar-fill" style="width:0%;background:#E0D0B8"></div></div><span class="bar-num">0</span></div></div><div style="text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--borda)"><span style="font-family:&#39;Playfair Display&#39;,serif;font-size:22px;font-weight:700;color:var(--vermelho)">0%</span><div style="font-family:&#39;Barlow Condensed&#39;,sans-serif;font-size:9px;letter-spacing:2px;color:var(--txt-hint);margin-top:2px;text-transform:uppercase">Média geral</div></div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-ttl">Disponibilidade por Dia</div>
+        <div id="diasChart"><div class="dias-bars"><div class="dia-col"><span class="dia-num">1</span><div class="dia-bar" style="height:72px"></div><span class="dia-lbl">Seg</span></div><div class="dia-col"><span class="dia-num">1</span><div class="dia-bar" style="height:72px"></div><span class="dia-lbl">Ter</span></div><div class="dia-col"><span class="dia-num">1</span><div class="dia-bar" style="height:72px"></div><span class="dia-lbl">Qua</span></div><div class="dia-col"><span class="dia-num">1</span><div class="dia-bar" style="height:72px"></div><span class="dia-lbl">Qui</span></div><div class="dia-col"><span class="dia-num">1</span><div class="dia-bar" style="height:72px"></div><span class="dia-lbl">Sex</span></div><div class="dia-col"><span class="dia-num">1</span><div class="dia-bar" style="height:72px"></div><span class="dia-lbl">Sáb</span></div><div class="dia-col"><span class="dia-num">1</span><div class="dia-bar" style="height:72px"></div><span class="dia-lbl">Dom</span></div></div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-ttl">Distribuição por Zona</div>
+        <div id="zonaChart"><div class="bar-list"><div class="bar-row"><span class="bar-lbl" style="width:90px;font-size:10px">Zona Norte</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:#1A0A00"></div></div><span class="bar-num">1</span></div></div></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-ttl">Ano de Entrada (Retenção)</div>
+        <div id="retencaoChart"><div class="bar-list"><div class="bar-row"><span class="bar-lbl">2010</span><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--dourado)"></div></div><span class="bar-num">1</span></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ABA 3: ALERTAS ── -->
+  <div class="tab-content" id="aba-3">
+    <div class="sec-lbl">Alertas de Ação</div>
+    <div class="alert-list" id="alertList">
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Convidados:</strong> Apenas 0% — 150 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Passistas:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Ziriguidum:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Anastácio:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Sítio:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Portal:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Avalanche:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Tamujuntu:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Explosão:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div>
+    <div class="alert-item red">
+      <div class="alert-dot red"></div>
+      <div class="alert-txt"><strong>Ala Amigos da Vila:</strong> Apenas 0% — 72 respostas pendentes</div>
+      <button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>
+    </div></div>
+  </div>
+
+</main>
+
+<script>
+let SCRIPT_URL=localStorage.getItem('censo_url')||'https://script.google.com/macros/s/AKfycbzfHZhoIOlmLu180vyBYyedrF6m6RTnbJCa6DozTXSd_6b4qMEkM6FHf_gCQjttEQg4Jw/exec';
+let allData=[],allMetas={};
+const METAS_DEFAULT={'Comissão de Frente':15,'Dep. Casais':10,'Destaque de Chão':8,'Composição':6,'Destaques':20,'Diretoria':12,'Harmonia':80,'Ala Carnareal':40,'Ala Comunidade':50,'Bateria':150,'Ala Guardiões':45,'Ala Baianas':60,'Ala Jovens':40,'Ala Zona Sul':35,'Ala Pirituba':30,'Ala Oz':35,'Ala Atibaia':25,'Ala Caverna':30,'Ala Amigos da Vila':35,'Ala Explosão':40,'Ala Tamujuntu':35,'Ala Avalanche':40,'Ala Portal':35,'Ala Sítio':30,'Ala Anastácio':35,'Ala Ziriguidum':40,'Ala Passistas':25,'Ala Convidados':20};
+
+// Config
+function openConfig(){document.getElementById('configModal').style.display='flex';document.getElementById('configUrl').value=SCRIPT_URL}
+function closeConfig(){document.getElementById('configModal').style.display='none'}
+function saveConfig(){
+  const u=document.getElementById('configUrl').value.trim();
+  if(!u){alert('Cole a URL.');return}
+  SCRIPT_URL=u;localStorage.setItem('censo_url',u);
+  document.getElementById('alertConfig').style.display='none';
+  closeConfig();loadData();
+}
+
+// Abas
+function mudarAba(idx){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('ativo',i===idx));
+  document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('ativo',i===idx));
+}
+
+// Accordion
+function toggleAcc(el){
+  el.classList.toggle('aberto');
+}
+
+// Load
+async function loadData(){
+  const btn=document.getElementById('btnAtualizar');
+  btn.classList.add('spin');
+  document.getElementById('loadingOv').style.display='flex';
+  try{
+    const res=await fetch(SCRIPT_URL+'?action=getDashboard',{cache:'no-store'});
+    const json=await res.json();
+    allData=json.respostas||[];
+    allMetas=json.metas||METAS_DEFAULT;
+    render(allData,allMetas);
+    document.getElementById('alertConfig').style.display='none';
+  }catch(e){
+    renderDemo();
+  }finally{
+    btn.classList.remove('spin');
+    document.getElementById('loadingOv').style.display='none';
+    document.getElementById('lastUpdate').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  }
+}
+
+function renderDemo(){
+  const demo=[];const deps=Object.keys(METAS_DEFAULT);
+  const generos=['Feminino','Feminino','Masculino','Masculino','Masculino','Não-binário'];
+  const chances=['100%','100%','75%','75%','50%','25%','0%'];
+  const carteirs=['Sim, tenho','Sim, tenho','Não tenho, mas quero','Não tenho interesse'];
+  const dias=[['Segunda','Quarta','Sexta'],['Sábado'],['Terça','Quinta'],['Quarta','Sexta','Sábado']];
+  const naipes=['Surdo','Surdo','Caixa','Caixa','Tamborim','Repinique','Agogô','Chocalho'];
+  const funcoes=['Mestre-Sala','Porta-Bandeira','Porta-Bandeira','Reserva/Suplente'];
+  const cidades=['São Paulo','São Paulo','Guarulhos','Osasco','Santo André'];
+  const bairros=['Vila Prudente','Ipiranga','Tatuapé','Centro','Lapa','Penha'];
+  const anos=['2024','2023','2022','2020','2018','2015','2010','2005'];
+  let id=1;
+  deps.forEach(dep=>{
+    const meta=METAS_DEFAULT[dep],resps=Math.floor(meta*(0.3+Math.random()*0.7));
+    for(let i=0;i<resps;i++){
+      demo.push({id:id++,nome:'Componente '+id,departamento:dep,
+        genero:generos[Math.floor(Math.random()*generos.length)],
+        chanceDesfile:chances[Math.floor(Math.random()*chances.length)],
+        carteirinha:carteirs[Math.floor(Math.random()*carteirs.length)],
+        diasEnsaio:dias[Math.floor(Math.random()*dias.length)].join(', '),
+        cidade:cidades[Math.floor(Math.random()*cidades.length)],
+        bairro:bairros[Math.floor(Math.random()*bairros.length)],
+        interesses:Math.random()>.5?'Aprender':'',
+        naipeBateria:dep==='Bateria'?naipes[Math.floor(Math.random()*naipes.length)]:'',
+        funcaoCasal:dep==='Dep. Casais'?funcoes[Math.floor(Math.random()*funcoes.length)]:'',
+        anoEntrada:anos[Math.floor(Math.random()*anos.length)]});
+    }
+  });
+  allData=demo;allMetas=METAS_DEFAULT;render(demo,METAS_DEFAULT);
+  document.getElementById('alertConfig').innerHTML='✦ <span><strong>Modo demonstração</strong> — dados simulados. <a href="#" onclick="openConfig();return false;">Configure a URL</a> para dados reais.</span>';
+  document.getElementById('alertConfig').style.display='flex';
+}
+
+function render(data,metas){
+  renderKPIs(data,metas);
+  renderResumo(data,metas);
+  renderDeps(data,metas);
+  renderAlertas(data,metas);
+  renderGenero(data);
+  renderChance(data);
+  renderDias(data);
+  renderZona(data);
+  renderRetencao(data);
+  renderStats(data);
+}
+
+function cls(pct){return pct>=90?'green':pct>=60?'yellow':'red'}
+function badge(pct){return pct>=90?'Completo':pct>=60?'Em andamento':'Atenção'}
+function statusColor(pct){return pct>=90?'#2D6A3A':pct>=60?'#A07820':'#C8102E'}
+
+function renderKPIs(data,metas){
+  const total=data.length,metaTotal=Object.values(metas).reduce((a,b)=>a+b,0);
+  const taxa=metaTotal>0?Math.round((total/metaTotal)*100):0;
+  const cm={'0%':0,'25%':25,'50%':50,'75%':75,'100%':100};
+  const chanceMedia=data.length?Math.round(data.reduce((s,r)=>s+(cm[r.chanceDesfile]||0),0)/data.length):0;
+  const querCart=data.filter(r=>r.carteirinha==='Não tenho, mas quero').length;
+  document.getElementById('kpiTotal').textContent=total;
+  document.getElementById('kpiMeta').textContent='de '+metaTotal+' esperados';
+  document.getElementById('kpiTaxa').textContent=taxa+'%';
+  document.getElementById('kpiTaxaSub').textContent=total+' de '+metaTotal;
+  document.getElementById('kpiChance').textContent=chanceMedia+'%';
+  document.getElementById('kpiCart').textContent=querCart;
+}
+
+function renderResumo(data,metas){
+  const counts={};data.forEach(r=>{counts[r.departamento]=(counts[r.departamento]||0)+1});
+  const deps=Object.keys(metas).filter(d=>metas[d]>0);
+  if(!deps.length){document.getElementById('resumoDeps').innerHTML='<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';return}
+  document.getElementById('resumoDeps').innerHTML=deps.map(dep=>{
+    const meta=metas[dep],resp=counts[dep]||0,pct=Math.min(100,Math.round((resp/meta)*100));
+    const c=cls(pct);
+    return `<div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:${statusColor(pct)}"></div>
+          <span class="acc-nome">${dep}</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge ${c}">${pct}% · ${resp}/${meta}</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">${resp} de ${meta} respostas</span>
+              <span class="dep-prog-pct" style="color:${statusColor(pct)}">${pct}%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill ${c}" style="width:${pct}%"></div></div>
+          </div>
+          <div style="font-size:12px;color:var(--txt-hint)">${badge(pct)}${meta-resp>0?' — faltam '+(meta-resp)+' respostas':''}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderDeps(data,metas){
+  const counts={};data.forEach(r=>{counts[r.departamento]=(counts[r.departamento]||0)+1});
+  const naipeCounts={};data.filter(r=>r.departamento==='Bateria').forEach(r=>{if(r.naipeBateria)naipeCounts[r.naipeBateria]=(naipeCounts[r.naipeBateria]||0)+1});
+  const funcaoCounts={};data.filter(r=>r.departamento==='Dep. Casais').forEach(r=>{if(r.funcaoCasal)funcaoCounts[r.funcaoCasal]=(funcaoCounts[r.funcaoCasal]||0)+1});
+  const deps=Object.keys(metas).filter(d=>metas[d]>0);
+  if(!deps.length){document.getElementById('depsAccordion').innerHTML='<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';return}
+
+  document.getElementById('depsAccordion').innerHTML=deps.map(dep=>{
+    const meta=metas[dep],resp=counts[dep]||0,pct=Math.min(100,Math.round((resp/meta)*100));
+    const c=cls(pct);
+    let extra='';
+    if(dep==='Bateria'){
+      const naipes=['Surdo','Caixa','Tamborim','Repinique','Agogô','Chocalho','Cuíca','Outro'];
+      extra=`<div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase">Naipes</div>
+      <div class="naipes-inner">${naipes.map(n=>`<div class="naipe-box"><div class="naipe-num">${naipeCounts[n]||0}</div><div class="naipe-lbl">${n}</div></div>`).join('')}</div>`;
+    }
+    if(dep==='Dep. Casais'){
+      const funcoes=['Mestre-Sala','Porta-Bandeira','Apresentador(a)','Reserva/Suplente'];
+      extra=`<div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase">Funções</div>
+      <div class="funcoes-inner">${funcoes.map(f=>`<div class="funcao-box"><div class="funcao-num">${funcaoCounts[f]||0}</div><div class="naipe-lbl">${f}</div></div>`).join('')}</div>`;
+    }
+    return `<div class="acc-item">
+      <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:${statusColor(pct)}"></div>
+          <span class="acc-nome">${dep}</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-pct-badge ${c}">${badge(pct)}</span>
+          <span style="font-size:12px;color:var(--txt-sec)">${resp}/${meta}</span>
+          <span class="acc-chevron">▾</span>
+        </div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-inner">
+          <div class="dep-prog">
+            <div class="dep-prog-hdr">
+              <span class="dep-prog-txt">${resp} de ${meta} respostas</span>
+              <span class="dep-prog-pct" style="color:${statusColor(pct)}">${pct}%</span>
+            </div>
+            <div class="dep-prog-track"><div class="dep-prog-fill ${c}" style="width:${pct}%"></div></div>
+          </div>
+          ${extra}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAlertas(data,metas){
+  const counts={};data.forEach(r=>{counts[r.departamento]=(counts[r.departamento]||0)+1});
+  const alertas=[];
+  Object.entries(metas).forEach(([dep,meta])=>{
+    if(!meta)return;
+    const resp=counts[dep]||0,pct=Math.round((resp/meta)*100);
+    if(pct<60)alertas.push({dep,cls:'red',msg:`Apenas ${pct}% — ${meta-resp} respostas pendentes`});
+    else if(pct<90)alertas.push({dep,cls:'yellow',msg:`Faltam ${meta-resp} resposta${meta-resp!==1?'s':''} para a meta`});
+  });
+  const pb=data.filter(r=>r.departamento==='Dep. Casais'&&r.funcaoCasal==='Porta-Bandeira').length;
+  if(pb<2)alertas.push({dep:'Dep. Casais',cls:'yellow',msg:`${pb} Porta-Bandeira${pb!==1?'s':''} registrada${pb!==1?'s':''} — meta: 2`});
+  Object.entries(metas).filter(([d,m])=>m>0&&Math.round(((counts[d]||0)/m)*100)>=100).forEach(([dep])=>alertas.push({dep,cls:'green',msg:'Departamento completo!',noBtn:true}));
+  alertas.sort((a,b)=>a.cls==='red'?-1:b.cls==='red'?1:0);
+  if(!alertas.length){document.getElementById('alertList').innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-txt">Tudo em ordem!</div></div>';return}
+  document.getElementById('alertList').innerHTML=alertas.slice(0,10).map(a=>`
+    <div class="alert-item ${a.cls}">
+      <div class="alert-dot ${a.cls}"></div>
+      <div class="alert-txt"><strong>${a.dep}:</strong> ${a.msg}</div>
+      ${!a.noBtn?`<button class="alert-btn" onclick="mudarAba(1)">Ver dept.</button>`:''}
+    </div>`).join('');
+  // Badge na aba de alertas
+  const criticos=alertas.filter(a=>a.cls==='red').length;
+  if(criticos>0){
+    const tabAlertas=document.querySelectorAll('.tab')[3];
+    if(tabAlertas&&!tabAlertas.querySelector('.badge-cnt')){
+      const b=document.createElement('span');
+      b.className='badge-cnt';
+      b.style.cssText='background:var(--vermelho);color:white;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:6px';
+      b.textContent=criticos;
+      tabAlertas.appendChild(b);
+    }
+  }
+}
+
+function renderGenero(data){
+  const map={};data.forEach(r=>{map[r.genero]=(map[r.genero]||0)+1});
+  const total=data.length;
+  if(!total){document.getElementById('generoChart').innerHTML='<div class="empty" style="width:100%"><div class="empty-icon">📊</div><div class="empty-txt">Sem dados</div></div>';return}
+  const cores={'Feminino':'#C8102E','Masculino':'#1A0A00','Não-binário':'#D4A843','Outro':'#8B6040','Prefiro não informar':'#D8C8A8'};
+  const sorted=Object.entries(map).sort((a,b)=>b[1]-a[1]);
+  const sz=100,cx=50,cy=50,r=40,r2=22;
+  let svg=`<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" style="flex-shrink:0">`;
+  let ang=-Math.PI/2;
+  sorted.forEach(([lbl,cnt])=>{
+    const a=(cnt/total)*Math.PI*2,x1=cx+r*Math.cos(ang),y1=cy+r*Math.sin(ang),x2=cx+r*Math.cos(ang+a),y2=cy+r*Math.sin(ang+a),xi1=cx+r2*Math.cos(ang),yi1=cy+r2*Math.sin(ang),xi2=cx+r2*Math.cos(ang+a),yi2=cy+r2*Math.sin(ang+a),lg=a>Math.PI?1:0;
+    svg+=`<path d="M${x1} ${y1} A${r} ${r} 0 ${lg} 1 ${x2} ${y2} L${xi2} ${yi2} A${r2} ${r2} 0 ${lg} 0 ${xi1} ${yi1} Z" fill="${cores[lbl]||'#888'}"/>`;
+    ang+=a;
+  });
+  svg+=`<text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="Playfair Display,serif" font-size="14" font-weight="700" fill="#1A0A00">${total}</text></svg>`;
+  const legend=sorted.map(([lbl,cnt])=>`<div class="leg-item"><span class="leg-dot" style="background:${cores[lbl]||'#888'}"></span><span class="leg-lbl">${lbl}</span><span class="leg-val">${cnt} (${Math.round((cnt/total)*100)}%)</span></div>`).join('');
+  document.getElementById('generoChart').innerHTML=`${svg}<div class="legend">${legend}</div>`;
+}
+
+function renderChance(data){
+  const cm={'0%':0,'25%':25,'50%':50,'75%':75,'100%':100};
+  const media=data.length?Math.round(data.reduce((s,r)=>s+(cm[r.chanceDesfile]||0),0)/data.length):0;
+  const dist={};data.forEach(r=>{dist[r.chanceDesfile]=(dist[r.chanceDesfile]||0)+1});
+  const total=data.length||1;
+  const cores={'0%':'#E0D0B8','25%':'#D4A843','50%':'#C8102E','75%':'#8B0015','100%':'#1A0A00'};
+  let html='<div class="bar-list">';
+  ['100%','75%','50%','25%','0%'].forEach(k=>{
+    const v=dist[k]||0,pct=Math.round((v/total)*100);
+    html+=`<div class="bar-row"><span class="bar-lbl">${k}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${cores[k]}"></div></div><span class="bar-num">${v}</span></div>`;
+  });
+  html+=`</div><div style="text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--borda)"><span style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--vermelho)">${media}%</span><div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;color:var(--txt-hint);margin-top:2px;text-transform:uppercase">Média geral</div></div>`;
+  document.getElementById('chanceChart').innerHTML=html;
+}
+
+function renderDias(data){
+  const dias=['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],lbls=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  const counts={};data.forEach(r=>{if(!r.diasEnsaio)return;r.diasEnsaio.split(', ').forEach(d=>{counts[d]=(counts[d]||0)+1})});
+  const max=Math.max(...dias.map(d=>counts[d]||0),1);
+  let html='<div class="dias-bars">';
+  dias.forEach((dia,i)=>{const n=counts[dia]||0,h=Math.max(4,Math.round((n/max)*72));html+=`<div class="dia-col"><span class="dia-num">${n}</span><div class="dia-bar" style="height:${h}px"></div><span class="dia-lbl">${lbls[i]}</span></div>`;});
+  html+='</div>';
+  document.getElementById('diasChart').innerHTML=html;
+}
+
+function renderZona(data){
+  const zonas=['Zona Leste','Zona Norte','Zona Sul','Zona Oeste','Centro','Grande São Paulo','Outro Estado'];
+  const counts={};data.forEach(r=>{if(r.bairro)counts[r.bairro]=(counts[r.bairro]||0)+1});
+  const total=data.length||1;
+  if(!Object.keys(counts).length){document.getElementById('zonaChart').innerHTML='<div class="empty"><div class="empty-icon">📍</div><div class="empty-txt">Sem dados</div></div>';return}
+  const cores={'Zona Leste':'#C8102E','Zona Norte':'#1A0A00','Zona Sul':'#D4A843','Zona Oeste':'#8B6040','Centro':'#2D6A3A','Grande São Paulo':'#B0A090','Outro Estado':'#E0D0B8'};
+  let html='<div class="bar-list">';
+  zonas.forEach(z=>{
+    const v=counts[z]||0;if(!v)return;
+    const pct=Math.round((v/total)*100);
+    html+=`<div class="bar-row"><span class="bar-lbl" style="width:90px;font-size:10px">${z}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${cores[z]||'#888'}"></div></div><span class="bar-num">${v}</span></div>`;
+  });
+  html+='</div>';
+  document.getElementById('zonaChart').innerHTML=html;
+}
+
+function renderRetencao(data){
+  const anos={};data.forEach(r=>{if(r.anoEntrada)anos[r.anoEntrada]=(anos[r.anoEntrada]||0)+1});
+  const sorted=Object.entries(anos).sort((a,b)=>a[0]-b[0]).slice(-8);
+  const max=Math.max(...sorted.map(([,v])=>v),1);
+  if(!sorted.length){document.getElementById('retencaoChart').innerHTML='<div class="empty"><div class="empty-icon">📈</div><div class="empty-txt">Sem dados</div></div>';return}
+  let html='<div class="bar-list">';
+  sorted.forEach(([ano,cnt])=>{
+    const pct=Math.round((cnt/max)*100);
+    html+=`<div class="bar-row"><span class="bar-lbl">${ano}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--dourado)"></div></div><span class="bar-num">${cnt}</span></div>`;
+  });
+  html+='</div>';
+  document.getElementById('retencaoChart').innerHTML=html;
+}
+
+function renderStats(data){
+  document.getElementById('stCidades').textContent=new Set(data.map(r=>r.cidade).filter(Boolean)).size;
+  document.getElementById('stBairros').textContent=new Set(data.map(r=>r.bairro).filter(Boolean)).size;
+  document.getElementById('stCart').textContent=data.filter(r=>r.carteirinha==='Sim, tenho').length;
+  document.getElementById('stInt').textContent=data.filter(r=>r.interesses&&r.interesses.length>0).length;
+}
+
+function exportCSV(){
+  if(!allData.length){alert('Sem dados para exportar.');return}
+  const cols=['nome','whatsapp','genero','dataNascimento','anoEntrada','departamento','funcaoCasal','naipeBateria','carteirinha','chanceDesfile','cidade','bairro','diasEnsaio','interesses','dataResposta'];
+  const csv=[cols.join(','),...allData.map(r=>cols.map(c=>`"${(r[c]||'').toString().replace(/"/g,'""')}"`).join(','))].join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));a.download=`censo2026_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+}
+
+setInterval(()=>{if(SCRIPT_URL)loadData()},5*60*1000);
+window.addEventListener('load',()=>{if(SCRIPT_URL)document.getElementById('alertConfig').style.display='none';loadData()});
+</script>
+
+
+</body></html>
