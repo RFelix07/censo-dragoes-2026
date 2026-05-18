@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="google-site-verification" content="FBT2xWJVqhPJ4mXP5nfuMhhU1-PddgeCjm5ViwyDchM" />
+<!-- saved from url=(0045)file:///C:/Users/roger/Downloads/index_8.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="google-site-verification" content="FBT2xWJVqhPJ4mXP5nfuMhhU1-PddgeCjm5ViwyDchM">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Censo 2026 — Dragões da Real</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="./index_files/css2" rel="stylesheet">
 <style>
 :root {
   --creme:       #F2EAD8;
@@ -189,7 +189,7 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
 </header>
 
 <div class="container">
-<form id="censoForm" novalidate>
+<form id="censoForm" novalidate="">
 
   <div class="sec-hdr">
     <span class="sec-num">I.</span><div class="sec-dot"></div>
@@ -223,8 +223,12 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
 
   <div class="field">
     <label class="lbl">Data de Nascimento <span class="req">*</span></label>
-    <input type="date" id="dataNascimento">
-    <div class="error-msg" id="nascError">Informe sua data de nascimento.</div>
+    <div style="display:flex;gap:8px">
+      <input type="tel" id="nascDia" placeholder="Dia" maxlength="2" style="width:70px;text-align:center" inputmode="numeric">
+      <input type="tel" id="nascMes" placeholder="Mês" maxlength="2" style="width:70px;text-align:center" inputmode="numeric">
+      <input type="tel" id="nascAno" placeholder="Ano" maxlength="4" style="flex:1;text-align:center" inputmode="numeric">
+    </div>
+    <div class="error-msg" id="nascError">Informe dia, mês e ano de nascimento.</div>
   </div>
 
   <div class="sec-hdr">
@@ -235,7 +239,7 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
 
   <div class="field">
     <label class="lbl">Ano de Entrada na Escola <span class="req">*</span></label>
-    <select id="anoEntrada"><option value="">Selecione o ano...</option></select>
+    <select id="anoEntrada"><option value="">Selecione o ano...</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option><option value="2019">2019</option><option value="2018">2018</option><option value="2017">2017</option><option value="2016">2016</option><option value="2015">2015</option><option value="2014">2014</option><option value="2013">2013</option><option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option></select>
     <div class="error-msg" id="anoError">Selecione o ano de entrada.</div>
   </div>
 
@@ -365,14 +369,14 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
   </div>
 
   <div class="info-box">
-    <strong>Privacidade e LGPD:</strong> Seus dados são coletados exclusivamente para fins de planejamento interno do Carnaval 2026 da Escola de Samba Dragões da Real, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018). Não compartilhamos seus dados com terceiros. <a href="privacidade.html" target="_blank" style="color:var(--vermelho);font-weight:600">Ver Política de Privacidade completa</a>.
+    <strong>Privacidade e LGPD:</strong> Seus dados são coletados exclusivamente para fins de planejamento interno do Carnaval 2026 da Escola de Samba Dragões da Real, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018). Não compartilhamos seus dados com terceiros. <a href="file:///C:/Users/roger/Downloads/privacidade.html" target="_blank" style="color:var(--vermelho);font-weight:600">Ver Política de Privacidade completa</a>.
   </div>
 
   <div class="field" style="margin-top:8px">
     <label class="check-opt" id="consentOpt" style="border-left:3px solid transparent">
       <input type="checkbox" id="consentCheck" name="consentimento" value="sim">
       <span class="check-mk"></span>
-      <span class="opt-lbl" style="font-size:13px">Li e concordo com a <a href="privacidade.html" target="_blank" style="color:var(--vermelho)">Política de Privacidade</a> e autorizo o uso dos meus dados para planejamento do Carnaval 2026.</span>
+      <span class="opt-lbl" style="font-size:13px">Li e concordo com a <a href="file:///C:/Users/roger/Downloads/privacidade.html" target="_blank" style="color:var(--vermelho)">Política de Privacidade</a> e autorizo o uso dos meus dados para planejamento do Carnaval 2026.</span>
     </label>
     <div class="error-msg" id="consentError">Você precisa aceitar a política de privacidade para continuar.</div>
   </div>
@@ -385,8 +389,8 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
 <div class="success-screen" id="successScreen">
   <div class="success-icon">
     <svg width="28" height="22" viewBox="0 0 52 38" fill="none">
-      <path d="M4 30L10 10L19 20L26 4L33 20L42 10L48 30H4Z" fill="#D4A843"/>
-      <rect x="4" y="30" width="44" height="6" rx="1" fill="#D4A843"/>
+      <path d="M4 30L10 10L19 20L26 4L33 20L42 10L48 30H4Z" fill="#D4A843"></path>
+      <rect x="4" y="30" width="44" height="6" rx="1" fill="#D4A843"></rect>
     </svg>
   </div>
   <div class="success-div"></div>
@@ -405,7 +409,7 @@ const URL_SCRIPT='https://script.google.com/macros/s/AKfycbzfHZhoIOlmLu180vyBYye
 })();
 
 function updateProg(){
-  const ts=['nome','whatsapp','dataNascimento','cidade'],ss2=['bairro'],ss=['anoEntrada','departamento'],rs=['genero','carteirinha','chanceDesfile'],cs=['diasEnsaio'];
+  const ts=['nome','whatsapp','nascDia','nascMes','nascAno','cidade'],ss2=['bairro'],ss=['anoEntrada','departamento'],rs=['genero','carteirinha','chanceDesfile'],cs=['diasEnsaio'];
   const total=ts.length+(typeof ss2!='undefined'?ss2.length:0)+ss.length+rs.length+cs.length;let f=0;
   ts.forEach(id=>{if(document.getElementById(id)?.value.trim())f++});
   if(typeof ss2!='undefined')ss2.forEach(id=>{if(document.getElementById(id)?.value)f++});
@@ -457,6 +461,14 @@ document.getElementById('departamento').addEventListener('change',function(){
   document.getElementById('condBateria').classList.toggle('open',v==='Bateria');
 });
 
+// Auto-avançar entre campos de data
+document.getElementById('nascDia').addEventListener('input',function(){
+  if(this.value.length===2)document.getElementById('nascMes').focus();
+});
+document.getElementById('nascMes').addEventListener('input',function(){
+  if(this.value.length===2)document.getElementById('nascAno').focus();
+});
+
 document.getElementById('whatsapp').addEventListener('input',function(e){
   let v=e.target.value.replace(/\D/g,'').slice(0,11);
   if(v.length>10)v=`(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
@@ -473,7 +485,12 @@ function validate(){
   let ok=true;
   const nome=document.getElementById('nome').value.trim();setErr('nome',!nome);showErr('nomeError',!nome);if(!nome)ok=false;
   const wa=document.getElementById('whatsapp').value.replace(/\D/g,'');setErr('whatsapp',wa.length<10);showErr('whatsappError',wa.length<10);if(wa.length<10)ok=false;
-  const nasc=document.getElementById('dataNascimento').value;setErr('dataNascimento',!nasc);showErr('nascError',!nasc);if(!nasc)ok=false;
+  const nascDia=document.getElementById('nascDia').value.trim();
+  const nascMes=document.getElementById('nascMes').value.trim();
+  const nascAno=document.getElementById('nascAno').value.trim();
+  const nascOk=nascDia&&nascMes&&nascAno&&nascAno.length===4;
+  setErr('nascDia',!nascDia);setErr('nascMes',!nascMes);setErr('nascAno',!nascAno||nascAno.length!==4);
+  showErr('nascError',!nascOk);if(!nascOk)ok=false;
   const ano=document.getElementById('anoEntrada').value;setErr('anoEntrada',!ano);showErr('anoError',!ano);if(!ano)ok=false;
   const dep=document.getElementById('departamento').value;setErr('departamento',!dep);showErr('depError',!dep);if(!dep)ok=false;
   const cidade=document.getElementById('cidade').value.trim();setErr('cidade',!cidade);showErr('cidadeError',!cidade);if(!cidade)ok=false;
@@ -499,7 +516,7 @@ document.getElementById('censoForm').addEventListener('submit',async function(e)
     nome:document.getElementById('nome').value.trim(),
     whatsapp:document.getElementById('whatsapp').value.trim(),
     genero:document.querySelector('input[name="genero"]:checked')?.value||'',
-    dataNascimento:document.getElementById('dataNascimento').value,
+    dataNascimento:document.getElementById('nascDia').value.padStart(2,'0')+'/'+document.getElementById('nascMes').value.padStart(2,'0')+'/'+document.getElementById('nascAno').value,
     anoEntrada:document.getElementById('anoEntrada').value,
     departamento:document.getElementById('departamento').value,
     funcaoCasal:document.querySelector('input[name="funcaoCasal"]:checked')?.value||'',
@@ -538,5 +555,6 @@ document.querySelectorAll('input,select').forEach(el=>{
   el.addEventListener('change',()=>el.classList.remove('error'));
 });
 </script>
-</body>
-</html>
+
+
+</body></html>
