@@ -365,7 +365,16 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
   </div>
 
   <div class="info-box">
-    <strong>Privacidade:</strong> Seus dados são protegidos pela LGPD e usados exclusivamente para planejamento interno da Escola de Samba Dragões da Real.
+    <strong>Privacidade e LGPD:</strong> Seus dados são coletados exclusivamente para fins de planejamento interno do Carnaval 2026 da Escola de Samba Dragões da Real, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018). Não compartilhamos seus dados com terceiros. <a href="privacidade.html" target="_blank" style="color:var(--vermelho);font-weight:600">Ver Política de Privacidade completa</a>.
+  </div>
+
+  <div class="field" style="margin-top:8px">
+    <label class="check-opt" id="consentOpt" style="border-left:3px solid transparent">
+      <input type="checkbox" id="consentCheck" name="consentimento" value="sim">
+      <span class="check-mk"></span>
+      <span class="opt-lbl" style="font-size:13px">Li e concordo com a <a href="privacidade.html" target="_blank" style="color:var(--vermelho)">Política de Privacidade</a> e autorizo o uso dos meus dados para planejamento do Carnaval 2026.</span>
+    </label>
+    <div class="error-msg" id="consentError">Você precisa aceitar a política de privacidade para continuar.</div>
   </div>
 
   <button type="submit" class="btn-submit" id="btnSubmit">Enviar meu Censo</button>
@@ -475,6 +484,10 @@ function validate(){
   if(!document.querySelector('input[name="diasEnsaio"]:checked')){showErr('diasError',true);ok=false;}else showErr('diasError',false);
   if(dep==='Dep. Casais'&&!document.querySelector('input[name="funcaoCasal"]:checked'))ok=false;
   if(dep==='Bateria'&&!document.querySelector('input[name="naipeBateria"]:checked'))ok=false;
+  const consent=document.getElementById('consentCheck').checked;
+  const consentOpt=document.getElementById('consentOpt');
+  if(!consent){showErr('consentError',true);consentOpt.style.borderLeftColor='var(--vermelho)';ok=false;}
+  else{showErr('consentError',false);consentOpt.style.borderLeftColor='var(--verde)';}
   return ok;
 }
 
@@ -508,6 +521,16 @@ document.getElementById('censoForm').addEventListener('submit',async function(e)
     btn.disabled=false;btn.innerHTML='Enviar meu Censo';
     alert('Erro ao enviar. Verifique sua conexão e tente novamente.');
   }
+});
+
+document.getElementById('consentOpt').addEventListener('click',function(e){
+  e.preventDefault();
+  const inp=document.getElementById('consentCheck');
+  const novo=!this.classList.contains('sel');
+  this.classList.toggle('sel',novo);
+  inp.checked=novo;
+  if(novo){this.style.borderLeftColor='var(--verde)';showErr('consentError',false);}
+  else{this.style.borderLeftColor='var(--vermelho)';}
 });
 
 document.querySelectorAll('input,select').forEach(el=>{
