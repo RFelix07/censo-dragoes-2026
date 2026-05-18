@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="google-site-verification" content="FBT2xWJVqhPJ4mXP5nfuMhhU1-PddgeCjm5ViwyDchM" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Censo 2026 — Dragões da Real</title>
+<title>Dashboard Censo 2027 — Dragões da Real</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -193,6 +193,14 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 .loading-txt{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--creme-txt);margin-top:14px}
 
 /* ── EXPORT CSV BTN ── */
+.cart-table{width:100%;border-collapse:collapse;font-size:13px}
+.cart-table th{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--txt-hint);padding:8px 10px;text-align:left;border-bottom:2px solid var(--borda);background:var(--creme)}
+.cart-table td{padding:9px 10px;border-bottom:1px solid var(--borda);color:var(--txt-sec);vertical-align:middle}
+.cart-table tr:last-child td{border-bottom:none}
+.cart-table tr:hover td{background:var(--bg)}
+.cart-table .td-nome{font-weight:600;color:var(--txt)}
+.cart-table .td-tel a{color:var(--vermelho);text-decoration:none;font-weight:600}
+
 .btn-export{background:transparent;border:1px solid var(--borda);border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--dour-esc);padding:4px 12px;cursor:pointer;transition:all .2s}
 .btn-export:hover{background:var(--creme);border-color:var(--dourado)}
 </style>
@@ -203,6 +211,18 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 <div class="loading-ov" id="loadingOv">
   <div class="loading-box">
     <div class="loading-txt">Carregando dados...</div>
+  </div>
+</div>
+
+<!-- MODAL CARTEIRINHA -->
+<div class="modal-ov" id="cartModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal" style="max-width:560px;max-height:80vh;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h2 style="margin:0">Querem Carteirinha</h2>
+      <button onclick="document.getElementById('cartModal').style.display='none'" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--txt-hint)">✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--txt-hint);margin-bottom:12px">Componentes sem carteirinha que desejam obter uma.</p>
+    <div style="overflow-y:auto;flex:1" id="cartLista"></div>
   </div>
 </div>
 
@@ -234,7 +254,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
     <div class="topbar-left">
       <div class="topbar-title">
         Dragões da Real
-        <small>Censo 2026 · Dashboard</small>
+        <small>Censo 2027 · Dashboard</small>
       </div>
     </div>
     <div class="topbar-right">
@@ -270,7 +290,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
       <div class="kpi red"><div class="kpi-lbl">Total Respostas</div><div class="kpi-val red" id="kpiTotal">—</div><div class="kpi-sub" id="kpiMeta">de — esperados</div></div>
       <div class="kpi gold"><div class="kpi-lbl">Taxa Geral</div><div class="kpi-val gold" id="kpiTaxa">—</div><div class="kpi-sub" id="kpiTaxaSub">—</div></div>
       <div class="kpi green"><div class="kpi-lbl">Chance Média Desfile</div><div class="kpi-val green" id="kpiChance">—</div><div class="kpi-sub">probabilidade média</div></div>
-      <div class="kpi dark"><div class="kpi-lbl">Querem Carteirinha</div><div class="kpi-val" id="kpiCart">—</div><div class="kpi-sub">sem carteirinha</div></div>
+      <div class="kpi dark" onclick="abrirModalCart()" style="cursor:pointer;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="kpi-lbl">Querem Carteirinha</div><div class="kpi-val" id="kpiCart">—</div><div class="kpi-sub" style="color:var(--vermelho);font-weight:600">Ver lista ↗</div></div>
     </div>
 
     <div class="sec-lbl" style="margin-top:24px">Progresso Geral</div>
@@ -278,6 +298,8 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
       <div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Aguardando dados...</div></div>
     </div>
 
+    <div class="sec-lbl" style="margin-top:24px">Atenção — Baixo Cadastro</div>
+    <div id="alasBaixas" class="acc-list"></div>
     <div class="sec-lbl" style="margin-top:24px">Dados Extras</div>
     <div class="stats-row">
       <div class="stat-item"><div class="stat-num" id="stCidades">—</div><div class="stat-lbl">Cidades</div></div>
@@ -655,11 +677,59 @@ function renderStats(data){
   document.getElementById('stInt').textContent=data.filter(r=>r.interesses&&r.interesses.length>0).length;
 }
 
+function abrirModalCart(){
+  const lista=allData.filter(r=>r.carteirinha==='Não tenho, mas quero');
+  if(!lista.length){alert('Nenhum componente solicitou carteirinha ainda.');return}
+  let html=`<table class="cart-table">
+    <thead><tr><th>Nome</th><th>WhatsApp</th><th>Departamento</th></tr></thead><tbody>`;
+  lista.forEach(r=>{
+    const tel=(r.whatsapp||'').replace(/\D/g,'');
+    html+=`<tr>
+      <td class="td-nome">${r.nome||'—'}</td>
+      <td class="td-tel"><a href="https://wa.me/55${tel}" target="_blank">📱 ${r.whatsapp||'—'}</a></td>
+      <td>${r.departamento||'—'}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('cartLista').innerHTML=html;
+  document.getElementById('cartModal').style.display='flex';
+}
+
+function renderAlasBaixas(data,metas){
+  const counts={};data.forEach(r=>{counts[r.departamento]=(counts[r.departamento]||0)+1});
+  const baixas=Object.entries(metas).filter(([dep,meta])=>{
+    if(!meta)return false;
+    const pct=Math.round(((counts[dep]||0)/meta)*100);
+    return pct<20;
+  });
+  const el=document.getElementById('alasBaixas');
+  if(!el)return;
+  if(!baixas.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-txt">Todas as alas com cadastro acima de 20%</div></div>';
+    return;
+  }
+  el.innerHTML=baixas.map(([dep,meta])=>{
+    const resp=counts[dep]||0;
+    const pct=Math.round((resp/meta)*100);
+    return `<div class="acc-item" style="border-left:3px solid var(--vermelho)">
+      <div class="acc-hdr">
+        <div class="acc-hdr-left">
+          <div class="acc-status" style="background:var(--vermelho)"></div>
+          <span class="acc-nome">${dep}</span>
+        </div>
+        <div class="acc-hdr-right">
+          <span class="acc-badge red">${pct}% · ${resp}/${meta}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function exportCSV(){
   if(!allData.length){alert('Sem dados para exportar.');return}
   const cols=['nome','whatsapp','genero','dataNascimento','anoEntrada','departamento','funcaoCasal','naipeBateria','carteirinha','chanceDesfile','cidade','bairro','diasEnsaio','interesses','dataResposta'];
   const csv=[cols.join(','),...allData.map(r=>cols.map(c=>`"${(r[c]||'').toString().replace(/"/g,'""')}"`).join(','))].join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));a.download=`censo2026_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));a.download=`censo2027_${new Date().toISOString().slice(0,10)}.csv`;a.click();
 }
 
 setInterval(()=>{if(SCRIPT_URL)loadData()},5*60*1000);
