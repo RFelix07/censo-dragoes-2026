@@ -273,6 +273,7 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
         <label class="radio-opt"><input type="radio" name="funcaoCasal" value="Reserva/Suplente"><span class="radio-mk"></span><span class="opt-lbl">Reserva / Suplente</span></label>
       </div>
     </div>
+    <div class="error-msg" id="funcaoCasalError">Selecione sua função no casal.</div>
   </div>
 
   <div class="cond" id="condBateria">
@@ -289,6 +290,7 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
         <label class="radio-opt"><input type="radio" name="naipeBateria" value="Outro"><span class="radio-mk"></span><span class="opt-lbl">Outro</span></label>
       </div>
     </div>
+    <div class="error-msg" id="naipeBateriaError">Selecione seu naipe na bateria.</div>
   </div>
 
   <div class="field">
@@ -394,19 +396,34 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
     </svg>
   </div>
   <div class="success-div"></div>
-  <h2 class="success-title">Obrigado!</h2>
+  <h2 class="success-title">Obrigado, <span id="successNome" style="color:var(--vermelho)"></span>!</h2>
   <p class="success-sub">Sua participação no Censo 2027 foi registrada com sucesso.<br><br>
   <em style="color:var(--dourado)">Dragões da Real — Lugar de Gente Feliz!</em></p>
 </div>
 </div>
 
 <script>
-const URL_SCRIPT='https://script.google.com/macros/s/AKfycbzcwh2WEbpCnLwSntDJ94EdxnfkzNxc47leOU9iKrTBaiL3SVhm3KRzMGYNn1dMN415yg/exec';
+const URL_SCRIPT='https://script.google.com/macros/s/AKfycbzXk27Dm3E2fooKsrdKEwO-vZoUwcig745juNnlbEkz4IOlhR8Iav36RZqqu2RnvPNk9Q/exec';
 
 (function(){
   const s=document.getElementById('anoEntrada');
   for(let y=2026;y>=2000;y--){const o=document.createElement('option');o.value=y;o.textContent=y;s.appendChild(o)}
 })();
+
+// Rastreamento de abandono
+let _trackTimer=null;
+let _lastPct=0;
+function trackAbandono(pct){
+  // Envia ao Apps Script quando progresso muda significativamente
+  clearTimeout(_trackTimer);
+  _trackTimer=setTimeout(()=>{
+    if(pct>_lastPct&&pct>0&&pct<100){
+      _lastPct=pct;
+      const secao=pct<30?'I - Identificação':pct<55?'II - Vínculo':pct<80?'III - Logística':'IV - Desenvolvimento';
+      try{fetch(URL_SCRIPT+'?action=trackAbandono&pct='+pct+'&secao='+encodeURIComponent(secao),{mode:'no-cors'});}catch(e){}
+    }
+  },3000);
+}
 
 function updateProg(){
   const ts=['nome','whatsapp','nascDia','nascMes','nascAno','cidade'],ss2=['bairro'],ss=['anoEntrada','departamento'],rs=['genero','carteirinha','chanceDesfile'],cs=['diasEnsaio'];
@@ -416,7 +433,9 @@ function updateProg(){
   ss.forEach(id=>{if(document.getElementById(id)?.value)f++});
   rs.forEach(n=>{if(document.querySelector(`input[name="${n}"]:checked`))f++});
   cs.forEach(n=>{if(document.querySelector(`input[name="${n}"]:checked`))f++});
-  document.getElementById('progFill').style.width=Math.round((f/total)*100)+'%';
+  const pct=Math.round((f/total)*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  trackAbandono(pct);
 }
 document.getElementById('censoForm').addEventListener('input',updateProg);
 document.getElementById('censoForm').addEventListener('change',updateProg);
@@ -509,8 +528,12 @@ function validate(){
   if(!document.querySelector('input[name="carteirinha"]:checked')){showErr('cartError',true);ok=false;}else showErr('cartError',false);
   if(!document.querySelector('input[name="chanceDesfile"]:checked')){showErr('chanceError',true);ok=false;}else showErr('chanceError',false);
   if(!document.querySelector('input[name="diasEnsaio"]:checked')){showErr('diasError',true);ok=false;}else showErr('diasError',false);
-  if(dep==='Dep. Casais'&&!document.querySelector('input[name="funcaoCasal"]:checked'))ok=false;
-  if(dep==='Bateria'&&!document.querySelector('input[name="naipeBateria"]:checked'))ok=false;
+  if(dep==='Dep. Casais'&&!document.querySelector('input[name="funcaoCasal"]:checked')){
+    showErr('funcaoCasalError',true);ok=false;
+  } else {showErr('funcaoCasalError',false);}
+  if(dep==='Bateria'&&!document.querySelector('input[name="naipeBateria"]:checked')){
+    showErr('naipeBateriaError',true);ok=false;
+  } else {showErr('naipeBateriaError',false);}
   const consent=document.getElementById('consentCheck').checked;
   const consentOpt=document.getElementById('consentOpt');
   if(!consent){showErr('consentError',true);consentOpt.style.borderLeftColor='var(--vermelho)';ok=false;}
@@ -520,7 +543,14 @@ function validate(){
 
 document.getElementById('censoForm').addEventListener('submit',async function(e){
   e.preventDefault();
-  if(!validate()){document.querySelector('.error,[style*="block"]')?.scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(!validate()){
+    const firstErr=document.querySelector('.error-msg[style*="block"], input.error, select.error');
+    if(firstErr){
+      const target=firstErr.closest('.field,.cond')||firstErr;
+      target.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+    return;
+  }
   const btn=document.getElementById('btnSubmit');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Enviando...';
   const p={
     nome:document.getElementById('nome').value.trim(),
@@ -543,6 +573,10 @@ document.getElementById('censoForm').addEventListener('submit',async function(e)
     await fetch(URL_SCRIPT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
     document.getElementById('censoForm').style.display='none';
     document.getElementById('successScreen').classList.add('show');
+    // Pegar primeiro nome
+    const nomeCompleto=document.getElementById('nome').value.trim();
+    const primeiroNome=nomeCompleto.split(' ')[0];
+    document.getElementById('successNome').textContent=primeiroNome;
     window.scrollTo({top:0,behavior:'smooth'});
   }catch(err){
     btn.disabled=false;btn.innerHTML='Enviar meu Censo';
