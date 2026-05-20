@@ -1,0 +1,264 @@
+# 🐉 Censo 2027 — Dragões da Real
+**Documentação Técnica do Projeto**
+
+---
+
+## 📋 Visão Geral
+
+Sistema completo de censo para a Escola de Samba **Dragões da Real**, composto por formulário de cadastro, dashboard analítico e backend via Google Apps Script.
+
+| Item | Valor |
+|---|---|
+| **Produção** | https://dragoes-censo-2026.vercel.app |
+| **Repositório** | https://github.com/RFelix07/censo-dragoes-2026 |
+| **Planilha** | https://docs.google.com/spreadsheets/d/1F6_BbUymzHfI2xWC74ZPEfrdon22Wi80aZAoornEhOo |
+| **Apps Script** | https://script.google.com/macros/s/AKfycbzXk27Dm3E2fooKsrdKEwO-vZoUwcig745juNnlbEkz4IOlhR8Iav36RZqqu2RnvPNk9Q/exec |
+
+---
+
+## 🗂️ Arquivos do Projeto
+
+```
+censo-dragoes-2026/
+├── index.html          # Formulário de cadastro
+├── dashboard.html      # Dashboard analítico
+├── privacidade.html    # Política de privacidade (LGPD)
+└── censo-script.gs     # Google Apps Script (backend)
+```
+
+---
+
+## 🏗️ Arquitetura
+
+```
+[Componente preenche]
+        ↓
+  index.html (formulário)
+        ↓ POST (JSON)
+  censo-script.gs (Apps Script)
+        ↓
+  Google Sheets (db_respostas)
+        ↑ GET ?action=getDashboard
+  dashboard.html
+```
+
+---
+
+## 📄 index.html — Formulário de Cadastro
+
+### Estrutura
+Formulário dividido em **4 seções**:
+
+| Seção | Campos |
+|---|---|
+| **I — Identificação** | Nome, WhatsApp, Gênero, Data de Nascimento |
+| **II — Vínculo** | Ano de Entrada, Departamento, Naipe (Bateria) / Função (Dep. Casais) |
+| **III — Logística** | Cidade, Bairro/Zona, Dias de Ensaio |
+| **IV — Desenvolvimento** | Chance de Desfile, Carteirinha, Interesses, Consentimento LGPD |
+
+### Campos Condicionais
+- **Departamento = Bateria** → exibe seleção de naipe (8 opções)
+- **Departamento = Dep. Casais** → exibe seleção de função
+
+### URL do Script
+```javascript
+const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzXk27Dm3E2fooKsrdKEwO.../exec';
+```
+> ⚠️ **Atenção:** Ao reimplantar o Apps Script, esta URL pode mudar. Atualizar em `index.html` e `dashboard.html`.
+
+### Rastreamento de Abandono
+O formulário envia automaticamente para o Apps Script quando detecta inatividade de 3 segundos, registrando:
+- Seção atual (I, II, III ou IV)
+- Progresso em %
+
+---
+
+## 📊 dashboard.html — Dashboard Analítico
+
+### Busca de Dados
+```javascript
+// URL sempre hardcoded — não usa localStorage
+localStorage.removeItem('censo_url');
+let SCRIPT_URL = 'https://script.google.com/.../exec';
+
+// Fetch com leitura de texto para contornar redirect do Apps Script
+const res = await fetch(SCRIPT_URL + '?action=getDashboard', {cache:'no-store'});
+const texto = await res.text();
+const match = texto.match(/\{[\s\S]*\}/);
+const json = JSON.parse(match[0]);
+```
+
+> ⚠️ **Problema conhecido:** O Apps Script pode redirecionar para uma URL de echo (`script.googleusercontent.com`), quebrando o fetch. Solução: o `doGet` retorna `ContentService` diretamente com `setMimeType(JSON)`.
+
+### Abas
+
+| Aba | Conteúdo |
+|---|---|
+| **Visão Geral** | KPIs, Progresso Geral, Atenção Baixo Cadastro, Dados Extras |
+| **Departamentos** | Todos os departamentos agrupados por status |
+| **Análises** | Gráficos de distribuição + Funil de Abandono |
+| **Alertas** | Alertas automáticos por departamento |
+
+### Faixas de Status
+| Status | Critério | Cor |
+|---|---|---|
+| ✅ Completo | ≥ 90% | Verde |
+| 🟡 Em andamento | 50% a 89% | Dourado |
+| 🔴 Atenção | < 50% | Vermelho |
+
+### KPIs (Visão Geral)
+- **Total de Respostas** vs meta total
+- **Taxa Geral** (%)
+- **Chance Média de Desfile**
+- **Querem Carteirinha** (clicável → modal com lista)
+
+### Dados Extras
+- **Cidades** — clicável → modal com ranking por cidade
+- **Zonas** — número de zonas distintas
+- **Média de Idade** — média geral da escola
+- **Querem Harmonia*** — componentes de fora da Harmonia com interesse em participar (clicável → modal)
+
+### Departamentos (Aba 1)
+Ao abrir cada departamento:
+- % Feminino / % Masculino / Média de Idade da ala
+- Barra de progresso
+- Naipes (Bateria) ou Funções (Dep. Casais)
+- Lista por chance de desfile: 75% / 50% / 25% / 0% com nome + WhatsApp
+
+### Normalização de chanceDesfile
+O campo pode chegar como `1`, `0.75`, `"100%"`, `"75%"` etc. A função `norm()` normaliza tudo para o formato `"XX%"`:
+```javascript
+const norm = v => {
+  if(!v) return '0%';
+  const s = v.toString().trim();
+  if(s.includes('%')) return s;
+  const n = parseFloat(s);
+  if(n<=1 && n>0) return Math.round(n*100)+'%';
+  if(n>1) return Math.round(n)+'%';
+  return '0%';
+};
+```
+
+---
+
+## ⚙️ censo-script.gs — Google Apps Script
+
+### Configuração
+```javascript
+const SPREADSHEET_ID = '1F6_BbUymzHfI2xWC74ZPEfrdon22Wi80aZAoornEhOo';
+```
+
+### Endpoints
+
+| Método | Action | Descrição |
+|---|---|---|
+| `POST` | — | Recebe dados do formulário e salva na planilha |
+| `GET` | `getDashboard` | Retorna respostas + metas + estatísticas de abandono |
+| `GET` | `trackAbandono` | Registra abandono de formulário |
+
+### Abas da Planilha
+
+| Aba | Descrição |
+|---|---|
+| `db_respostas` | Dados do formulário (cabeçalho vermelho, linhas pares em `#FFF2CC`) |
+| `config_metas` | Metas por departamento (tem prioridade sobre o código) |
+| `abandono_tracking` | Rastreamento de formulários não enviados |
+| `dashboard_calc` | Calculado automaticamente (não editar) |
+
+### Colunas de db_respostas
+```
+id | dataResposta | nome | whatsapp | genero | dataNascimento |
+anoEntrada | departamento | funcaoCasal | naipeBateria |
+carteirinha | chanceDesfile | cidade | bairro | diasEnsaio | interesses
+```
+
+### Metas (config_metas)
+As metas são lidas da aba `config_metas` com prioridade sobre o código. Edite diretamente na planilha para alterar sem reimplantar.
+
+---
+
+## 🚀 Deploy
+
+### Vercel (Frontend)
+1. Conectar repositório GitHub ao Vercel
+2. Deploy automático a cada push na branch `main`
+3. URL: `https://dragoes-censo-2026.vercel.app`
+
+### Google Apps Script (Backend)
+1. Acesse **script.google.com** → **Censo 2026 Dragões**
+2. Cole o código do `censo-script.gs`
+3. **Implantar → Gerenciar implantações → ✏️ → Nova versão → Implantar**
+4. Configurar: **Executar como: Eu** / **Quem pode acessar: Qualquer pessoa**
+
+> ⚠️ **Se a URL mudar após reimplantação:** Atualizar `SCRIPT_URL` em `dashboard.html` e `URL_SCRIPT` em `index.html`.
+
+---
+
+## 🔧 Troubleshooting
+
+### Dashboard não carrega dados reais
+
+**Sintoma:** Mostra "Erro ao carregar dados reais" ou dados zerados.
+
+**Causa mais comum:** URL do Apps Script desatualizada ou redirect do Google.
+
+**Solução:**
+1. Testar URL diretamente no browser: `URL_DO_SCRIPT?action=getDashboard`
+2. Se retornar JSON com `"success":true` → o script está OK
+3. Se redirecionar → reimplantar o Apps Script (nova versão)
+4. Limpar localStorage no console: `localStorage.clear()`
+
+### chanceDesfile mostrando 0% para todos
+
+**Causa:** Campo chegando como número decimal (`1`, `0.75`) em vez de string (`"100%"`).
+
+**Solução:** Já corrigido com a função `norm()` que aceita ambos os formatos.
+
+### Aba config_metas não sendo lida
+
+**Causa:** Aba vazia ou cabeçalho incorreto.
+
+**Solução:** A aba deve ter duas colunas: `Departamento` | `Meta`. Se vazia, o código usa `METAS_DEFAULT` como fallback.
+
+---
+
+## 📱 Verificações de Segurança
+
+| Item | Status |
+|---|---|
+| Google Search Console | ✅ Verificado (`FBT2xWJVqhPJ4mXP5nfuMhhU1-PddgeCjm5ViwyDchM`) |
+| Google Safe Browsing | ✅ Aprovado |
+| LGPD | ✅ Política em `privacidade.html` + checkbox obrigatório no formulário |
+
+---
+
+## 📅 Histórico de Alterações Importantes
+
+| Data | Alteração |
+|---|---|
+| Mai/2026 | Formulário com tela de sucesso personalizada ("Obrigado, [Nome]!") |
+| Mai/2026 | Rastreamento de abandono por seção |
+| Mai/2026 | Dashboard: departamentos agrupados por status + % gênero + média idade por ala |
+| Mai/2026 | Dashboard: faixas atualizadas (Completo ≥90%, Em andamento 50-89%, Atenção <50%) |
+| Mai/2026 | Dashboard: Atenção Baixo Cadastro alterado para < 5% |
+| Mai/2026 | Dashboard: Modal de cidades + Modal de "Querem Harmonia" |
+| Mai/2026 | Apps Script reimplantado — nova URL |
+| Mai/2026 | Correção: localStorage removido para evitar cache de URL antiga |
+
+---
+
+## 🎨 Identidade Visual
+
+| Variável | Cor | Uso |
+|---|---|---|
+| `--vermelho` | `#C8102E` | Cor primária, alertas |
+| `--dourado` | `#D4A843` | Destaques, Em andamento |
+| `--preto` | `#1A0A00` | Texto principal |
+| `--creme` | `#F2EAD8` | Fundos secundários |
+| `--verde` | `#2D6A3A` | Status completo |
+
+Fontes: **Playfair Display** (títulos) + **Barlow / Barlow Condensed** (corpo)
+
+---
+
+*Documentação gerada em Mai/2026 — Dragões da Real 🥁*
