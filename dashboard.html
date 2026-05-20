@@ -928,7 +928,13 @@ function renderStats(data){
   
 function abrirModalCidades(){
   const counts={};
-  allData.forEach(r=>{if(r.cidade){const c=r.cidade.trim();counts[c]=(counts[c]||0)+1;}});
+  allData.forEach(r=>{
+    if(r.cidade){
+      // ✅ Converte para string antes de usar trim
+      const c = String(r.cidade).trim();
+      counts[c]=(counts[c]||0)+1;
+    }
+  });
   const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
   if(!sorted.length){alert('Sem dados de cidades ainda.');return}
   let html=`<table class="cart-table">
