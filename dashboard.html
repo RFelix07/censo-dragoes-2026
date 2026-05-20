@@ -899,6 +899,7 @@ function renderRetencao(data){
   document.getElementById('retencaoChart').innerHTML=html;
 }
 
+<!--
 function renderStats(data){
   const elCidades = document.getElementById('stCidades');
   const elBairros = document.getElementById('stBairros');
@@ -928,7 +929,8 @@ function renderStats(data){
   const media = idades.length ? Math.round(idades.reduce((a,b)=>a+b,0)/idades.length) : 0;
   if(elIdade) elIdade.textContent = media ? media+' anos' : '—';
 }
-
+ -->
+  
 function abrirModalCidades(){
   const counts={};
   allData.forEach(r=>{if(r.cidade){const c=r.cidade.trim();counts[c]=(counts[c]||0)+1;}});
