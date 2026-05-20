@@ -899,20 +899,13 @@ function renderRetencao(data){
   document.getElementById('retencaoChart').innerHTML=html;
 }
 
-<!--
 function renderStats(data){
   const elCidades = document.getElementById('stCidades');
-  const elBairros = document.getElementById('stBairros');
-  const elCart = document.getElementById('stCart');
-  const elHarmonia = document.getElementById('stHarmonia');
   const elIdade = document.getElementById('stIdade');
+  const elHarmonia = document.getElementById('stHarmonia');
   
+  // Cidades
   if(elCidades) elCidades.textContent = new Set(data.map(r=>r.cidade).filter(Boolean)).size;
-  if(elBairros) elBairros.textContent = new Set(data.map(r=>r.bairro).filter(Boolean)).size;
-  if(elCart) elCart.textContent = data.filter(r=>r.carteirinha==='Sim, tenho').length;
-  
-  const querHarmonia = data.filter(r=>r.departamento!=='Harmonia'&&r.interesses&&r.interesses.includes('Participar da Harmonia'));
-  if(elHarmonia) elHarmonia.textContent = querHarmonia.length;
   
   // Média de idade geral
   const anoAtual = new Date().getFullYear();
@@ -928,8 +921,12 @@ function renderStats(data){
   
   const media = idades.length ? Math.round(idades.reduce((a,b)=>a+b,0)/idades.length) : 0;
   if(elIdade) elIdade.textContent = media ? media+' anos' : '—';
+  
+  // Querem Harmonia
+  const querHarmonia = data.filter(r=>r.departamento!=='Harmonia'&&r.interesses&&r.interesses.includes('Participar da Harmonia'));
+  if(elHarmonia) elHarmonia.textContent = querHarmonia.length;
 }
- -->
+
   
 function abrirModalCidades(){
   const counts={};
