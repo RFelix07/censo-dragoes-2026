@@ -856,24 +856,33 @@ function renderRetencao(data){
 }
 
 function renderStats(data){
-  document.getElementById('stCidades').textContent=new Set(data.map(r=>r.cidade).filter(Boolean)).size;
-  document.getElementById('stBairros').textContent=new Set(data.map(r=>r.bairro).filter(Boolean)).size;
-  document.getElementById('stCart').textContent=data.filter(r=>r.carteirinha==='Sim, tenho').length;
-  const querHarmonia=data.filter(r=>r.departamento!=='Harmonia'&&r.interesses&&r.interesses.includes('Participar da Harmonia'));
-  document.getElementById('stHarmonia').textContent=querHarmonia.length;
+  const elCidades = document.getElementById('stCidades');
+  const elBairros = document.getElementById('stBairros');
+  const elCart = document.getElementById('stCart');
+  const elHarmonia = document.getElementById('stHarmonia');
+  const elIdade = document.getElementById('stIdade');
+  
+  if(elCidades) elCidades.textContent = new Set(data.map(r=>r.cidade).filter(Boolean)).size;
+  if(elBairros) elBairros.textContent = new Set(data.map(r=>r.bairro).filter(Boolean)).size;
+  if(elCart) elCart.textContent = data.filter(r=>r.carteirinha==='Sim, tenho').length;
+  
+  const querHarmonia = data.filter(r=>r.departamento!=='Harmonia'&&r.interesses&&r.interesses.includes('Participar da Harmonia'));
+  if(elHarmonia) elHarmonia.textContent = querHarmonia.length;
+  
   // Média de idade geral
-  const anoAtual=new Date().getFullYear();
-  const idades=data.map(r=>{
-    if(!r.dataNascimento)return null;
-    const parts=r.dataNascimento.toString().split(/[T\s]/)[0].split('/');
+  const anoAtual = new Date().getFullYear();
+  const idades = data.map(r=>{
+    if(!r.dataNascimento) return null;
+    const parts = r.dataNascimento.toString().split(/[T\s]/)[0].split('/');
     let ano;
-    if(parts.length===3)ano=parseInt(parts[2].length===4?parts[2]:parts[0]);
-    else ano=parseInt(r.dataNascimento.toString().substring(0,4));
-    if(isNaN(ano)||ano<1900)return null;
+    if(parts.length===3) ano = parseInt(parts[2].length===4 ? parts[2] : parts[0]);
+    else ano = parseInt(r.dataNascimento.toString().substring(0,4));
+    if(isNaN(ano)||ano<1900) return null;
     return anoAtual-ano;
   }).filter(x=>x&&x>0&&x<120);
-  const media=idades.length?Math.round(idades.reduce((a,b)=>a+b,0)/idades.length):0;
-  document.getElementById('stIdade').textContent=media?media+' anos':'—';
+  
+  const media = idades.length ? Math.round(idades.reduce((a,b)=>a+b,0)/idades.length) : 0;
+  if(elIdade) elIdade.textContent = media ? media+' anos' : '—';
 }
 
 function abrirModalCidades(){
