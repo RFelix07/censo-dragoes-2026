@@ -1068,6 +1068,35 @@ function exportCSV(){
 
 setInterval(()=>{if(SCRIPT_URL)loadData()},5*60*1000);
 window.addEventListener('load',()=>{document.getElementById('alertConfig').style.display='none';loadData();});
+
+// ── DEBUG: Teste das abas ──
+function testarAbas(){
+  console.log('🔍 Testando elementos das abas...');
+  
+  // Aba Análises
+  const charts = ['generoChart','chanceChart','diasChart','zonaChart','retencaoChart','abandonoChart'];
+  charts.forEach(id => {
+    const el = document.getElementById(id);
+    console.log(`📊 ${id}:`, el ? '✅ Encontrado' : '❌ NÃO encontrado');
+  });
+  
+  // Aba Alertas
+  const alertList = document.getElementById('alertList');
+  console.log(`🔔 alertList:`, alertList ? '✅ Encontrado' : '❌ NÃO encontrado');
+  
+  // Testa renderizar manualmente
+  console.log('🔄 Tentando renderizar gráficos...');
+  if(allData.length > 0){
+    renderGenero(allData);
+    renderChance(allData);
+    renderAlertas(allData, allMetas);
+    console.log('✅ Renderização manual concluída');
+  } else {
+    console.log('⚠️ allData está vazio');
+  }
+}
+// Execute no console: testarAbas()
+  
 </script>
 </body>
 </html>
