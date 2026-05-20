@@ -311,11 +311,11 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
     <div id="alasBaixas" class="acc-list"></div>
     <div class="sec-lbl" style="margin-top:24px">Dados Extras</div>
     <div class="stats-row">
-      <div class="stat-item" onclick="abrirModalCidades()" style="cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="stat-num" id="stCidades">—</div><div class="stat-lbl">Cidades</div><div style="font-size:10px;color:var(--vermelho);font-weight:600;margin-top:2px">Ver lista ↗</div></div>
+    <div class="stat-item" onclick="abrirModalCidades()" style="cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="stat-num" id="stCidades">—</div><div class="stat-lbl">Cidades</div><div style="font-size:10px;color:var(--vermelho);font-weight:600;margin-top:2px">Ver lista ↗</div></div>
    
-     <div class="stat-item"><div class="stat-num" id="stBairros">—</div><div class="stat-lbl">Zonas</div></div>
+   <!-- <div class="stat-item"><div class="stat-num" id="stBairros">—</div><div class="stat-lbl">Zonas</div></div> -->
      
-      <div class="stat-item"><div class="stat-num" id="stIdade">—</div><div class="stat-lbl">Média de Idade</div></div>
+     <div class="stat-item"><div class="stat-num" id="stIdade">—</div><div class="stat-lbl">Média de Idade</div></div>
       <div class="stat-item"><div class="stat-num" id="stCart">—</div><div class="stat-lbl">Têm Carteirinha</div></div>
       <div class="stat-item" onclick="abrirModalHarmonia()" style="cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="stat-num" id="stHarmonia">—</div><div class="stat-lbl">Querem Harmonia*</div><div style="font-size:10px;color:var(--vermelho);font-weight:600;margin-top:2px">Ver lista ↗</div></div>
     </div>
@@ -414,9 +414,43 @@ function toggleAcc(el){
   el.classList.toggle('aberto');
 }
 
-// Load
+function abrirModalCidades(){
+  // 1. Conta quantas pessoas tem em cada cidade
+  const counts = {};
+  allData.forEach(r => {
+    if(r.cidade) {
+      const c = r.cidade.trim();
+      counts[c] = (counts[c] || 0) + 1;
+    }
+  });
 
-// Substitua TODA a função loadData() por esta:
+  // 2. Ordena da cidade com mais gente para a com menos
+  const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+
+  if(!sorted.length) {
+    alert('Sem dados de cidades ainda.');
+    return;
+  }
+
+  // 3. Monta a tabela HTML
+  let html = `<table class="cart-table">
+    <thead><tr><th>Cidade</th><th style="text-align:right">Pessoas</th></tr></thead><tbody>`;
+  
+  sorted.forEach(([cidade, n]) => {
+    html += `<tr>
+      <td class="td-nome">${cidade}</td>
+      <td style="text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--vermelho)">${n}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+
+  // 4. Atualiza o modal e abre
+  document.getElementById('cartLista').innerHTML = html;
+  document.querySelector('#cartModal h2').textContent = 'Cidades';
+  document.querySelector('#cartModal p').textContent = 'Distribuição de componentes por cidade.';
+  document.getElementById('cartModal').style.display = 'flex';
+}
+
 
 async function loadData(){
   const btn=document.getElementById('btnAtualizar');
