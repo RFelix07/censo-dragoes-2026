@@ -300,12 +300,12 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
       <div class="kpi dark" onclick="abrirModalCart()" style="cursor:pointer;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="kpi-lbl">Querem Carteirinha</div><div class="kpi-val" id="kpiCart">—</div><div class="kpi-sub" style="color:var(--vermelho);font-weight:600">Ver lista ↗</div></div>
     </div>
 
-  <!--    
+  
     <div class="sec-lbl" style="margin-top:24px">Progresso Geral</div>
     <div class="acc-list" id="resumoDeps">
       <div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Aguardando dados...</div></div>
     </div>
-    -->
+  
 
     <div class="sec-lbl" style="margin-top:24px">Atenção — Baixo Cadastro</div>
     <div id="alasBaixas" class="acc-list"></div>
@@ -313,7 +313,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
     <div class="stats-row">
       <div class="stat-item" onclick="abrirModalCidades()" style="cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="stat-num" id="stCidades">—</div><div class="stat-lbl">Cidades</div><div style="font-size:10px;color:var(--vermelho);font-weight:600;margin-top:2px">Ver lista ↗</div></div>
    
-      <!--  <div class="stat-item"><div class="stat-num" id="stBairros">—</div><div class="stat-lbl">Zonas</div></div> -->
+     <div class="stat-item"><div class="stat-num" id="stBairros">—</div><div class="stat-lbl">Zonas</div></div>
      
       <div class="stat-item"><div class="stat-num" id="stIdade">—</div><div class="stat-lbl">Média de Idade</div></div>
       <div class="stat-item"><div class="stat-num" id="stCart">—</div><div class="stat-lbl">Têm Carteirinha</div></div>
@@ -901,11 +901,17 @@ function renderRetencao(data){
 
 function renderStats(data){
   const elCidades = document.getElementById('stCidades');
-  const elIdade = document.getElementById('stIdade');
+  const elBairros = document.getElementById('stBairros');
+  const elCart = document.getElementById('stCart');
   const elHarmonia = document.getElementById('stHarmonia');
+  const elIdade = document.getElementById('stIdade');
   
-  // Cidades
   if(elCidades) elCidades.textContent = new Set(data.map(r=>r.cidade).filter(Boolean)).size;
+  if(elBairros) elBairros.textContent = new Set(data.map(r=>r.bairro).filter(Boolean)).size;
+  if(elCart) elCart.textContent = data.filter(r=>r.carteirinha==='Sim, tenho').length;
+  
+  const querHarmonia = data.filter(r=>r.departamento!=='Harmonia'&&r.interesses&&r.interesses.includes('Participar da Harmonia'));
+  if(elHarmonia) elHarmonia.textContent = querHarmonia.length;
   
   // Média de idade geral
   const anoAtual = new Date().getFullYear();
@@ -921,10 +927,6 @@ function renderStats(data){
   
   const media = idades.length ? Math.round(idades.reduce((a,b)=>a+b,0)/idades.length) : 0;
   if(elIdade) elIdade.textContent = media ? media+' anos' : '—';
-  
-  // Querem Harmonia
-  const querHarmonia = data.filter(r=>r.departamento!=='Harmonia'&&r.interesses&&r.interesses.includes('Participar da Harmonia'));
-  if(elHarmonia) elHarmonia.textContent = querHarmonia.length;
 }
 
   
