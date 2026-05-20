@@ -293,7 +293,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
   <!-- ── ABA 0: VISÃO GERAL ── -->
   <div class="tab-content ativo" id="aba-0">
 
-   <!-- 1. RESUMO -->
+    <!-- 1. RESUMO -->
     <div class="sec-lbl">Resumo</div>
     <div class="kpi-grid">
       <div class="kpi red"><div class="kpi-lbl">Total Respostas</div><div class="kpi-val red" id="kpiTotal">—</div><div class="kpi-sub" id="kpiMeta">de — esperados</div></div>
@@ -302,30 +302,40 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
       <div class="kpi dark" onclick="abrirModalCart()" style="cursor:pointer;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="kpi-lbl">Querem Carteirinha</div><div class="kpi-val" id="kpiCart">—</div><div class="kpi-sub" style="color:var(--vermelho);font-weight:600">Ver lista ↗</div></div>
     </div>
 
- <div class="sec-lbl" style="margin-top:24px">Dados Extras</div>
+    <!-- 2. DADOS EXTRAS -->
+    <div class="sec-lbl" style="margin-top:24px">Dados Extras</div>
     <div class="stats-row">
-    <div class="stat-item" onclick="abrirModalCidades()" style="cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="stat-num" id="stCidades">—</div><div class="stat-lbl">Cidades</div><div style="font-size:10px;color:var(--vermelho);font-weight:600;margin-top:2px">Ver lista ↗</div></div>
-   
-   <!-- <div class="stat-item"><div class="stat-num" id="stBairros">—</div><div class="stat-lbl">Zonas</div></div> -->
-     
-     <div class="stat-item"><div class="stat-num" id="stIdade">—</div><div class="stat-lbl">Média de Idade</div></div>
-      <div class="stat-item"><div class="stat-num" id="stCart">—</div><div class="stat-lbl">Têm Carteirinha</div></div>
-      <div class="stat-item" onclick="abrirModalHarmonia()" style="cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'"><div class="stat-num" id="stHarmonia">—</div><div class="stat-lbl">Querem Harmonia*</div><div style="font-size:10px;color:var(--vermelho);font-weight:600;margin-top:2px">Ver lista ↗</div></div>
+      <div class="stat-item" onclick="abrirModalCidades()" style="cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'">
+        <div class="stat-num" id="stCidades">—</div>
+        <div class="stat-lbl">Cidades</div>
+        <div style="font-size:10px;color:var(--vermelho);font-weight:600;margin-top:2px">Ver lista ↗</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stIdade">—</div>
+        <div class="stat-lbl">Média de Idade</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stCart">—</div>
+        <div class="stat-lbl">Têm Carteirinha</div>
+      </div>
+      <div class="stat-item" onclick="abrirModalHarmonia()" style="cursor:pointer" onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,.1)'" onmouseout="this.style.boxShadow='none'">
+        <div class="stat-num" id="stHarmonia">—</div>
+        <div class="stat-lbl">Querem Harmonia*</div>
+        <div style="font-size:10px;color:var(--vermelho);font-weight:600;margin-top:2px">Ver lista ↗</div>
+      </div>
     </div>
-  </div>
 
-    
-   <!-- 3. PROGRESSO GERAL (agora vem depois) -->
+    <!-- 3. PROGRESSO GERAL -->
     <div class="sec-lbl" style="margin-top:24px">Progresso Geral</div>
     <div class="acc-list" id="resumoDeps">
       <div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Aguardando dados...</div></div>
     </div>
-  
-   <!-- 4. ATENÇÃO — BAIXO CADASTRO -->
+
+    <!-- 4. ATENÇÃO — BAIXO CADASTRO -->
     <div class="sec-lbl" style="margin-top:24px">Atenção — Baixo Cadastro</div>
     <div id="alasBaixas" class="acc-list"></div>
 
-</div>
+  </div> <!-- ✅ FECHAR ABA-0 APENAS AQUI NO FINAL -->
      
   <!-- ── ABA 1: DEPARTAMENTOS ── -->
   <div class="tab-content" id="aba-1">
