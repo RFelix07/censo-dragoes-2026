@@ -90,6 +90,11 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 .acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
 .acc-item.aberto .acc-body{max-height:1000px}
 .acc-inner{padding:14px 16px}
+.acc-pct-badge.purple{background:#F3E8FF;color:#7B3F9E;border-color:rgba(123,63,158,.2)}
+.acc-pct-badge.blue{background:#EFF6FF;color:#3B82F6;border-color:rgba(59,130,246,.2)}
+.dep-prog-fill.purple{background:#7B3F9E}
+.dep-prog-fill.blue{background:#3B82F6}
+  
 
 /* Barra de progresso dentro do accordion */
 .dep-prog{margin-bottom:14px}
@@ -533,9 +538,27 @@ function render(data,metas){
   renderAbandono();
 }
 
-function cls(pct){return pct>=90?'green':pct>=50?'yellow':'red'}
-function badge(pct){return pct>=90?'Completo':pct>=50?'Em andamento':'Atenção'}
-function statusColor(pct){return pct>=90?'#2D6A3A':pct>=50?'#A07820':'#C8102E'}
+function cls(pct){
+  if(pct===100) return 'green';
+  if(pct>=90) return 'purple';
+  if(pct>=50) return 'blue';
+  if(pct>=20) return 'yellow';
+  return 'red';
+}
+function badge(pct){
+  if(pct===100) return '100% Completo';
+  if(pct>=90) return 'Quase lá';
+  if(pct>=50) return 'Em andamento';
+  if(pct>=20) return 'Atenção';
+  return 'Urgente';
+}
+function statusColor(pct){
+  if(pct===100) return '#2D6A3A';   // Verde
+  if(pct>=90) return '#7B3F9E';     // Roxo
+  if(pct>=50) return '#3B82F6';     // Azul
+  if(pct>=20) return '#F59E0B';     // Amarelo
+  return '#C8102E';                 // Vermelho
+}
 
 function renderKPIs(data,metas){
   const total=data.length,metaTotal=Object.values(metas).reduce((a,b)=>a+b,0);
@@ -613,12 +636,29 @@ function renderDeps(data,metas){
     return pb-pa;
   });
 
-  // Agrupar por status
-  const grupos=[
-    {label:'✅ Completo',cor:'#2D6A3A',itens:sorted.filter(d=>Math.min(100,Math.round(((counts[d]||0)/metas[d])*100))>=90)},
-    {label:'🟡 Em andamento',cor:'#A07820',itens:sorted.filter(d=>{const p=Math.min(100,Math.round(((counts[d]||0)/metas[d])*100));return p>=50&&p<90;})},
-    {label:'🔴 Atenção',cor:'#C8102E',itens:sorted.filter(d=>Math.min(100,Math.round(((counts[d]||0)/metas[d])*100))<50)},
-  ];
+  // Agrupar por status (NOVAS CORES E FAIXAS)
+const grupos = [
+  {label:'🟢 100% Completo', cor:'#2D6A3A', itens: sorted.filter(d => {
+    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+    return p === 100;
+  })},
+  {label:'🟣 Quase lá (90-99%)', cor:'#7B3F9E', itens: sorted.filter(d => {
+    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+    return p >= 90 && p < 100;
+  })},
+  {label:'🔵 Em andamento (50-89%)', cor:'#3B82F6', itens: sorted.filter(d => {
+    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+    return p >= 50 && p < 90;
+  })},
+  {label:'🟡 Atenção (20-49%)', cor:'#F59E0B', itens: sorted.filter(d => {
+    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+    return p >= 20 && p < 50;
+  })},
+  {label:'🔴 Urgente (0-19%)', cor:'#C8102E', itens: sorted.filter(d => {
+    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+    return p < 20;
+  })},
+];
 
   const norm3=v=>{
     if(!v)return'0%';const s=v.toString().trim();
