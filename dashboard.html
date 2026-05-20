@@ -326,13 +326,13 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
     </div>
 
        
-    <!-- 3. PROGRESSO GERAL  -->
+    <!-- 3. PROGRESSO GERAL 
     <div class="sec-lbl" style="margin-top:24px">Progresso Geral</div>
     <div class="acc-list" id="resumoDeps">
       <div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Aguardando dados...</div></div>
     </div>
 
-    <!-- 4. ATENÇÃO — BAIXO CADASTRO -->
+    <!-- 4. ATENÇÃO — BAIXO CADASTRO 
     <div class="sec-lbl" style="margin-top:24px">Atenção — Baixo Cadastro</div>
     <div id="alasBaixas" class="acc-list"></div>
 <!-- ✅ FECHAR ABA-0 APENAS AQUI NO FINAL -->
@@ -601,18 +601,29 @@ function renderKPIs(data,metas){
   document.getElementById('kpiCart').textContent=querCart;
 }
 
-function renderResumo(data,metas){
-  const counts={};data.forEach(r=>{counts[r.departamento]=(counts[r.departamento]||0)+1});
-  const deps=Object.keys(metas).filter(d=>metas[d]>0);
-  if(!deps.length){document.getElementById('resumoDeps').innerHTML='<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';return}
-  const depsSorted=[...deps].sort((a,b)=>{
-    const pctA=Math.min(100,Math.round(((counts[a]||0)/metas[a])*100));
-    const pctB=Math.min(100,Math.round(((counts[b]||0)/metas[b])*100));
-    return pctB-pctA;
+function renderResumo(data, metas) {
+  // ✅ TRAVA DE SEGURANÇA: Se o elemento não existe, para aqui.
+  const el = document.getElementById('resumoDeps');
+  if (!el) return; 
+
+  const counts = {};
+  data.forEach(r => { counts[r.departamento] = (counts[r.departamento] || 0) + 1; });
+  const deps = Object.keys(metas).filter(d => metas[d] > 0);
+  
+  if (!deps.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';
+    return;
+  }
+
+  const depsSorted = [...deps].sort((a, b) => {
+    const pctA = Math.min(100, Math.round(((counts[a] || 0) / metas[a]) * 100));
+    const pctB = Math.min(100, Math.round(((counts[b] || 0) / metas[b]) * 100));
+    return pctB - pctA;
   });
-  document.getElementById('resumoDeps').innerHTML=depsSorted.map(dep=>{
-    const meta=metas[dep],resp=counts[dep]||0,pct=Math.min(100,Math.round((resp/meta)*100));
-    const c=cls(pct);
+
+  el.innerHTML = depsSorted.map(dep => {
+    const meta = metas[dep], resp = counts[dep] || 0, pct = Math.min(100, Math.round((resp / meta) * 100));
+    const c = cls(pct);
     return `<div class="acc-item">
       <div class="acc-hdr" onclick="toggleAcc(this.parentElement)">
         <div class="acc-hdr-left">
@@ -633,7 +644,7 @@ function renderResumo(data,metas){
             </div>
             <div class="dep-prog-track"><div class="dep-prog-fill ${c}" style="width:${pct}%"></div></div>
           </div>
-          <div style="font-size:12px;color:var(--txt-hint)">${badge(pct)}${meta-resp>0?' — faltam '+(meta-resp)+' respostas':''}</div>
+          <div style="font-size:12px;color:var(--txt-hint)">${badge(pct)}${meta - resp > 0 ? ' — faltam ' + (meta - resp) + ' respostas' : ''}</div>
         </div>
       </div>
     </div>`;
