@@ -222,7 +222,7 @@ body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;font-
 
 <!-- MODAL CARTEIRINHA -->
 <div class="modal-ov" id="cartModal" style="display:none" onclick="if(event.target===this)this.style.display='none'">
-  <div class="modal" style="max-width:650px;max-height:80vh;display:flex;flex-direction:column">
+  <div class="modal" style="max-width:560px;max-height:80vh;display:flex;flex-direction:column">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
       <h2 style="margin:0">Querem Carteirinha</h2>
       <button onclick="document.getElementById('cartModal').style.display='none'" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--txt-hint)">✕</button>
@@ -457,20 +457,8 @@ async function loadData(){
       throw new Error('Servidor retornou status ' + response.status);
     }
     
-   const text = await response.text();
-   console.log('📥 Resposta recebida:', text.substring(0, 500));+ '...');
-
-// Verifica se começa com '<' (HTML)
-if (text.trim().startsWith('<')) {
-  throw new Error('Servidor retornou HTML em vez de JSON. Verifique a URL e a implantação do script.');
-}
-
-let json;
-try {
-  json = JSON.parse(text);
-} catch (e) {
-  throw new Error('Resposta não é JSON válido: ' + text.substring(0, 200));
-}
+    const text = await response.text();
+    console.log('Resposta recebida:', text.substring(0, 100) + '...');
     
     // ✅ Tenta parsear JSON
     let json;
@@ -775,50 +763,6 @@ const grupos = [
         </div>`;
       }
 
-
-// ✅ ADICIONE ESTE BOTÃO APÓS infoAla:
-let botaoLista = `
-  <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--borda)">
-    <button onclick="verListaPessoas('${dep}')" 
-      style="width:100%;background:var(--creme);border:1px solid var(--creme-brd);border-radius:4px;
-      color:var(--creme-txt);font-family:'Barlow Condensed',sans-serif;font-size:11px;
-      font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px;
-      cursor:pointer;transition:all .2s">
-      👥 Ver lista de pessoas (${resp})
-    </button>
-  </div>
-`;
-
-// E no return, adicione após ${infoAla}:
-return `<div class="acc-item" ...>
-  ...
-  <div class="acc-body">
-    <div class="acc-inner">
-      ...
-      ${infoAla}
-      ${botaoLista}
-      ${extra}
-      ${listaChance}
-    </div>
-  </div>
-</div>`;
-
-            
-      <!-- ✅ BOTÃO DE LISTA -->
-      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--borda)">
-        <button onclick="verListaPessoas('${dep}')" 
-          style="width:100%;background:var(--creme);border:1px solid var(--creme-brd);border-radius:4px;
-          color:var(--creme-txt);font-family:'Barlow Condensed',sans-serif;font-size:11px;
-          font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px;
-          cursor:pointer;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.05)">
-          👥 Ver lista de pessoas (${resp})
-        </button>
-      </div>
-
-      ${extra}
-      ${listaChance}
-      
-      
       let extra='';
       if(dep==='Bateria'){
         const naipes=['Surdo','Caixa','Tamborim','Repinique','Agogô','Chocalho','Cuíca','Outro'];
@@ -1165,131 +1109,6 @@ function testarAbas(){
   }
 }
 // Execute no console: testarAbas()
-
-
-// ✅ Função para mostrar lista de pessoas do departamento
-function verListaPessoas(departamento) {
-  const pessoas = allData.filter(r => r.departamento === departamento);
-  
-  if (!pessoas.length) {
-    alert('Nenhuma pessoa cadastrada neste departamento.');
-    return;
-  }
-
-  // Ordena por nome
-  pessoas.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-
-  let html = `<table class="cart-table">
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th style="text-align:right">WhatsApp</th>
-      </tr>
-    </thead>
-    <tbody>`;
-  
-  pessoas.forEach(p => {
-    const tel = (p.whatsapp || '').replace(/\D/g, '');
-    const nomeCompleto = p.nome || '—';
-    // Pega só o primeiro nome + sobrenome
-    const partesNome = nomeCompleto.split(' ');
-    const nomeExibicao = partesNome.length >= 2 
-      ? `${partesNome[0]} ${partesNome[partesNome.length - 1]}`
-      : nomeCompleto;
-    
-    html += `<tr>
-      <td class="td-nome">${nomeExibicao}</td>
-      <td class="td-tel" style="text-align:right">
-        <a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);text-decoration:none">
-          📱 ${p.whatsapp || '—'}
-        </a>
-      </td>
-    </tr>`;
-  });
-  
-  html += `</tbody></table>
-    <div style="margin-top:12px;padding:8px;background:var(--creme);border-radius:4px;
-    font-size:11px;color:var(--creme-txt);text-align:center">
-      Total: <strong>${pessoas.length}</strong> pessoa${pessoas.length !== 1 ? 's' : ''}
-    </div>`;
-
-  // Atualiza e abre o modal
-  document.getElementById('cartLista').innerHTML = html;
-  document.querySelector('#cartModal h2').textContent = departamento;
-  document.querySelector('#cartModal p').textContent = `Lista de pessoas do departamento`;
-  document.getElementById('cartModal').style.display = 'flex';
-}
-  
-
-// ✅ Lista de pessoas por departamento
-function verListaPessoas(departamento) {
-  const pessoas = allData.filter(r => r.departamento === departamento);
-  if (!pessoas.length) { alert('Nenhuma pessoa cadastrada.'); return; }
-
-  // Ordena alfabeticamente
-  pessoas.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-
-  let html = `<table class="cart-table">
-    <thead><tr><th>Nome</th><th style="text-align:right">WhatsApp</th></tr></thead><tbody>`;
-  
-  pessoas.forEach(p => {
-    const tel = (p.whatsapp || '').replace(/\D/g, '');
-    const nomeArr = (p.nome || '—').trim().split(/\s+/);
-    const nomeExibicao = nomeArr.length >= 2 ? `${nomeArr[0]} ${nomeArr[nomeArr.length-1]}` : p.nome;
-    
-    html += `<tr>
-      <td class="td-nome">${nomeExibicao}</td>
-      <td class="td-tel" style="text-align:right">
-        <a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);text-decoration:none">📱 ${p.whatsapp || '—'}</a>
-      </td>
-    </tr>`;
-  });
-  
-  html += `</tbody></table>
-    <div style="margin-top:12px;padding:8px;background:var(--creme);border-radius:4px;font-size:11px;color:var(--creme-txt);text-align:center">
-      Total: <strong>${pessoas.length}</strong> componente${pessoas.length!==1?'s':''}
-    </div>`;
-
-  document.getElementById('cartLista').innerHTML = html;
-  document.querySelector('#cartModal h2').textContent = departamento;
-  document.querySelector('#cartModal p').textContent = 'Lista de pessoas do departamento';
-  document.getElementById('cartModal').style.display = 'flex';
-}
-
-// ✅ Lista de pessoas por departamento
-function verListaPessoas(departamento) {
-  const pessoas = allData.filter(r => r.departamento === departamento);
-  if (!pessoas.length) { alert('Nenhuma pessoa cadastrada.'); return; }
-
-  // Ordena alfabeticamente
-  pessoas.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-
-  let html = `<table class="cart-table">
-    <thead><tr><th>Nome</th><th style="text-align:right">WhatsApp</th></tr></thead><tbody>`;
-  
-  pessoas.forEach(p => {
-    const tel = (p.whatsapp || '').replace(/\D/g, '');
-    const nomeArr = (p.nome || '—').trim().split(/\s+/);
-    const nomeExibicao = nomeArr.length >= 2 ? `${nomeArr[0]} ${nomeArr[nomeArr.length-1]}` : p.nome;
-    
-    html += `<tr>
-      <td class="td-nome">${nomeExibicao}</td>
-      <td class="td-tel" style="text-align:right">
-        <a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);text-decoration:none">📱 ${p.whatsapp || '—'}</a>
-      </td>
-    </tr>`;
-  });
-  
-  html += `</tbody></table>
-    <div style="margin-top:12px;padding:8px;background:var(--creme);border-radius:4px;font-size:11px;color:var(--creme-txt);text-align:center">
-      Total: <strong>${pessoas.length}</strong> componente${pessoas.length!==1?'s':''}
-    </div>`;
-
-  document.getElementById('cartLista').innerHTML = html;
-  document.querySelector('#cartModal h2').textContent = departamento;
-  document.querySelector('#cartModal p').textContent = 'Lista de pessoas do departamento';
-  document.getElementById('cartModal').style.display = 'flex';
-}
   
 </script>
 </body>
