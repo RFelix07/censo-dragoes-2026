@@ -706,26 +706,50 @@ const grupos = [
       const meta=metas[dep],resp=counts[dep]||0,pct=Math.min(100,Math.round((resp/meta)*100));
       const c=cls(pct);
 
-      // Lista de pessoas com chance < 100%
-      const naoGarantidos=data.filter(r=>r.departamento===dep&&['75%','50%','25%','0%'].includes(norm3(r.chanceDesfile)));
-      let listaChance='';
-      if(naoGarantidos.length){
-        const grupos_chance={'75%':[],'50%':[],'25%':[],'0%':[]};
-        naoGarantidos.forEach(r=>{ const k=norm3(r.chanceDesfile); if(grupos_chance[k])grupos_chance[k].push(r); });
-        listaChance=`<div style="margin-top:12px;border-top:1px solid var(--borda);padding-top:10px">
-          <div style="font-size:11px;color:var(--txt-hint);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Chance de Desfile</div>`;
-        ['75%','50%','25%','0%'].forEach(chance=>{
-          const pessoas=grupos_chance[chance];
-          if(!pessoas.length)return;
-          const cor=chance==='75%'?'#A07820':chance==='50%'?'#C8102E':chance==='25%'?'#8B0015':'#1A0A00';
-          listaChance+=`<div style="margin-bottom:8px">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:${cor};letter-spacing:1px;margin-bottom:4px">${chance} — ${pessoas.length} pessoa${pessoas.length!==1?'s':''}</div>
-            ${pessoas.map(r=>{const tel=(r.whatsapp||'').replace(/\D/g,'');return`<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg);border-radius:3px;margin-bottom:3px;font-size:12px"><span style="color:var(--txt);font-weight:500">${r.nome||'—'}</span><a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);font-size:11px;text-decoration:none">📱 ${r.whatsapp||'—'}</a></div>`;}).join('')}
-          </div>`;
-        });
-        listaChance+='</div>';
-      }
+      
+// Lista de TODAS as pessoas do departamento (ordenadas alfabeticamente)
+const todasPessoas = data.filter(r => r.departamento === dep);
+todasPessoas.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
 
+let listaChance = '';
+if (todasPessoas.length) {
+  // Agrupa por porcentagem de chance
+  const grupos_chance = {'100%': [], '75%': [], '50%': [], '25%': [], '0%': []};
+  todasPessoas.forEach(r => {
+    const k = norm3(r.chanceDesfile);
+    if (grupos_chance[k]) grupos_chance[k].push(r);
+  });
+  
+  listaChance = `<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--borda)">
+    <div style="font-size:11px;color:var(--txt-hint);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Componentes (${todasPessoas.length})</div>`;
+  
+  // Mostra todas as chances em ordem: 100%, 75%, 50%, 25%, 0%
+  ['100%', '75%', '50%', '25%', '0%'].forEach(chance => {
+    const pessoas = grupos_chance[chance];
+    if (!pessoas.length) return;
+    
+    const cor = chance === '100%' ? '#2D6A3A' : 
+                chance === '75%' ? '#A07820' : 
+                chance === '50%' ? '#C8102E' : 
+                chance === '25%' ? '#8B0015' : '#1A0A00';
+    
+    listaChance += `<div style="margin-bottom:8px">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:${cor};letter-spacing:1px;margin-bottom:4px">${chance} — ${pessoas.length} pessoa${pessoas.length !== 1 ? 's' : ''}</div>
+      ${pessoas.map(r => {
+        const tel = (r.whatsapp || '').replace(/\D/g, '');
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg);border-radius:3px;margin-bottom:3px;font-size:12px">
+          <span style="color:var(--txt);font-weight:500">${r.nome || '—'}</span>
+          <a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);font-size:11px;text-decoration:none">📱 ${r.whatsapp || '—'}</a>
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+  
+  listaChance += '</div>';
+}
+
+
+      
       // % Gênero por ala
       const membros=data.filter(r=>r.departamento===dep);
       const fem=membros.filter(r=>r.genero==='Feminino').length;
