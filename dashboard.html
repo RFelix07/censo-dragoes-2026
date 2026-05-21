@@ -651,106 +651,112 @@ function renderResumo(data, metas) {
   }).join('');
 }
 
-function renderDeps(data,metas){
-  const counts={};data.forEach(r=>{counts[r.departamento]=(counts[r.departamento]||0)+1});
-  const naipeCounts={};data.filter(r=>r.departamento==='Bateria').forEach(r=>{if(r.naipeBateria)naipeCounts[r.naipeBateria]=(naipeCounts[r.naipeBateria]||0)+1});
-  const funcaoCounts={};data.filter(r=>r.departamento==='Dep. Casais').forEach(r=>{if(r.funcaoCasal)funcaoCounts[r.funcaoCasal]=(funcaoCounts[r.funcaoCasal]||0)+1});
-  const deps=Object.keys(metas).filter(d=>metas[d]>0);
-  if(!deps.length){document.getElementById('depsAccordion').innerHTML='<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';return}
+function renderDeps(data, metas) {
+  const counts = {};
+  data.forEach(r => { counts[r.departamento] = (counts[r.departamento] || 0) + 1; });
+  
+  const naipeCounts = {};
+  data.filter(r => r.departamento === 'Bateria').forEach(r => { if (r.naipeBateria) naipeCounts[r.naipeBateria] = (naipeCounts[r.naipeBateria] || 0) + 1; });
+  
+  const funcaoCounts = {};
+  data.filter(r => r.departamento === 'Dep. Casais').forEach(r => { if (r.funcaoCasal) funcaoCounts[r.funcaoCasal] = (funcaoCounts[r.funcaoCasal] || 0) + 1; });
+  
+  const deps = Object.keys(metas).filter(d => metas[d] > 0);
+  if (!deps.length) {
+    document.getElementById('depsAccordion').innerHTML = '<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';
+    return;
+  }
 
-  const sorted=[...deps].sort((a,b)=>{
-    const pa=Math.min(100,Math.round(((counts[a]||0)/metas[a])*100));
-    const pb=Math.min(100,Math.round(((counts[b]||0)/metas[b])*100));
-    return pb-pa;
+  // Ordenar departamentos por %
+  const sorted = [...deps].sort((a, b) => {
+    const pa = Math.min(100, Math.round(((counts[a] || 0) / metas[a]) * 100));
+    const pb = Math.min(100, Math.round(((counts[b] || 0) / metas[b]) * 100));
+    return pb - pa;
   });
 
   const grupos = [
-    {label:'🟢 100% Completo', cor:'#2D6A3A', itens: sorted.filter(d => {
-      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-      return p === 100;
-    })},
-    {label:'🟣 Quase lá (90-99%)', cor:'#7B3F9E', itens: sorted.filter(d => {
-      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-      return p >= 90 && p < 100;
-    })},
-    {label:'🔵 Em andamento (50-89%)', cor:'#3B82F6', itens: sorted.filter(d => {
-      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-      return p >= 50 && p < 90;
-    })},
-    {label:'🟡 Atenção (20-49%)', cor:'#F59E0B', itens: sorted.filter(d => {
-      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-      return p >= 20 && p < 50;
-    })},
-    {label:'🔴 Urgente (0-19%)', cor:'#C8102E', itens: sorted.filter(d => {
-      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-      return p < 20;
-    })},
+    { label: '🟢 100% Completo', cor: '#2D6A3A', itens: sorted.filter(d => Math.min(100, Math.round(((counts[d] || 0) / metas[d]) * 100)) === 100) },
+    { label: '🟣 Quase lá (90-99%)', cor: '#7B3F9E', itens: sorted.filter(d => { const p = Math.min(100, Math.round(((counts[d] || 0) / metas[d]) * 100)); return p >= 90 && p < 100; }) },
+    { label: '🔵 Em andamento (50-89%)', cor: '#3B82F6', itens: sorted.filter(d => { const p = Math.min(100, Math.round(((counts[d] || 0) / metas[d]) * 100)); return p >= 50 && p < 90; }) },
+    { label: '🟡 Atenção (20-49%)', cor: '#F59E0B', itens: sorted.filter(d => { const p = Math.min(100, Math.round(((counts[d] || 0) / metas[d]) * 100)); return p >= 20 && p < 50; }) },
+    { label: '🔴 Urgente (0-19%)', cor: '#C8102E', itens: sorted.filter(d => Math.min(100, Math.round(((counts[d] || 0) / metas[d]) * 100)) < 20) },
   ];
 
-  const norm3=v=>{
-    if(!v)return'0%';const s=v.toString().trim();
-    if(s.includes('%'))return s;
-    const n=parseFloat(s);
-    if(n<=1&&n>0)return Math.round(n*100)+'%';
-    if(n>1)return Math.round(n)+'%';
-    return'0%';
+  const norm3 = v => {
+    if (!v) return '0%';
+    const s = v.toString().trim();
+    if (s.includes('%')) return s;
+    const n = parseFloat(s);
+    if (n <= 1 && n > 0) return Math.round(n * 100) + '%';
+    if (n > 1) return Math.round(n) + '%';
+    return '0%';
   };
 
-  let html='';
-  grupos.forEach(g=>{
-    if(!g.itens.length)return;
-    html+=`<div style="margin-bottom:6px;padding:8px 12px;background:var(--creme);border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${g.cor}">${g.label}</div>`;
-    html+=g.itens.map(dep=>{
-      const meta=metas[dep],resp=counts[dep]||0,pct=Math.min(100,Math.round((resp/meta)*100));
-      const c=cls(pct);
+  let html = '';
+  grupos.forEach(g => {
+    if (!g.itens.length) return;
+    html += `<div style="margin-bottom:6px;padding:8px 12px;background:var(--creme);border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${g.cor}">${g.label}</div>`;
+    
+    html += g.itens.map(dep => {
+      const meta = metas[dep], resp = counts[dep] || 0, pct = Math.min(100, Math.round((resp / meta) * 100));
+      const c = cls(pct);
 
-      // Lista de TODAS as pessoas do departamento
-      const todasPessoas = data.filter(r => r.departamento === dep);
-      todasPessoas.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+      // ✅ LISTA DE PESSOAS COM SCROLL E ORDEM ALFABÉTICA
+      const todosComponentes = data.filter(r => r.departamento === dep);
+      todosComponentes.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
 
       let listaChance = '';
-      if (todasPessoas.length) {
-        const grupos_chance = {'100%':[],'75%':[],'50%':[],'25%':[],'0%':[]};
-        todasPessoas.forEach(r => {
+      if (todosComponentes.length) {
+        const grupos_chance = { '100%': [], '75%': [], '50%': [], '25%': [], '0%': [] };
+        todosComponentes.forEach(r => {
           const k = norm3(r.chanceDesfile);
           if (grupos_chance[k]) grupos_chance[k].push(r);
         });
 
-        listaChance = `<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--borda)">
-          <div style="font-size:11px;color:var(--txt-hint);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Componentes (${todasPessoas.length})</div>`;
+        // Container com max-height para gerar o scroll
+        listaChance = `<div style="max-height: 350px; overflow-y: auto; margin-top:12px; padding: 10px 12px 10px 0; border-top:1px solid var(--borda)">
+          <div style="font-size:11px;color:var(--txt-hint);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px; position:sticky; top:0; background:white; padding-bottom:5px; z-index:10;">Componentes (${todosComponentes.length})</div>`;
 
-        ['100%','75%','50%','25%','0%'].forEach(chance=>{
-          const pessoas=grupos_chance[chance];
-          if(!pessoas.length)return;
-          const cor=chance==='100%'?'#2D6A3A':chance==='75%'?'#A07820':chance==='50%'?'#C8102E':chance==='25%'?'#8B0015':'#1A0A00';
-          listaChance+=`<div style="margin-bottom:8px">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:${cor};letter-spacing:1px;margin-bottom:4px">${chance} — ${pessoas.length} pessoa${pessoas.length!==1?'s':''}</div>
-            ${pessoas.map(r=>{const tel=(r.whatsapp||'').replace(/\D/g,'');return`<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg);border-radius:3px;margin-bottom:3px;font-size:12px"><span style="color:var(--txt);font-weight:500">${r.nome||'—'}</span><a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);font-size:11px;text-decoration:none">📱 ${r.whatsapp||'—'}</a></div>`;}).join('')}
+        ['100%', '75%', '50%', '25%', '0%'].forEach(chance => {
+          const pessoas = grupos_chance[chance];
+          if (!pessoas.length) return;
+          const cor = chance === '100%' ? '#2D6A3A' : chance === '75%' ? '#A07820' : chance === '50%' ? '#C8102E' : chance === '25%' ? '#8B0015' : '#1A0A00';
+          
+          listaChance += `<div style="margin-bottom:8px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:${cor};letter-spacing:1px;margin-bottom:4px">${chance} — ${pessoas.length} pessoa${pessoas.length !== 1 ? 's' : ''}</div>
+            ${pessoas.map(r => {
+              const tel = (r.whatsapp || '').replace(/\D/g, '');
+              return `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg);border-radius:3px;margin-bottom:3px;font-size:12px">
+                <span style="color:var(--txt);font-weight:500">${r.nome || '—'}</span>
+                <a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);font-size:11px;text-decoration:none">📱 ${r.whatsapp || '—'}</a>
+              </div>`;
+            }).join('')}
           </div>`;
         });
-        listaChance+='</div>';
+        listaChance += '</div>';
       }
 
-      const membros=data.filter(r=>r.departamento===dep);
-      const fem=membros.filter(r=>r.genero==='Feminino').length;
-      const mas=membros.filter(r=>r.genero==='Masculino').length;
-      const pctFem=membros.length?Math.round((fem/membros.length)*100):0;
-      const pctMas=membros.length?Math.round((mas/membros.length)*100):0;
+      // Estatísticas de Gênero e Idade
+      const membros = data.filter(r => r.departamento === dep);
+      const fem = membros.filter(r => r.genero === 'Feminino').length;
+      const mas = membros.filter(r => r.genero === 'Masculino').length;
+      const pctFem = membros.length ? Math.round((fem / membros.length) * 100) : 0;
+      const pctMas = membros.length ? Math.round((mas / membros.length) * 100) : 0;
 
-      const idades=membros.map(r=>{
-        if(!r.dataNascimento)return null;
-        const parts=r.dataNascimento.toString().split(/[T\s]/)[0].split('/');
+      const idades = membros.map(r => {
+        if (!r.dataNascimento) return null;
+        const parts = r.dataNascimento.toString().split(/[T\s]/)[0].split('/');
         let ano;
-        if(parts.length===3)ano=parseInt(parts[2].length===4?parts[2]:parts[0]);
-        else ano=parseInt(r.dataNascimento.toString().substring(0,4));
-        if(isNaN(ano)||ano<1900)return null;
-        return new Date().getFullYear()-ano;
-      }).filter(x=>x&&x>0&&x<120);
-      const mediaIdade=idades.length?Math.round(idades.reduce((a,b)=>a+b,0)/idades.length):null;
+        if (parts.length === 3) ano = parseInt(parts[2].length === 4 ? parts[2] : parts[0]);
+        else ano = parseInt(r.dataNascimento.toString().substring(0, 4));
+        if (isNaN(ano) || ano < 1900) return null;
+        return new Date().getFullYear() - ano;
+      }).filter(x => x && x > 0 && x < 120);
+      const mediaIdade = idades.length ? Math.round(idades.reduce((a, b) => a + b, 0) / idades.length) : null;
 
-      let infoAla='';
-      if(membros.length){
-        infoAla=`<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      let infoAla = '';
+      if (membros.length) {
+        infoAla = `<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
           <div style="flex:1;min-width:80px;background:var(--bg);border:1px solid var(--borda);border-radius:3px;padding:7px 10px;text-align:center">
             <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#C8102E">${pctFem}%</div>
             <div style="font-size:10px;color:var(--txt-hint);margin-top:1px">Feminino</div>
@@ -759,10 +765,10 @@ function renderDeps(data,metas){
             <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#1A0A00">${pctMas}%</div>
             <div style="font-size:10px;color:var(--txt-hint);margin-top:1px">Masculino</div>
           </div>
-          ${mediaIdade?`<div style="flex:1;min-width:80px;background:var(--bg);border:1px solid var(--borda);border-radius:3px;padding:7px 10px;text-align:center">
+          ${mediaIdade ? `<div style="flex:1;min-width:80px;background:var(--bg);border:1px solid var(--borda);border-radius:3px;padding:7px 10px;text-align:center">
             <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#D4A843">${mediaIdade}</div>
             <div style="font-size:10px;color:var(--txt-hint);margin-top:1px">Média de Idade</div>
-          </div>`:''}
+          </div>` : ''}
         </div>`;
       }
 
@@ -775,19 +781,18 @@ function renderDeps(data,metas){
             cursor:pointer;transition:all .2s">
             👥 Ver lista de pessoas (${resp})
           </button>
-        </div>
-      `;
+        </div>`;
 
-      let extra='';
-      if(dep==='Bateria'){
-        const naipes=['Surdo','Caixa','Tamborim','Repinique','Agogô','Chocalho','Cuíca','Outro'];
-        extra=`<div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase">Naipes</div>
-        <div class="naipes-inner">${naipes.map(n=>`<div class="naipe-box"><div class="naipe-num">${naipeCounts[n]||0}</div><div class="naipe-lbl">${n}</div></div>`).join('')}</div>`;
+      let extra = '';
+      if (dep === 'Bateria') {
+        const naipes = ['Surdo', 'Caixa', 'Tamborim', 'Repinique', 'Agogô', 'Chocalho', 'Cuíca', 'Outro'];
+        extra = `<div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase">Naipes</div>
+        <div class="naipes-inner">${naipes.map(n => `<div class="naipe-box"><div class="naipe-num">${naipeCounts[n] || 0}</div><div class="naipe-lbl">${n}</div></div>`).join('')}</div>`;
       }
-      if(dep==='Dep. Casais'){
-        const funcoes=['Mestre-Sala','Porta-Bandeira','Apresentador(a)','Reserva/Suplente'];
-        extra=`<div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase">Funções</div>
-        <div class="funcoes-inner">${funcoes.map(f=>`<div class="funcao-box"><div class="funcao-num">${funcaoCounts[f]||0}</div><div class="naipe-lbl">${f}</div></div>`).join('')}</div>`;
+      if (dep === 'Dep. Casais') {
+        const funcoes = ['Mestre-Sala', 'Porta-Bandeira', 'Apresentador(a)', 'Reserva/Suplente'];
+        extra = `<div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase">Funções</div>
+        <div class="funcoes-inner">${funcoes.map(f => `<div class="funcao-box"><div class="funcao-num">${funcaoCounts[f] || 0}</div><div class="naipe-lbl">${f}</div></div>`).join('')}</div>`;
       }
 
       return `<div class="acc-item" style="margin-bottom:4px">
@@ -820,9 +825,11 @@ function renderDeps(data,metas){
     }).join('');
   });
 
-  document.getElementById('depsAccordion').innerHTML=html||'<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';
+  document.getElementById('depsAccordion').innerHTML = html || '<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';
 }
-function renderAlertas(data,metas){
+  
+  
+  function renderAlertas(data,metas){
   const counts={};data.forEach(r=>{counts[r.departamento]=(counts[r.departamento]||0)+1});
   const alertas=[];
   Object.entries(metas).forEach(([dep,meta])=>{
