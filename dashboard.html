@@ -707,13 +707,13 @@ const grupos = [
       const c=cls(pct);
 
       
-// Lista de TODAS as pessoas do departamento (ordenadas alfabeticamente)
+// ✅ CÓDIGO CORRIGIDO - Filtra TODAS as pessoas do departamento
 const todasPessoas = data.filter(r => r.departamento === dep);
 todasPessoas.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
 
 let listaChance = '';
 if (todasPessoas.length) {
-  // Agrupa por porcentagem de chance
+  // Agrupa TODAS as chances (100%, 75%, 50%, 25%, 0%)
   const grupos_chance = {'100%': [], '75%': [], '50%': [], '25%': [], '0%': []};
   todasPessoas.forEach(r => {
     const k = norm3(r.chanceDesfile);
@@ -723,7 +723,7 @@ if (todasPessoas.length) {
   listaChance = `<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--borda)">
     <div style="font-size:11px;color:var(--txt-hint);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Componentes (${todasPessoas.length})</div>`;
   
-  // Mostra todas as chances em ordem: 100%, 75%, 50%, 25%, 0%
+  // Mostra TODAS as chances em ordem: 100%, 75%, 50%, 25%, 0%
   ['100%', '75%', '50%', '25%', '0%'].forEach(chance => {
     const pessoas = grupos_chance[chance];
     if (!pessoas.length) return;
