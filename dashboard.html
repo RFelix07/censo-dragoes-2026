@@ -707,45 +707,86 @@ const grupos = [
       const c=cls(pct);
 
       
-// ✅ CÓDIGO CORRIGIDO - Filtra TODAS as pessoas do departamento
-const todasPessoas = data.filter(r => r.departamento === dep);
-todasPessoas.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+// ✅ Lista de pessoas por departamento - AGRUPADAS POR CHANCE
+function verListaPessoas(departamento) {
+  const pessoas = allData.filter(r => r.departamento === departamento);
+  if (!pessoas.length) { 
+    alert('Nenhuma pessoa cadastrada.'); 
+    return; 
+  }
 
-let listaChance = '';
-if (todasPessoas.length) {
-  // Agrupa TODAS as chances (100%, 75%, 50%, 25%, 0%)
-  const grupos_chance = {'100%': [], '75%': [], '50%': [], '25%': [], '0%': []};
-  todasPessoas.forEach(r => {
-    const k = norm3(r.chanceDesfile);
-    if (grupos_chance[k]) grupos_chance[k].push(r);
+  // Agrupa por porcentagem de chance
+  const grupos = {
+    '100%': [],
+    '75%': [],
+    '50%': [],
+    '25%': [],
+    '0%': []
+  };
+
+  pessoas.forEach(p => {
+    const chance = p.chanceDesfile || '0%';
+    // Normaliza o valor
+    const chanceNormalizada = ['100%','75%','50%','25%','0%'].includes(chance) ? chance : '0%';
+    if (grupos[chanceNormalizada]) {
+      grupos[chanceNormalizada].push(p);
+    }
   });
-  
-  listaChance = `<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--borda)">
-    <div style="font-size:11px;color:var(--txt-hint);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Componentes (${todasPessoas.length})</div>`;
-  
-  // Mostra TODAS as chances em ordem: 100%, 75%, 50%, 25%, 0%
+
+  // Ordena cada grupo alfabeticamente
+  Object.keys(grupos).forEach(chance => {
+    grupos[chance].sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+  });
+
+  let html = `<table class="cart-table">
+    <thead><tr><th>Nome</th><th style="text-align:right">WhatsApp</th></tr></thead><tbody>`;
+
+  let totalPessoas = 0;
+
+  // Mostra cada grupo
   ['100%', '75%', '50%', '25%', '0%'].forEach(chance => {
-    const pessoas = grupos_chance[chance];
-    if (!pessoas.length) return;
-    
+    const grupo = grupos[chance];
+    if (!grupo.length) return;
+
+    totalPessoas += grupo.length;
+
+    // Cor baseada na chance
     const cor = chance === '100%' ? '#2D6A3A' : 
                 chance === '75%' ? '#A07820' : 
                 chance === '50%' ? '#C8102E' : 
                 chance === '25%' ? '#8B0015' : '#1A0A00';
-    
-    listaChance += `<div style="margin-bottom:8px">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:${cor};letter-spacing:1px;margin-bottom:4px">${chance} — ${pessoas.length} pessoa${pessoas.length !== 1 ? 's' : ''}</div>
-      ${pessoas.map(r => {
-        const tel = (r.whatsapp || '').replace(/\D/g, '');
-        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg);border-radius:3px;margin-bottom:3px;font-size:12px">
-          <span style="color:var(--txt);font-weight:500">${r.nome || '—'}</span>
-          <a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);font-size:11px;text-decoration:none">📱 ${r.whatsapp || '—'}</a>
-        </div>`;
-      }).join('')}
-    </div>`;
+
+    // Título do grupo
+    html += `<tr style="background:var(--creme)">
+      <td colspan="2" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:${cor};padding:8px 10px;border-bottom:1px solid var(--borda)">
+        ${chance} — ${grupo.length} pessoa${grupo.length !== 1 ? 's' : ''}
+      </td>
+    </tr>`;
+
+    // Pessoas do grupo
+    grupo.forEach(p => {
+      const tel = (p.whatsapp || '').replace(/\D/g, '');
+      const nomeArr = (p.nome || '—').trim().split(/\s+/);
+      const nomeExibicao = nomeArr.length >= 2 ? `${nomeArr[0]} ${nomeArr[nomeArr.length-1]}` : p.nome;
+      
+      html += `<tr>
+        <td class="td-nome">${nomeExibicao}</td>
+        <td class="td-tel" style="text-align:right">
+          <a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);text-decoration:none">📱 ${p.whatsapp || '—'}</a>
+        </td>
+      </tr>`;
+    });
   });
-  
-  listaChance += '</div>';
+
+  html += `</tbody></table>
+    <div style="margin-top:12px;padding:8px;background:var(--creme);border-radius:4px;font-size:11px;color:var(--creme-txt);text-align:center">
+      Total: <strong>${totalPessoas}</strong> componente${totalPessoas !== 1 ? 's' : ''}
+    </div>`;
+
+  document.getElementById('cartLista').innerHTML = html;
+  document.querySelector('#cartModal h2').textContent = departamento;
+  document.querySelector('#cartModal p').textContent = 'Lista de pessoas do departamento';
+  document.getElementById('cartModal').style.display = 'flex';
 }
 
 
