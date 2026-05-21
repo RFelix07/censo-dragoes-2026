@@ -658,36 +658,34 @@ function renderDeps(data,metas){
   const deps=Object.keys(metas).filter(d=>metas[d]>0);
   if(!deps.length){document.getElementById('depsAccordion').innerHTML='<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';return}
 
-  // Ordenar decrescente por %
   const sorted=[...deps].sort((a,b)=>{
     const pa=Math.min(100,Math.round(((counts[a]||0)/metas[a])*100));
     const pb=Math.min(100,Math.round(((counts[b]||0)/metas[b])*100));
     return pb-pa;
   });
 
-  // Agrupar por status (NOVAS CORES E FAIXAS)
-const grupos = [
-  {label:'🟢 100% Completo', cor:'#2D6A3A', itens: sorted.filter(d => {
-    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-    return p === 100;
-  })},
-  {label:'🟣 Quase lá (90-99%)', cor:'#7B3F9E', itens: sorted.filter(d => {
-    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-    return p >= 90 && p < 100;
-  })},
-  {label:'🔵 Em andamento (50-89%)', cor:'#3B82F6', itens: sorted.filter(d => {
-    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-    return p >= 50 && p < 90;
-  })},
-  {label:'🟡 Atenção (20-49%)', cor:'#F59E0B', itens: sorted.filter(d => {
-    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-    return p >= 20 && p < 50;
-  })},
-  {label:'🔴 Urgente (0-19%)', cor:'#C8102E', itens: sorted.filter(d => {
-    const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
-    return p < 20;
-  })},
-];
+  const grupos = [
+    {label:'🟢 100% Completo', cor:'#2D6A3A', itens: sorted.filter(d => {
+      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+      return p === 100;
+    })},
+    {label:'🟣 Quase lá (90-99%)', cor:'#7B3F9E', itens: sorted.filter(d => {
+      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+      return p >= 90 && p < 100;
+    })},
+    {label:'🔵 Em andamento (50-89%)', cor:'#3B82F6', itens: sorted.filter(d => {
+      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+      return p >= 50 && p < 90;
+    })},
+    {label:'🟡 Atenção (20-49%)', cor:'#F59E0B', itens: sorted.filter(d => {
+      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+      return p >= 20 && p < 50;
+    })},
+    {label:'🔴 Urgente (0-19%)', cor:'#C8102E', itens: sorted.filter(d => {
+      const p = Math.min(100, Math.round(((counts[d]||0)/metas[d])*100));
+      return p < 20;
+    })},
+  ];
 
   const norm3=v=>{
     if(!v)return'0%';const s=v.toString().trim();
@@ -706,99 +704,39 @@ const grupos = [
       const meta=metas[dep],resp=counts[dep]||0,pct=Math.min(100,Math.round((resp/meta)*100));
       const c=cls(pct);
 
-      
-// ✅ Lista de pessoas por departamento - AGRUPADAS POR CHANCE
-function verListaPessoas(departamento) {
-  const pessoas = allData.filter(r => r.departamento === departamento);
-  if (!pessoas.length) { 
-    alert('Nenhuma pessoa cadastrada.'); 
-    return; 
-  }
+      // Lista de TODAS as pessoas do departamento
+      const todasPessoas = data.filter(r => r.departamento === dep);
+      todasPessoas.sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
 
-  // Agrupa por porcentagem de chance
-  const grupos = {
-    '100%': [],
-    '75%': [],
-    '50%': [],
-    '25%': [],
-    '0%': []
-  };
+      let listaChance = '';
+      if (todasPessoas.length) {
+        const grupos_chance = {'100%':[],'75%':[],'50%':[],'25%':[],'0%':[]};
+        todasPessoas.forEach(r => {
+          const k = norm3(r.chanceDesfile);
+          if (grupos_chance[k]) grupos_chance[k].push(r);
+        });
 
-  pessoas.forEach(p => {
-    const chance = p.chanceDesfile || '0%';
-    // Normaliza o valor
-    const chanceNormalizada = ['100%','75%','50%','25%','0%'].includes(chance) ? chance : '0%';
-    if (grupos[chanceNormalizada]) {
-      grupos[chanceNormalizada].push(p);
-    }
-  });
+        listaChance = `<div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--borda)">
+          <div style="font-size:11px;color:var(--txt-hint);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Componentes (${todasPessoas.length})</div>`;
 
-  // Ordena cada grupo alfabeticamente
-  Object.keys(grupos).forEach(chance => {
-    grupos[chance].sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-  });
+        ['100%','75%','50%','25%','0%'].forEach(chance=>{
+          const pessoas=grupos_chance[chance];
+          if(!pessoas.length)return;
+          const cor=chance==='100%'?'#2D6A3A':chance==='75%'?'#A07820':chance==='50%'?'#C8102E':chance==='25%'?'#8B0015':'#1A0A00';
+          listaChance+=`<div style="margin-bottom:8px">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;color:${cor};letter-spacing:1px;margin-bottom:4px">${chance} — ${pessoas.length} pessoa${pessoas.length!==1?'s':''}</div>
+            ${pessoas.map(r=>{const tel=(r.whatsapp||'').replace(/\D/g,'');return`<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--bg);border-radius:3px;margin-bottom:3px;font-size:12px"><span style="color:var(--txt);font-weight:500">${r.nome||'—'}</span><a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);font-size:11px;text-decoration:none">📱 ${r.whatsapp||'—'}</a></div>`;}).join('')}
+          </div>`;
+        });
+        listaChance+='</div>';
+      }
 
-  let html = `<table class="cart-table">
-    <thead><tr><th>Nome</th><th style="text-align:right">WhatsApp</th></tr></thead><tbody>`;
-
-  let totalPessoas = 0;
-
-  // Mostra cada grupo
-  ['100%', '75%', '50%', '25%', '0%'].forEach(chance => {
-    const grupo = grupos[chance];
-    if (!grupo.length) return;
-
-    totalPessoas += grupo.length;
-
-    // Cor baseada na chance
-    const cor = chance === '100%' ? '#2D6A3A' : 
-                chance === '75%' ? '#A07820' : 
-                chance === '50%' ? '#C8102E' : 
-                chance === '25%' ? '#8B0015' : '#1A0A00';
-
-    // Título do grupo
-    html += `<tr style="background:var(--creme)">
-      <td colspan="2" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:${cor};padding:8px 10px;border-bottom:1px solid var(--borda)">
-        ${chance} — ${grupo.length} pessoa${grupo.length !== 1 ? 's' : ''}
-      </td>
-    </tr>`;
-
-    // Pessoas do grupo
-    grupo.forEach(p => {
-      const tel = (p.whatsapp || '').replace(/\D/g, '');
-      const nomeArr = (p.nome || '—').trim().split(/\s+/);
-      const nomeExibicao = nomeArr.length >= 2 ? `${nomeArr[0]} ${nomeArr[nomeArr.length-1]}` : p.nome;
-      
-      html += `<tr>
-        <td class="td-nome">${nomeExibicao}</td>
-        <td class="td-tel" style="text-align:right">
-          <a href="https://wa.me/55${tel}" target="_blank" style="color:var(--vermelho);text-decoration:none">📱 ${p.whatsapp || '—'}</a>
-        </td>
-      </tr>`;
-    });
-  });
-
-  html += `</tbody></table>
-    <div style="margin-top:12px;padding:8px;background:var(--creme);border-radius:4px;font-size:11px;color:var(--creme-txt);text-align:center">
-      Total: <strong>${totalPessoas}</strong> componente${totalPessoas !== 1 ? 's' : ''}
-    </div>`;
-
-  document.getElementById('cartLista').innerHTML = html;
-  document.querySelector('#cartModal h2').textContent = departamento;
-  document.querySelector('#cartModal p').textContent = 'Lista de pessoas do departamento';
-  document.getElementById('cartModal').style.display = 'flex';
-}
-
-
-      
-      // % Gênero por ala
       const membros=data.filter(r=>r.departamento===dep);
       const fem=membros.filter(r=>r.genero==='Feminino').length;
       const mas=membros.filter(r=>r.genero==='Masculino').length;
       const pctFem=membros.length?Math.round((fem/membros.length)*100):0;
       const pctMas=membros.length?Math.round((mas/membros.length)*100):0;
 
-      // Média de idade por ala
       const idades=membros.map(r=>{
         if(!r.dataNascimento)return null;
         const parts=r.dataNascimento.toString().split(/[T\s]/)[0].split('/');
@@ -827,6 +765,18 @@ function verListaPessoas(departamento) {
           </div>`:''}
         </div>`;
       }
+
+      let botaoLista = `
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--borda)">
+          <button onclick="verListaPessoas('${dep}')"
+            style="width:100%;background:var(--creme);border:1px solid var(--creme-brd);border-radius:4px;
+            color:var(--creme-txt);font-family:'Barlow Condensed',sans-serif;font-size:11px;
+            font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px;
+            cursor:pointer;transition:all .2s">
+            👥 Ver lista de pessoas (${resp})
+          </button>
+        </div>
+      `;
 
       let extra='';
       if(dep==='Bateria'){
@@ -861,6 +811,7 @@ function verListaPessoas(departamento) {
               <div class="dep-prog-track"><div class="dep-prog-fill ${c}" style="width:${pct}%"></div></div>
             </div>
             ${infoAla}
+            ${botaoLista}
             ${extra}
             ${listaChance}
           </div>
@@ -871,7 +822,6 @@ function verListaPessoas(departamento) {
 
   document.getElementById('depsAccordion').innerHTML=html||'<div class="empty"><div class="empty-icon">📋</div><div class="empty-txt">Sem dados</div></div>';
 }
-
 function renderAlertas(data,metas){
   const counts={};data.forEach(r=>{counts[r.departamento]=(counts[r.departamento]||0)+1});
   const alertas=[];
