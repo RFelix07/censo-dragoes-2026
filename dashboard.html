@@ -457,8 +457,20 @@ async function loadData(){
       throw new Error('Servidor retornou status ' + response.status);
     }
     
-    const text = await response.text();
-    console.log('Resposta recebida:', text.substring(0, 100) + '...');
+   const text = await response.text();
+   console.log('📥 Resposta recebida:', text.substring(0, 500));+ '...');
+
+// Verifica se começa com '<' (HTML)
+if (text.trim().startsWith('<')) {
+  throw new Error('Servidor retornou HTML em vez de JSON. Verifique a URL e a implantação do script.');
+}
+
+let json;
+try {
+  json = JSON.parse(text);
+} catch (e) {
+  throw new Error('Resposta não é JSON válido: ' + text.substring(0, 200));
+}
     
     // ✅ Tenta parsear JSON
     let json;
