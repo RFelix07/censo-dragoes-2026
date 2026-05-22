@@ -617,20 +617,7 @@ document.querySelectorAll('input,select').forEach(el=>{
 });
 
 
-// ✅ Mostrar/esconder naipes baseado no departamento
-document.getElementById('departamento').addEventListener('change', function() {
-  const naipesSection = document.getElementById('naipesSection');
-  const naipeSelect = document.getElementById('naipeBateria');
-  
-  if (this.value === 'Bateria') {
-    naipesSection.style.display = 'block';
-    naipeSelect.required = true; // Torna obrigatório
-  } else {
-    naipesSection.style.display = 'none';
-    naipeSelect.required = false; // Remove obrigatoriedade
-    naipeSelect.value = ''; // Limpa a seleção
-  }
-});
+
   
 </script>
 </body>
