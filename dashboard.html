@@ -514,7 +514,7 @@ function renderDemo(){
   const chances=['100%','100%','75%','75%','50%','25%','0%'];
   const carteirs=['Sim, tenho','Sim, tenho','Não tenho, mas quero','Não tenho interesse'];
   const dias=[['Segunda','Quarta','Sexta'],['Sábado'],['Terça','Quinta'],['Quarta','Sexta','Sábado']];
-  const naipes=['Surdo','Surdo','Caixa','Caixa','Tamborim','Repinique','Agogô','Chocalho'];
+  const naipes=['Surdo de Primeira', 'Surdo de Segunda', 'Surdo de Terceira', 'Caixa', 'Caixa', 'Tamborim', 'Repinique', 'Agogô', 'Chocalho', 'Cuíca'];
   const funcoes=['Mestre-Sala','Porta-Bandeira','Porta-Bandeira','Reserva/Suplente'];
   const cidades=['São Paulo','São Paulo','Guarulhos','Osasco','Santo André'];
   const bairros=['Vila Prudente','Ipiranga','Tatuapé','Centro','Lapa','Penha'];
@@ -784,10 +784,10 @@ function renderDeps(data, metas) {
         </div>`;
 
       let extra = '';
-      if (dep === 'Bateria') {
-        const naipes = ['Surdo', 'Caixa', 'Tamborim', 'Repinique', 'Agogô', 'Chocalho', 'Cuíca', 'Outro'];
-        extra = `<div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase">Naipes</div>
-        <div class="naipes-inner">${naipes.map(n => `<div class="naipe-box"><div class="naipe-num">${naipeCounts[n] || 0}</div><div class="naipe-lbl">${n}</div></div>`).join('')}</div>`;
+    if(dep==='Bateria'){
+        const naipes=['Surdo de Primeira', 'Surdo de Segunda', 'Surdo de Terceira', 'Caixa', 'Tamborim', 'Repinique', 'Agogô', 'Chocalho', 'Cuíca'];
+        extra=`<div style="font-size:11px;color:var(--txt-hint);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase">Naipes</div>
+        <div class="naipes-inner">${naipes.map(n=>`<div class="naipe-box"><div class="naipe-num">${naipeCounts[n]||0}</div><div class="naipe-lbl">${n}</div></div>`).join('')}</div>`;
       }
       if (dep === 'Dep. Casais') {
         const funcoes = ['Mestre-Sala', 'Porta-Bandeira', 'Apresentador(a)', 'Reserva/Suplente'];
