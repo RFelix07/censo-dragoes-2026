@@ -3,254 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Censo 2026 — Dragões da Real</title>
+    <title>Dashboard Censo 2026 — Dragões da Real</title>
     <style>
-        :root {
-            --primary: #C8102E; /* Vermelho Dragões */
-            --dark: #121212;
-            --light: #F5F5F5;
-            --gray: #333;
-        }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--light); margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: #1E1E1E; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); }
-        h1 { color: var(--primary); font-size: 1.5rem; margin: 10px 0; }
-        h2 { font-size: 1.1rem; color: #ddd; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 25px; }
+        :root { --primary: #C8102E; --dark: #121212; --card: #1E1E1E; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: white; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .header h1 { color: var(--primary); margin: 0; }
         
-        label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.9rem; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; background: #2C2C2C; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; }
-        input:focus, select:focus { border-color: var(--primary); outline: none; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .card { background: var(--card); padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary); }
+        .card h3 { margin: 0 0 5px 0; font-size: 0.9rem; color: #aaa; }
+        .card .value { font-size: 1.5rem; font-weight: bold; }
         
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 5px; }
-        .checkbox-item { background: #2C2C2C; padding: 10px; border-radius: 5px; flex: 1 1 40%; border: 1px solid #444; cursor: pointer; }
-        .checkbox-item input { width: auto; margin-right: 5px; }
+        .section-title { margin-top: 30px; border-bottom: 1px solid #333; padding-bottom: 5px; color: var(--primary); }
         
-        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 5px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 30px; transition: 0.3s; }
-        button:hover { background: #A00D24; }
+        .dept-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+        .dept-item { background: var(--card); padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .progress-bar { height: 5px; background: #333; width: 100px; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s; }
+
+        .alert-box { background: #331a1a; border: 1px solid #ff4444; padding: 10px; border-radius: 5px; margin-top: 10px; }
         
-        .hidden { display: none; }
-        .success { text-align: center; padding: 40px; }
-        .success h2 { color: #4CAF50; border: none; }
+        .btn-config { background: #333; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--card); padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; }
+        .modal input { width: 100%; padding: 10px; margin: 10px 0; background: #222; border: 1px solid #444; color: white; }
     </style>
 </head>
 <body>
 
-<div class="container" id="form-container">
+<div class="container">
     <div class="header">
-        <!-- Logo placeholder - substitua pela URL real se tiver -->
-        <img src="./index_files/logo.png" alt="Logo Dragões" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Question_mark_alternative.svg/1200px-Question_mark_alternative.svg.png'">
-        <h1>Dragões da Real</h1>
-        <p>Censo Carnaval 2026</p>
+        <div>
+            <h1> Dragões da Real</h1>
+            <small>Censo 2026 · Dashboard</small>
+        </div>
+        <button class="btn-config" onclick="document.getElementById('configModal').style.display='flex'">⚙️ Configurar URL</button>
     </div>
 
-    <form id="censoForm">
-        <!-- I. Identificação -->
-        <h2>I. Identificação</h2>
-        <label>Nome Completo *</label>
-        <input type="text" name="nome" required placeholder="Seu nome completo">
-        
-        <label>WhatsApp *</label>
-        <input type="tel" name="whatsapp" required placeholder="(11) 99999-9999">
-        
-        <label>Gênero *</label>
-        <select name="genero" required>
-            <option value="" disabled selected>Selecione...</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Não-binário">Não-binário</option>
-            <option value="Outro">Outro</option>
-            <option value="Prefiro não informar">Prefiro não informar</option>
-        </select>
-        
-        <label>Data de Nascimento *</label>
-        <input type="date" name="nascimento" required>
+    <div id="loading" style="text-align: center; padding: 50px;">Carregando dados...</div>
 
-        <!-- II. Vínculo -->
-        <h2>II. Vínculo com a Escola</h2>
-        <label>Ano de Entrada *</label>
-        <select name="ano_entrada" required>
-            <option value="" disabled selected>Selecione o ano...</option>
-            <option value="2026">2026 (Novo)</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <!-- Adicione mais anos se necessário -->
-        </select>
-
-        <label>Departamento / Ala *</label>
-        <select name="departamento" required>
-            <option value="" disabled selected>Selecione...</option>
-            <option value="Comissão de Frente">Comissão de Frente</option>
-            <option value="Dep. Casais">Dep. Casais</option>
-            <option value="Destaque de Chão">Destaque de Chão</option>
-            <option value="Composição">Composição</option>
-            <option value="Destaques">Destaques</option>
-            <option value="Diretoria">Diretoria</option>
-            <option value="Harmonia">Harmonia</option>
-            <option value="Ala Carnareal">Ala Carnareal</option>
-            <option value="Ala Comunidade">Ala Comunidade</option>
-            <option value="Bateria">Bateria</option>
-            <option value="Ala Guardiões">Ala Guardiões</option>
-            <option value="Ala Baianas">Ala Baianas</option>
-            <option value="Ala Jovens">Ala Jovens</option>
-            <option value="Ala Zona Sul">Ala Zona Sul</option>
-            <option value="Ala Pirituba">Ala Pirituba</option>
-            <option value="Ala Oz">Ala Oz</option>
-            <option value="Ala Atibaia">Ala Atibaia</option>
-            <option value="Ala Caverna">Ala Caverna</option>
-            <option value="Ala Amigos da Vila">Ala Amigos da Vila</option>
-            <option value="Ala Explosão">Ala Explosão</option>
-            <option value="Ala Tamujuntu">Ala Tamujuntu</option>
-            <option value="Ala Avalanche">Ala Avalanche</option>
-            <option value="Ala Portal">Ala Portal</option>
-            <option value="Ala Sítio">Ala Sítio</option>
-            <option value="Ala Anastácio">Ala Anastácio</option>
-            <option value="Ala Ziriguidum">Ala Ziriguidum</option>
-            <option value="Ala Passistas">Ala Passistas</option>
-            <option value="Ala Convidados">Ala Convidados</option>
-        </select>
-
-        <label>Função no Casal (Se aplicável)</label>
-        <select name="funcao_casal">
-            <option value="">Não se aplica</option>
-            <option value="Mestre-Sala">Mestre-Sala</option>
-            <option value="Porta-Bandeira">Porta-Bandeira</option>
-            <option value="Apresentador(a)">Apresentador(a)</option>
-        </select>
-
-        <label>Naipe na Bateria (Se aplicável)</label>
-        <select name="naipe_bateria">
-            <option value="">Não se aplica</option>
-            <option value="Surdo">Surdo</option>
-            <option value="Caixa">Caixa</option>
-            <option value="Tamborim">Tamborim</option>
-            <option value="Repinique">Repinique</option>
-            <option value="Agogô">Agogô</option>
-            <option value="Chocalho">Chocalho</option>
-            <option value="Cuíca">Cuíca</option>
-            <option value="Outro">Outro</option>
-        </select>
-
-        <label>Carteirinha da Escola *</label>
-        <select name="carteirinha" required>
-            <option value="" disabled selected>Selecione...</option>
-            <option value="Sim, tenho">Sim, tenho</option>
-            <option value="Não tenho, mas quero">Não tenho, mas quero</option>
-            <option value="Não tenho interesse">Não tenho interesse</option>
-        </select>
-
-        <!-- III. Logística -->
-        <h2>III. Logística e Disponibilidade</h2>
-        <label>Chance de Desfilar em 2026 *</label>
-        <select name="chance_desfile" required>
-            <option value="" disabled selected>Selecione...</option>
-            <option value="100%">100% (Certo)</option>
-            <option value="75%">75% (Provável)</option>
-            <option value="50%">50% (Talvez)</option>
-            <option value="25%">25% (Difícil)</option>
-            <option value="0%">0% (Não vou)</option>
-        </select>
-
-        <label>Cidade *</label>
-        <input type="text" name="cidade" required placeholder="São Paulo">
-
-        <label>Zona *</label>
-        <select name="zona" required>
-            <option value="" disabled selected>Selecione...</option>
-            <option value="Zona Norte">Zona Norte</option>
-            <option value="Zona Sul">Zona Sul</option>
-            <option value="Zona Leste">Zona Leste</option>
-            <option value="Zona Oeste">Zona Oeste</option>
-            <option value="Centro">Centro</option>
-            <option value="Grande São Paulo">Grande São Paulo</option>
-            <option value="Outro Estado">Outro Estado</option>
-        </select>
-
-        <label>Dias Disponíveis para Ensaio *</label>
-        <div class="checkbox-group">
-            <label class="checkbox-item"><input type="checkbox" name="dias[]" value="Seg"> Seg</label>
-            <label class="checkbox-item"><input type="checkbox" name="dias[]" value="Ter"> Ter</label>
-            <label class="checkbox-item"><input type="checkbox" name="dias[]" value="Qua"> Qua</label>
-            <label class="checkbox-item"><input type="checkbox" name="dias[]" value="Qui"> Qui</label>
-            <label class="checkbox-item"><input type="checkbox" name="dias[]" value="Sex"> Sex</label>
-            <label class="checkbox-item"><input type="checkbox" name="dias[]" value="Sáb"> Sáb</label>
-            <label class="checkbox-item"><input type="checkbox" name="dias[]" value="Dom"> Dom</label>
+    <div id="dashboard-content" style="display: none;">
+        <!-- Resumo Geral -->
+        <div class="stats-grid">
+            <div class="card"><h3>Total Respostas</h3><div class="value" id="total-respostas">0</div></div>
+            <div class="card"><h3>Taxa Geral</h3><div class="value" id="taxa-geral">0%</div></div>
+            <div class="card"><h3>Chance Média Desfile</h3><div class="value" id="chance-media">0%</div></div>
+            <div class="card"><h3>Querem Carteirinha</h3><div class="value" id="querem-carteirinha">0</div></div>
         </div>
 
-        <!-- IV. Desenvolvimento -->
-        <h2>IV. Desenvolvimento</h2>
-        <label>Interesses (Opcional)</label>
-        <p style="font-size: 0.8rem; color: #aaa; margin-top: 0;">O que você gostaria de fazer na escola?</p>
-        <div class="checkbox-group">
-            <label class="checkbox-item"><input type="checkbox" name="interesses[]" value="Aprender mais"> Aprender mais sobre Carnaval</label>
-            <label class="checkbox-item"><input type="checkbox" name="interesses[]" value="Ser Coordenador"> Ser Coordenador de Ala</label>
-            <label class="checkbox-item"><input type="checkbox" name="interesses[]" value="Participar Harmonia"> Participar da Harmonia</label>
-            <label class="checkbox-item"><input type="checkbox" name="interesses[]" value="Integrar Ala Cênica"> Integrar Ala Cênica/Coreografada</label>
+        <!-- Gênero e Carteirinha -->
+        <h2 class="section-title">Perfil dos Componentes</h2>
+        <div class="stats-grid">
+            <div class="card">
+                <h3>Distribuição por Gênero</h3>
+                <div id="genero-stats" style="font-size: 0.9rem; margin-top: 5px;">-</div>
+            </div>
+            <div class="card">
+                <h3>Situação da Carteirinha</h3>
+                <div id="carteirinha-stats" style="font-size: 0.9rem; margin-top: 5px;">-</div>
+            </div>
         </div>
 
-        <button type="submit">Enviar meu Censo</button>
-    </form>
+        <!-- NOVOS INTERESSES -->
+        <h2 class="section-title">Interesses e Desenvolvimento</h2>
+        <div class="card" style="border-left-color: #4CAF50;">
+            <h3>O que os componentes querem fazer?</h3>
+            <div id="interesses-stats" style="margin-top: 10px; font-size: 0.9rem;">
+                <!-- Preenchido via JS -->
+            </div>
+        </div>
+
+        <!-- Departamentos -->
+        <h2 class="section-title">Progresso por Departamento</h2>
+        <div class="dept-list" id="dept-list"></div>
+
+        <!-- Alertas -->
+        <h2 class="section-title">Alertas de Ação</h2>
+        <div id="alertas"></div>
+    </div>
 </div>
 
-<div class="container hidden" id="success-container">
-    <div class="success">
-        <img src="./index_files/logo.png" alt="Logo" style="width: 80px; border-radius: 50%;" onerror="this.style.display='none'">
-        <h2>Obrigado!</h2>
-        <p>Sua participação no Censo 2026 foi registrada com sucesso.</p>
-        <p style="color: #888; font-size: 0.9rem;">Dragões da Real — Uma vida de amor ao samba!</p>
-        <button onclick="location.reload()">Enviar outro</button>
+<!-- Modal de Configuração -->
+<div class="modal" id="configModal">
+    <div class="modal-content">
+        <h3>Configurar Dashboard</h3>
+        <p>Cole a URL do Google Apps Script para conectar com sua planilha.</p>
+        <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/...">
+        <button class="btn-config" style="background: var(--primary); width: 100%;" onclick="salvarConfig()">Salvar</button>
+        <button class="btn-config" style="background: #444; width: 100%; margin-top: 5px;" onclick="document.getElementById('configModal').style.display='none'">Cancelar</button>
     </div>
 </div>
 
 <script>
-    // CONFIGURAÇÃO: Cole aqui a URL do seu Google Apps Script
-    const SCRIPT_URL = 'SUA_URL_DO_GOOGLE_SCRIPT_AQUI';
+    const SCRIPT_URL_KEY = 'dragoes_script_url';
+    let SCRIPT_URL = localStorage.getItem(SCRIPT_URL_KEY) || '';
 
-    document.getElementById('censoForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const btn = this.querySelector('button');
-        btn.textContent = 'Enviando...';
-        btn.disabled = true;
+    if (!SCRIPT_URL) {
+        document.getElementById('configModal').style.display = 'flex';
+    } else {
+        carregarDados();
+    }
 
-        const formData = new FormData(this);
+    function salvarConfig() {
+        const url = document.getElementById('scriptUrlInput').value;
+        if (url) {
+            localStorage.setItem(SCRIPT_URL_KEY, url);
+            SCRIPT_URL = url;
+            document.getElementById('configModal').style.display = 'none';
+            carregarDados();
+        }
+    }
+
+    function carregarDados() {
+        if (!SCRIPT_URL) return;
+        fetch(SCRIPT_URL)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
+                processarDados(data);
+            })
+            .catch(err => {
+                document.getElementById('loading').textContent = 'Erro ao carregar. Verifique a URL.';
+            });
+    }
+
+    function processarDados(rows) {
+        if (!rows || rows.length === 0) return;
         
-        // Converte checkboxes para string
-        const dias = formData.getAll('dias[]');
-        const interesses = formData.getAll('interesses[]');
-        
-        // Prepara dados para envio
-        const data = {
-            nome: formData.get('nome'),
-            whatsapp: formData.get('whatsapp'),
-            genero: formData.get('genero'),
-            nascimento: formData.get('nascimento'),
-            ano_entrada: formData.get('ano_entrada'),
-            departamento: formData.get('departamento'),
-            funcao_casal: formData.get('funcao_casal'),
-            naipe_bateria: formData.get('naipe_bateria'),
-            carteirinha: formData.get('carteirinha'),
-            chance_desfile: formData.get('chance_desfile'),
-            cidade: formData.get('cidade'),
-            zona: formData.get('zona'),
-            dias: dias.join(', '),
-            interesses: interesses.join(', ') // Aqui está o campo Interesses!
-        };
+        const total = rows.length;
+        document.getElementById('total-respostas').textContent = total;
 
-        fetch(SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        }).then(() => {
-            document.getElementById('form-container').classList.add('hidden');
-            document.getElementById('success-container').classList.remove('hidden');
-        }).catch(err => {
-            alert('Erro ao enviar. Tente novamente.');
-            btn.textContent = 'Enviar meu Censo';
-            btn.disabled = false;
+        // Gênero
+        let generos = {};
+        rows.forEach(r => { if(r.genero) generos[r.genero] = (generos[r.genero] || 0) + 1; });
+        let genHtml = Object.entries(generos).map(([k, v]) => `<b>${k}:</b> ${v} (${Math.round(v/total*100)}%)`).join('<br>');
+        document.getElementById('genero-stats').innerHTML = genHtml;
+
+        // Carteirinha
+        let carteirinhas = {};
+        rows.forEach(r => { if(r.carteirinha) carteirinhas[r.carteirinha] = (carteirinhas[r.carteirinha] || 0) + 1; });
+        let cartHtml = Object.entries(carteirinhas).map(([k, v]) => `<b>${k}:</b> ${v}`).join('<br>');
+        document.getElementById('carteirinha-stats').innerHTML = cartHtml;
+        
+        // Contagem específica para o card superior
+        document.getElementById('querem-carteirinha').textContent = (carteirinhas['Não tenho, mas quero'] || 0);
+
+        // INTERESSES (Novo)
+        let interesses = {};
+        rows.forEach(r => {
+            if (r.interesses) {
+                const lista = r.interesses.split(', '); // Separa por vírgula
+                lista.forEach(interesse => {
+                    if (interesse) interesses[interesse] = (interesses[interesse] || 0) + 1;
+                });
+            }
         });
-    });
-</script>
+        let intHtml = Object.entries(interesses)
+            .sort((a, b) => b[1] - a[1]) // Ordena do maior para o menor
+            .map(([k, v]) => `<div style="display:flex; justify-content:space-between; margin-bottom:5px; border-bottom:1px solid #333; padding-bottom:2px;">
+                                <span>${k}</span> <b style="color:var(--primary)">${v} pessoas</b>
+                              </div>`).join('');
+        document.getElementById('interesses-stats').innerHTML = intHtml || 'Nenhum interesse registrado.';
 
+        // Departamentos
+        let deptos = {};
+        rows.forEach(r => { if(r.departamento) deptos[r.departamento] = (deptos[r.departamento] || 0) + 1; });
+        // ... (lógica de deptos simplificada para exemplo)
+        let deptListEl = document.getElementById('dept-list');
+        deptListEl.innerHTML = '';
+        // Exibe os top 5 deptos com mais respostas
+        Object.entries(deptos).sort((a,b) => b[1]-a[1]).slice(0, 10).forEach(([nome, count]) => {
+            deptListEl.innerHTML += `<div class="dept-item"><span>${nome}</span><b>${count}</b></div>`;
+        });
+    }
+</script>
 </body>
 </html>
