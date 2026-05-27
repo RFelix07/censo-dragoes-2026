@@ -5,30 +5,236 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Relatório por Ala - Dragões da Real</title>
 <style>
-  body { font-family: 'Barlow', sans-serif; background: #F7F4EF; padding: 20px; }
-  .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-  h1 { color: #1A0A00; margin-bottom: 10px; }
-  .subtitle { color: #8B6040; margin-bottom: 30px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { 
+    font-family: 'Barlow', 'Segoe UI', sans-serif; 
+    background: linear-gradient(135deg, #F7F4EF 0%, #F2EAD8 100%); 
+    padding: 20px; 
+    min-height: 100vh;
+  }
+  .container { 
+    max-width: 1100px; 
+    margin: 0 auto; 
+    background: white; 
+    padding: 30px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  h1 { 
+    color: #1A0A00; 
+    margin-bottom: 8px;
+    font-size: 32px;
+  }
+  .subtitle { 
+    color: #8B6040; 
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
   
-  .select-box { margin-bottom: 30px; }
-  label { display: block; font-weight: 600; margin-bottom: 8px; color: #6B5040; }
-  select { width: 100%; padding: 12px; border: 1px solid #E0D0B8; border-radius: 4px; font-size: 15px; background: white; }
+  .select-box { 
+    margin-bottom: 30px; 
+    background: #FFF8F0;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #E0D0B8;
+  }
+  label { 
+    display: block; 
+    font-weight: 700; 
+    margin-bottom: 10px; 
+    color: #1A0A00;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+  select { 
+    width: 100%; 
+    padding: 14px; 
+    border: 2px solid #D4A843; 
+    border-radius: 6px; 
+    font-size: 16px; 
+    background: white;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  select:focus {
+    outline: none;
+    border-color: #C8102E;
+  }
   
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-  .stat-card { background: #FFF0EE; padding: 20px; border-radius: 6px; border-left: 4px solid #C8102E; }
-  .stat-card h3 { margin: 0; font-size: 14px; color: #6B5040; text-transform: uppercase; }
-  .stat-card .number { font-size: 32px; font-weight: 700; color: #1A0A00; margin: 8px 0 0 0; }
+  /* Cards de Estatísticas */
+  .stats { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 15px; 
+    margin-bottom: 40px; 
+  }
+  .stat-card { 
+    background: linear-gradient(135deg, #FFF0EE 0%, #F2EAD8 100%); 
+    padding: 25px; 
+    border-radius: 8px; 
+    border-left: 5px solid #C8102E;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  .stat-card.dourado { border-left-color: #D4A843; }
+  .stat-card h3 { 
+    margin: 0; 
+    font-size: 12px; 
+    color: #6B5040; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .stat-card .number { 
+    font-size: 42px; 
+    font-weight: 900; 
+    color: #1A0A00; 
+    margin: 10px 0 0 0;
+  }
+  .stat-card .sub {
+    font-size: 13px;
+    color: #8B6040;
+    margin-top: 5px;
+  }
   
-  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  th { background: #F2EAD8; padding: 12px; text-align: left; font-weight: 600; color: #1A0A00; border-bottom: 2px solid #D4A843; }
-  td { padding: 12px; border-bottom: 1px solid #E0D0B8; }
-  tr:hover { background: #FFF8F0; }
+  /* Seções por chance */
+  .section {
+    margin-bottom: 35px;
+    background: #FAF8F5;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #E0D0B8;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A0A00;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #D4A843;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .badge {
+    background: #C8102E;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .badge.dourado { background: #D4A843; }
+  .badge.verde { background: #2D6A3A; }
   
-  .btn { background: #1A0A00; color: #D4A843; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; margin-top: 20px; }
-  .btn:hover { background: #2A1000; }
+  /* Tabela */
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    background: white;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  th { 
+    background: linear-gradient(135deg, #F2EAD8 0%, #D8C8A8 100%); 
+    padding: 14px; 
+    text-align: left; 
+    font-weight: 700; 
+    color: #1A0A00;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td { 
+    padding: 14px; 
+    border-bottom: 1px solid #E0D0B8;
+    font-size: 15px;
+  }
+  tr:hover { 
+    background: #FFF8F0; 
+  }
+  tr:last-child td {
+    border-bottom: none;
+  }
+  .nome {
+    font-weight: 600;
+    color: #1A0A00;
+  }
+  .telefone {
+    color: #6B5040;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  .chance {
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .chance-100 { color: #2D6A3A; }
+  .chance-75 { color: #D4A843; }
+  .chance-50 { color: #FF9800; }
+  .chance-25 { color: #FF5722; }
+  .chance-0 { color: #C8102E; }
   
-  .loading { text-align: center; padding: 40px; color: #8B6040; }
+  .btn { 
+    background: linear-gradient(135deg, #1A0A00 0%, #2A1000 100%); 
+    color: #D4A843; 
+    padding: 14px 28px; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 20px;
+    transition: transform 0.2s;
+  }
+  .btn:hover { 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  
+  .loading { 
+    text-align: center; 
+    padding: 60px 20px; 
+    color: #8B6040;
+    font-size: 16px;
+  }
+  .spinner {
+    border: 4px solid #F2EAD8;
+    border-top: 4px solid #C8102E;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
   .hidden { display: none; }
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: #8B6040;
+    font-style: italic;
+    font-size: 15px;
+  }
+  
+  @media print {
+    .select-box, .btn { display: none; }
+    .container { box-shadow: none; }
+    body { background: white; }
+    .section { break-inside: avoid; }
+  }
+  
+  @media (max-width: 768px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .container { padding: 20px; }
+    table { font-size: 12px; }
+    th, td { padding: 10px; }
+  }
 </style>
 </head>
 <body>
@@ -38,57 +244,95 @@
   <p class="subtitle">Censo Carnaval 2027 - Dragões da Real</p>
   
   <div class="select-box">
-    <label for="alaSelect">Selecione a Ala/Departamento:</label>
+    <label for="alaSelect">🎭 Selecione a Ala/Departamento:</label>
     <select id="alaSelect">
       <option value="">Carregando alas...</option>
     </select>
   </div>
   
-  <div id="loading" class="loading hidden">Carregando dados...</div>
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Carregando dados da ala...</p>
+  </div>
   
   <div id="dashboard" class="hidden">
+    <!-- Estatísticas Gerais -->
     <div class="stats">
       <div class="stat-card">
         <h3>Total de Membros</h3>
         <p class="number" id="totalMembros">0</p>
       </div>
-      <div class="stat-card">
-        <h3>Carteirinhas</h3>
-        <p class="number" id="totalCarteirinhas">0</p>
+      <div class="stat-card dourado">
+        <h3>% Mulheres</h3>
+        <p class="number" id="pctMulheres">0%</p>
+        <p class="sub" id="totalMulheres">0 pessoas</p>
+      </div>
+      <div class="stat-card dourado">
+        <h3>% Homens</h3>
+        <p class="number" id="pctHomens">0%</p>
+        <p class="sub" id="totalHomens">0 pessoas</p>
       </div>
       <div class="stat-card">
-        <h3>Disponíveis Ensaio</h3>
-        <p class="number" id="totalDisponiveis">0</p>
-      </div>
-      <div class="stat-card">
-        <h3>Chance 100%</h3>
-        <p class="number" id="totalChance100">0</p>
+        <h3>Média de Idade</h3>
+        <p class="number" id="idadeMedia">0</p>
+        <p class="sub">anos</p>
       </div>
     </div>
     
-    <h2 style="margin-bottom: 15px; color: #1A0A00;">Membros da Ala</h2>
-    <table id="tabelaMembros">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>WhatsApp</th>
-          <th>Gênero</th>
-          <th>Carteirinha</th>
-          <th>Chance Desfile</th>
-          <th>Dias Ensaio</th>
-        </tr>
-      </thead>
-      <tbody id="tbodyMembros"></tbody>
-    </table>
+    <!-- 100% -->
+    <div class="section">
+      <div class="section-title">
+        ✅ Chance de Desfile: 100%
+        <span class="badge verde" id="count100">0</span>
+      </div>
+      <div id="lista100" class="empty">Nenhum participante</div>
+    </div>
     
-    <button class="btn" onclick="window.print()">📄 Imprimir Relatório</button>
+    <!-- 75% -->
+    <div class="section">
+      <div class="section-title">
+        👍 Chance de Desfile: 75%
+        <span class="badge dourado" id="count75">0</span>
+      </div>
+      <div id="lista75" class="empty">Nenhum participante</div>
+    </div>
+    
+    <!-- 50% -->
+    <div class="section">
+      <div class="section-title">
+        ⚠️ Chance de Desfile: 50%
+        <span class="badge" id="count50">0</span>
+      </div>
+      <div id="lista50" class="empty">Nenhum participante</div>
+    </div>
+    
+    <!-- 25% -->
+    <div class="section">
+      <div class="section-title">
+        🔻 Chance de Desfile: 25%
+        <span class="badge" id="count25">0</span>
+      </div>
+      <div id="lista25" class="empty">Nenhum participante</div>
+    </div>
+    
+    <!-- 0% -->
+    <div class="section">
+      <div class="section-title">
+        ❌ Chance de Desfile: 0%
+        <span class="badge" style="background: #C8102E;" id="count0">0</span>
+      </div>
+      <div id="lista0" class="empty">Nenhum participante</div>
+    </div>
+    
+    <div style="text-align: center;">
+      <button class="btn" onclick="window.print()">📄 Imprimir Relatório</button>
+    </div>
   </div>
 </div>
 
 <script>
-const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbw3jOC7u0aQVXHCA-cx2gCyYDgnY83VvbiYsOUueYLauby_t3cwB85V_op6xUesdCTXIg/exec';
+const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzXk27Dm3E2fooKsrdKEwO-vZoUwcig745juNnIbEkz4IOIhR8Iav36RZqqu2RnvPNk9Q/exec';
 
-// Lista de alas (mesma do censo)
 const ALAS = [
   'Comissão de Frente', 'Dep. Casais', 'Destaque de Chão', 'Composição',
   'Destaques', 'Diretoria', 'Harmonia', 'Ala Carnareal', 'Ala Comunidade',
@@ -107,7 +351,6 @@ ALAS.forEach(ala => {
   select.appendChild(opt);
 });
 
-// Ao mudar ala, carregar dados
 select.addEventListener('change', carregarRelatorio);
 
 async function carregarRelatorio() {
@@ -126,37 +369,133 @@ async function carregarRelatorio() {
       return;
     }
     
-    exibirRelatorio(dados, ala);
+    exibirRelatorio(dados.membros || [], ala);
   } catch (err) {
     alert('Erro ao carregar dados: ' + err.message);
+    console.error(err);
   } finally {
     document.getElementById('loading').classList.add('hidden');
   }
 }
 
-function exibirRelatorio(dados, ala) {
-  const membros = dados.membros || [];
+function calcularIdade(dataNascimento) {
+  if (!dataNascimento) return null;
+  const hoje = new Date();
+  let nasc;
   
-  // Estatísticas
-  document.getElementById('totalMembros').textContent = membros.length;
-  document.getElementById('totalCarteirinhas').textContent = membros.filter(m => m.carteirinha === 'Sim, tenho').length;
-  document.getElementById('totalDisponiveis').textContent = membros.filter(m => m.diasEnsaio).length;
-  document.getElementById('totalChance100').textContent = membros.filter(m => m.chanceDesfile === '100%').length;
+  // Tentar diferentes formatos de data
+  if (typeof dataNascimento === 'string') {
+    const partes = dataNascimento.split('/');
+    if (partes.length === 3) {
+      nasc = new Date(partes[2], partes[1] - 1, partes[0]);
+    } else {
+      nasc = new Date(dataNascimento);
+    }
+  } else {
+    nasc = new Date(dataNascimento);
+  }
   
-  // Tabela
-  const tbody = document.getElementById('tbodyMembros');
-  tbody.innerHTML = membros.map(m => `
-    <tr>
-      <td>${m.nome || '-'}</td>
-      <td>${m.whatsapp || '-'}</td>
-      <td>${m.genero || '-'}</td>
-      <td>${m.carteirinha || '-'}</td>
-      <td>${m.chanceDesfile || '-'}</td>
-      <td>${m.diasEnsaio || '-'}</td>
-    </tr>
-  `).join('');
+  if (isNaN(nasc.getTime())) return null;
+  
+  let idade = hoje.getFullYear() - nasc.getFullYear();
+  const mes = hoje.getMonth() - nasc.getMonth();
+  if (mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())) {
+    idade--;
+  }
+  return idade;
+}
+
+function exibirRelatorio(membros, ala) {
+  const total = membros.length;
+  
+  // Calcular estatísticas
+  const mulheres = membros.filter(m => m.genero === 'Feminino').length;
+  const homens = membros.filter(m => m.genero === 'Masculino').length;
+  const pctMulheres = total > 0 ? Math.round((mulheres/total)*100) : 0;
+  const pctHomens = total > 0 ? Math.round((homens/total)*100) : 0;
+  
+  // Calcular idade média
+  const idades = membros.map(m => calcularIdade(m.dataNascimento)).filter(id => id !== null);
+  const idadeMedia = idades.length > 0 
+    ? Math.round(idades.reduce((a, b) => a + b, 0) / idades.length) 
+    : 0;
+  
+  // Atualizar cards
+  document.getElementById('totalMembros').textContent = total;
+  document.getElementById('totalMulheres').textContent = mulheres + ' pessoa' + (mulheres !== 1 ? 's' : '');
+  document.getElementById('totalHomens').textContent = homens + ' pessoa' + (homens !== 1 ? 's' : '');
+  document.getElementById('pctMulheres').textContent = pctMulheres + '%';
+  document.getElementById('pctHomens').textContent = pctHomens + '%';
+  document.getElementById('idadeMedia').textContent = idadeMedia;
+  
+  // Agrupar por chance de desfile
+  const grupos = {
+    '100%': [],
+    '75%': [],
+    '50%': [],
+    '25%': [],
+    '0%': []
+  };
+  
+  membros.forEach(m => {
+    const chance = m.chanceDesfile || '0%';
+    if (grupos[chance]) {
+      grupos[chance].push(m);
+    }
+  });
+  
+  // Ordenar cada grupo alfabeticamente por nome
+  Object.keys(grupos).forEach(chance => {
+    grupos[chance].sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+  });
+  
+  // Atualizar contadores
+  document.getElementById('count100').textContent = grupos['100%'].length;
+  document.getElementById('count75').textContent = grupos['75%'].length;
+  document.getElementById('count50').textContent = grupos['50%'].length;
+  document.getElementById('count25').textContent = grupos['25%'].length;
+  document.getElementById('count0').textContent = grupos['0%'].length;
+  
+  // Renderizar listas
+  renderizarLista('lista100', grupos['100%'], '100%');
+  renderizarLista('lista75', grupos['75%'], '75%');
+  renderizarLista('lista50', grupos['50%'], '50%');
+  renderizarLista('lista25', grupos['25%'], '25%');
+  renderizarLista('lista0', grupos['0%'], '0%');
   
   document.getElementById('dashboard').classList.remove('hidden');
+}
+
+function renderizarLista(elementId, membros, chance) {
+  const container = document.getElementById(elementId);
+  
+  if (membros.length === 0) {
+    container.innerHTML = '<div class="empty">Nenhum participante</div>';
+    return;
+  }
+  
+  const table = document.createElement('table');
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Chance</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${membros.map(m => `
+        <tr>
+          <td class="nome">${m.nome || '-'}</td>
+          <td class="telefone">${m.whatsapp || '-'}</td>
+          <td class="chance chance-${chance.replace('%', '')}">${chance}</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+  
+  container.innerHTML = '';
+  container.appendChild(table);
 }
 </script>
 
