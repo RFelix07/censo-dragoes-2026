@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório por Ala - Dragões da Real</title>
+<style>
+  body { font-family: 'Barlow', sans-serif; background: #F7F4EF; padding: 20px; }
+  .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h1 { color: #1A0A00; margin-bottom: 10px; }
+  .subtitle { color: #8B6040; margin-bottom: 30px; }
+  
+  .select-box { margin-bottom: 30px; }
+  label { display: block; font-weight: 600; margin-bottom: 8px; color: #6B5040; }
+  select { width: 100%; padding: 12px; border: 1px solid #E0D0B8; border-radius: 4px; font-size: 15px; background: white; }
+  
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
+  .stat-card { background: #FFF0EE; padding: 20px; border-radius: 6px; border-left: 4px solid #C8102E; }
+  .stat-card h3 { margin: 0; font-size: 14px; color: #6B5040; text-transform: uppercase; }
+  .stat-card .number { font-size: 32px; font-weight: 700; color: #1A0A00; margin: 8px 0 0 0; }
+  
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  th { background: #F2EAD8; padding: 12px; text-align: left; font-weight: 600; color: #1A0A00; border-bottom: 2px solid #D4A843; }
+  td { padding: 12px; border-bottom: 1px solid #E0D0B8; }
+  tr:hover { background: #FFF8F0; }
+  
+  .btn { background: #1A0A00; color: #D4A843; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; margin-top: 20px; }
+  .btn:hover { background: #2A1000; }
+  
+  .loading { text-align: center; padding: 40px; color: #8B6040; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📊 Relatório por Ala</h1>
+  <p class="subtitle">Censo Carnaval 2027 - Dragões da Real</p>
+  
+  <div class="select-box">
+    <label for="alaSelect">Selecione a Ala/Departamento:</label>
+    <select id="alaSelect">
+      <option value="">Carregando alas...</option>
+    </select>
+  </div>
+  
+  <div id="loading" class="loading hidden">Carregando dados...</div>
+  
+  <div id="dashboard" class="hidden">
+    <div class="stats">
+      <div class="stat-card">
+        <h3>Total de Membros</h3>
+        <p class="number" id="totalMembros">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Carteirinhas</h3>
+        <p class="number" id="totalCarteirinhas">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Disponíveis Ensaio</h3>
+        <p class="number" id="totalDisponiveis">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Chance 100%</h3>
+        <p class="number" id="totalChance100">0</p>
+      </div>
+    </div>
+    
+    <h2 style="margin-bottom: 15px; color: #1A0A00;">Membros da Ala</h2>
+    <table id="tabelaMembros">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>WhatsApp</th>
+          <th>Gênero</th>
+          <th>Carteirinha</th>
+          <th>Chance Desfile</th>
+          <th>Dias Ensaio</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyMembros"></tbody>
+    </table>
+    
+    <button class="btn" onclick="window.print()">📄 Imprimir Relatório</button>
+  </div>
+</div>
+
+<script>
+const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzXk27Dm3E2fooKsrdKEwO-vZoUwcig745juNnIbEkz4IOIhR8Iav36RZqqu2RnvPNk9Q/exec';
+
+// Lista de alas (mesma do censo)
+const ALAS = [
+  'Comissão de Frente', 'Dep. Casais', 'Destaque de Chão', 'Composição',
+  'Destaques', 'Diretoria', 'Harmonia', 'Ala Carnareal', 'Ala Comunidade',
+  'Bateria', 'Ala Guardiões', 'Ala Baianas', 'Ala Jovens', 'Ala Zona Sul',
+  'Ala Pirituba', 'Ala Oz', 'Ala Atibaia', 'Ala Caverna', 'Ala Amigos da Vila',
+  'Ala Amigos do Samba', 'Ala Explosão', 'Ala Tamujuntu', 'Ala Avalanche',
+  'Ala Portal', 'Ala Sítio', 'Ala Anastácio', 'Ala Ziriguidum', 'Ala Passistas', 'Ala Convidados'
+];
+
+// Preencher select
+const select = document.getElementById('alaSelect');
+ALAS.forEach(ala => {
+  const opt = document.createElement('option');
+  opt.value = ala;
+  opt.textContent = ala;
+  select.appendChild(opt);
+});
+
+// Ao mudar ala, carregar dados
+select.addEventListener('change', carregarRelatorio);
+
+async function carregarRelatorio() {
+  const ala = select.value;
+  if (!ala) return;
+  
+  document.getElementById('loading').classList.remove('hidden');
+  document.getElementById('dashboard').classList.add('hidden');
+  
+  try {
+    const response = await fetch(`${URL_SCRIPT}?action=relatorioAla&ala=${encodeURIComponent(ala)}`);
+    const dados = await response.json();
+    
+    if (dados.error) {
+      alert('Erro: ' + dados.error);
+      return;
+    }
+    
+    exibirRelatorio(dados, ala);
+  } catch (err) {
+    alert('Erro ao carregar dados: ' + err.message);
+  } finally {
+    document.getElementById('loading').classList.add('hidden');
+  }
+}
+
+function exibirRelatorio(dados, ala) {
+  const membros = dados.membros || [];
+  
+  // Estatísticas
+  document.getElementById('totalMembros').textContent = membros.length;
+  document.getElementById('totalCarteirinhas').textContent = membros.filter(m => m.carteirinha === 'Sim, tenho').length;
+  document.getElementById('totalDisponiveis').textContent = membros.filter(m => m.diasEnsaio).length;
+  document.getElementById('totalChance100').textContent = membros.filter(m => m.chanceDesfile === '100%').length;
+  
+  // Tabela
+  const tbody = document.getElementById('tbodyMembros');
+  tbody.innerHTML = membros.map(m => `
+    <tr>
+      <td>${m.nome || '-'}</td>
+      <td>${m.whatsapp || '-'}</td>
+      <td>${m.genero || '-'}</td>
+      <td>${m.carteirinha || '-'}</td>
+      <td>${m.chanceDesfile || '-'}</td>
+      <td>${m.diasEnsaio || '-'}</td>
+    </tr>
+  `).join('');
+  
+  document.getElementById('dashboard').classList.remove('hidden');
+}
+</script>
+
+</body>
+</html>
