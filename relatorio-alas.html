@@ -331,7 +331,7 @@
 </div>
 
 <script>
-const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbw3jOC7u0aQVXHCA-cx2gCyYDgnY83VvbiYsOUueYLauby_t3cwB85V_op6xUesdCTXIg/exec';
+const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzXk27Dm3E2fooKsrdKEwO-vZoUwcig745juNnIbEkz4IOIhR8Iav36RZqqu2RnvPNk9Q/exec';
 
 const ALAS = [
   'Comissão de Frente', 'Dep. Casais', 'Destaque de Chão', 'Composição',
@@ -342,7 +342,6 @@ const ALAS = [
   'Ala Portal', 'Ala Sítio', 'Ala Anastácio', 'Ala Ziriguidum', 'Ala Passistas', 'Ala Convidados'
 ];
 
-// Preencher select
 const select = document.getElementById('alaSelect');
 ALAS.forEach(ala => {
   const opt = document.createElement('option');
@@ -369,6 +368,7 @@ async function carregarRelatorio() {
       return;
     }
     
+    console.log('Dados recebidos:', dados); // Para debugar no F12
     exibirRelatorio(dados.membros || [], ala);
   } catch (err) {
     alert('Erro ao carregar dados: ' + err.message);
@@ -382,81 +382,60 @@ function calcularIdade(dataNascimento) {
   if (!dataNascimento) return null;
   const hoje = new Date();
   let nasc;
-  
-  // Tentar diferentes formatos de data
   if (typeof dataNascimento === 'string') {
     const partes = dataNascimento.split('/');
-    if (partes.length === 3) {
-      nasc = new Date(partes[2], partes[1] - 1, partes[0]);
-    } else {
-      nasc = new Date(dataNascimento);
-    }
+    if (partes.length === 3) nasc = new Date(partes[2], partes[1] - 1, partes[0]);
+    else nasc = new Date(dataNascimento);
   } else {
     nasc = new Date(dataNascimento);
   }
-  
   if (isNaN(nasc.getTime())) return null;
-  
   let idade = hoje.getFullYear() - nasc.getFullYear();
   const mes = hoje.getMonth() - nasc.getMonth();
-  if (mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())) {
-    idade--;
-  }
+  if (mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())) idade--;
   return idade;
 }
 
 function exibirRelatorio(membros, ala) {
   const total = membros.length;
-  
-  // Calcular estatísticas
   const mulheres = membros.filter(m => m.genero === 'Feminino').length;
   const homens = membros.filter(m => m.genero === 'Masculino').length;
-  const pctMulheres = total > 0 ? Math.round((mulheres/total)*100) : 0;
-  const pctHomens = total > 0 ? Math.round((homens/total)*100) : 0;
   
-  // Calcular idade média
-  const idades = membros.map(m => calcularIdade(m.dataNascimento)).filter(id => id !== null);
-  const idadeMedia = idades.length > 0 
-    ? Math.round(idades.reduce((a, b) => a + b, 0) / idades.length) 
-    : 0;
-  
-  // Atualizar cards
   document.getElementById('totalMembros').textContent = total;
   document.getElementById('totalMulheres').textContent = mulheres + ' pessoa' + (mulheres !== 1 ? 's' : '');
   document.getElementById('totalHomens').textContent = homens + ' pessoa' + (homens !== 1 ? 's' : '');
-  document.getElementById('pctMulheres').textContent = pctMulheres + '%';
-  document.getElementById('pctHomens').textContent = pctHomens + '%';
-  document.getElementById('idadeMedia').textContent = idadeMedia;
+  document.getElementById('pctMulheres').textContent = total > 0 ? Math.round((mulheres/total)*100) + '%' : '0%';
+  document.getElementById('pctHomens').textContent = total > 0 ? Math.round((homens/total)*100) + '%' : '0%';
   
-  // Agrupar por chance de desfile
-  const grupos = {
-    '100%': [],
-    '75%': [],
-    '50%': [],
-    '25%': [],
-    '0%': []
-  };
+  const idades = membros.map(m => calcularIdade(m.dataNascimento)).filter(id => id !== null);
+  document.getElementById('idadeMedia').textContent = idades.length > 0 ? Math.round(idades.reduce((a, b) => a + b, 0) / idades.length) : 0;
+  
+  // Agrupamento Inteligente
+  const grupos = { '100%': [], '75%': [], '50%': [], '25%': [], '0%': [] };
   
   membros.forEach(m => {
-    const chance = m.chanceDesfile || '0%';
+    // Normaliza a chance: remove espaços, garante que tem %
+    let chance = (m.chanceDesfile || '0%').toString().trim();
+    if (!chance.includes('%') && ['100','75','50','25','0'].includes(chance)) {
+      chance = chance + '%';
+    }
     if (grupos[chance]) {
       grupos[chance].push(m);
+    } else {
+      // Se vier algo diferente (ex: "N/A"), joga para 0% para não perder
+      grupos['0%'].push(m);
     }
   });
   
-  // Ordenar cada grupo alfabeticamente por nome
-  Object.keys(grupos).forEach(chance => {
-    grupos[chance].sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-  });
+  // Ordena alfabeticamente
+  Object.values(grupos).forEach(lista => lista.sort((a, b) => (a.nome || '').localeCompare(b.nome || '')));
   
-  // Atualizar contadores
   document.getElementById('count100').textContent = grupos['100%'].length;
   document.getElementById('count75').textContent = grupos['75%'].length;
   document.getElementById('count50').textContent = grupos['50%'].length;
   document.getElementById('count25').textContent = grupos['25%'].length;
   document.getElementById('count0').textContent = grupos['0%'].length;
   
-  // Renderizar listas
   renderizarLista('lista100', grupos['100%'], '100%');
   renderizarLista('lista75', grupos['75%'], '75%');
   renderizarLista('lista50', grupos['50%'], '50%');
@@ -468,36 +447,29 @@ function exibirRelatorio(membros, ala) {
 
 function renderizarLista(elementId, membros, chance) {
   const container = document.getElementById(elementId);
-  
   if (membros.length === 0) {
     container.innerHTML = '<div class="empty">Nenhum participante</div>';
     return;
   }
-  
-  const table = document.createElement('table');
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>Nome</th>
-        <th>Telefone</th>
-        <th>Chance</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${membros.map(m => `
+  container.innerHTML = `
+    <table>
+      <thead>
         <tr>
-          <td class="nome">${m.nome || '-'}</td>
-          <td class="telefone">${m.whatsapp || '-'}</td>
-          <td class="chance chance-${chance.replace('%', '')}">${chance}</td>
+          <th>Nome</th>
+          <th>Telefone</th>
+          <th>Chance</th>
         </tr>
-      `).join('')}
-    </tbody>
+      </thead>
+      <tbody>
+        ${membros.map(m => `
+          <tr>
+            <td class="nome">${m.nome || '-'}</td>
+            <td class="telefone">${m.whatsapp || '-'}</td>
+            <td class="chance chance-${chance.replace('%', '')}">${chance}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
   `;
-  
-  container.innerHTML = '';
-  container.appendChild(table);
 }
 </script>
-
-</body>
-</html>
