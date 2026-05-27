@@ -86,12 +86,12 @@ input[type="text"],input[type="tel"],input[type="date"],select{
   color:var(--txt);font-family:'Barlow',sans-serif;font-size:15px;
   padding:12px 14px;transition:border-color .15s,box-shadow .15s;
   outline:none;-webkit-appearance:none;appearance:none;border-radius:4px;
-  border-left:3px solid transparent;
+  box-shadow: inset 3px 0 0 transparent; /* ← SOLUÇÃO */
 }
 input[type="date"]{color-scheme:light}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238B6040'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
 input::placeholder{color:var(--txt-hint)}
-input:focus,select:focus{border-color:var(--dourado);border-left-color:var(--vermelho);box-shadow:0 0 0 3px rgba(212,168,67,.1)}
+input:focus,select:focus{border-color:var(--dourado);box-shadow: inset 3px 0 0 var(--vermelho), 0 0 0 3px rgba(212,168,67,.1);}
 input.error,select.error{border-color:var(--vermelho);border-left-color:var(--vermelho);background:var(--verm-bg)}
 .error-msg{font-size:11px;color:var(--vermelho);margin-top:4px;font-weight:600;display:none}
 
