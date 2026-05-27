@@ -599,7 +599,14 @@ document.getElementById('censoForm').addEventListener('submit',async function(e)
     cidade:document.getElementById('cidade').value.trim(),
     bairro:document.getElementById('bairro').value,
     diasEnsaio:[...document.querySelectorAll('input[name="diasEnsaio"]:checked')].map(i=>i.value).join(', '),
-    interesses:[...document.querySelectorAll('input[name="interesses"]:checked')].map(i=>i.value).join(', '),
+    interesses: (function(){
+	const dep = document.getElementById('departamento').value;
+	const grupoVisivel = dep === 'Bateria' 
+	  ? document.getElementById('grp-interesses-bateria')
+	  : document.getElementById('grp-interesses-padrao');
+	return [...grupoVisivel.querySelectorAll('input[name="interesses"]:checked')]
+	  .map(i => i.value).join(', ');
+    })(),
     dataResposta:new Date().toLocaleString('pt-BR')
   };
   try{
