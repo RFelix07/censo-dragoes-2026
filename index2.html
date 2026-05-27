@@ -362,15 +362,25 @@ input.error,select.error{border-color:var(--vermelho);border-left-color:var(--ve
     <div class="sec-line"></div>
   </div>
 
-  <div class="field">
-    <label class="lbl">Interesses <span class="opt">— opcional</span></label>
-    <div class="check-group" id="grp-interesses">
-      <label class="check-opt"><input type="checkbox" name="interesses" value="Aprender mais sobre Carnaval"><span class="check-mk"></span><span class="opt-lbl">Aprender mais sobre Carnaval</span></label>
-      <label class="check-opt"><input type="checkbox" name="interesses" value="Ser Coordenador de Ala"><span class="check-mk"></span><span class="opt-lbl">Ser Coordenador de Ala</span></label>
-      <label class="check-opt"><input type="checkbox" name="interesses" value="Participar da Harmonia"><span class="check-mk"></span><span class="opt-lbl">Participar da Harmonia</span></label>
-      <label class="check-opt"><input type="checkbox" name="interesses" value="Integrar Ala Cênica/Coreografada"><span class="check-mk"></span><span class="opt-lbl">Integrar Ala Cênica / Coreografada</span></label>
-    </div>
+<div class="field">
+  <label class="lbl">Interesses <span class="opt">— opcional</span></label>
+  
+  <!-- Grupo Padrão -->
+  <div class="check-group" id="grp-interesses-padrao">
+    <label class="check-opt"><input type="checkbox" name="interesses" value="Aprender mais sobre Carnaval"><span class="check-mk"></span><span class="opt-lbl">Aprender mais sobre Carnaval</span></label>
+    <label class="check-opt"><input type="checkbox" name="interesses" value="Ser Coordenador de Ala"><span class="check-mk"></span><span class="opt-lbl">Ser Coordenador de Ala</span></label>
+    <label class="check-opt"><input type="checkbox" name="interesses" value="Participar da Harmonia"><span class="check-mk"></span><span class="opt-lbl">Participar da Harmonia</span></label>
+    <label class="check-opt"><input type="checkbox" name="interesses" value="Integrar Ala Cênica/Coreografada"><span class="check-mk"></span><span class="opt-lbl">Integrar Ala Cênica / Coreografada</span></label>
   </div>
+
+  <!-- Grupo Específico Bateria -->
+  <div class="check-group" id="grp-interesses-bateria" style="display:none">
+    <label class="check-opt"><input type="checkbox" name="interesses" value="Aprender mais sobre Carnaval"><span class="check-mk"></span><span class="opt-lbl">Aprender mais sobre Carnaval</span></label>
+    <label class="check-opt"><input type="checkbox" name="interesses" value="Participar da Harmonia"><span class="check-mk"></span><span class="opt-lbl">Participar da Harmonia</span></label>
+    <label class="check-opt"><input type="checkbox" name="interesses" value="Desenvolvimento Musical"><span class="check-mk"></span><span class="opt-lbl">Desenvolvimento Musical</span></label>
+    <label class="check-opt"><input type="checkbox" name="interesses" value="Ser diretor de bateria"><span class="check-mk"></span><span class="opt-lbl">Ser diretor de bateria</span></label>
+  </div>
+</div>
 
   <div class="info-box">
     <strong>Privacidade e LGPD:</strong> Seus dados são coletados exclusivamente para fins de planejamento interno do Carnaval 2027 da Escola de Samba Dragões da Real, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018). Não compartilhamos seus dados com terceiros. <a href="privacidade.html" target="_blank" style="color:var(--vermelho);font-weight:600">Ver Política de Privacidade completa</a>.
@@ -478,9 +488,29 @@ document.querySelectorAll('.check-opt').forEach(function(el){
 });
 
 document.getElementById('departamento').addEventListener('change',function(){
-  const v=this.value;
-  document.getElementById('condCasal').classList.toggle('open',v==='Dep. Casais');
-  document.getElementById('condBateria').classList.toggle('open',v==='Bateria');
+  const v = this.value;
+  
+  // Lógica condicional existente
+  document.getElementById('condCasal').classList.toggle('open', v==='Dep. Casais');
+  document.getElementById('condBateria').classList.toggle('open', v==='Bateria');
+  
+  // Troca dinâmica dos interesses
+  const grpPadrao = document.getElementById('grp-interesses-padrao');
+  const grpBateria = document.getElementById('grp-interesses-bateria');
+  
+  if (v === 'Bateria') {
+    grpPadrao.style.display = 'none';
+    grpBateria.style.display = 'flex';
+  } else {
+    grpPadrao.style.display = 'flex';
+    grpBateria.style.display = 'none';
+  }
+  
+  // Limpa seleções anteriores para evitar envio de dados misturados
+  document.querySelectorAll('input[name="interesses"]:checked').forEach(cb => {
+    cb.checked = false;
+    cb.closest('.check-opt').classList.remove('sel');
+  });
 });
 
 function toggleConsent(){
