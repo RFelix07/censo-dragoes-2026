@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="google-site-verification" content="FBT2xWJVqhPJ4mXP5nfuMhhU1-PddgeCjm5ViwyDchM" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Censo 2027 — Dragões da Real v2.0</title>
+<title>Censo 2027 — Dragões da Real</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -86,62 +86,37 @@ input[type="text"],input[type="tel"],input[type="date"],select{
   color:var(--txt);font-family:'Barlow',sans-serif;font-size:15px;
   padding:12px 14px;transition:border-color .15s,box-shadow .15s;
   outline:none;-webkit-appearance:none;appearance:none;border-radius:4px;
-  box-shadow: inset 3px 0 0 transparent; /* ← SOLUÇÃO */
+  border-left:3px solid transparent;
 }
 input[type="date"]{color-scheme:light}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238B6040'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
 input::placeholder{color:var(--txt-hint)}
-input:focus,select:focus{border-color:var(--dourado);box-shadow: inset 3px 0 0 var(--vermelho), 0 0 0 3px rgba(212,168,67,.1);}
+input:focus,select:focus{border-color:var(--dourado);border-left-color:var(--vermelho);box-shadow:0 0 0 3px rgba(212,168,67,.1)}
 input.error,select.error{border-color:var(--vermelho);border-left-color:var(--vermelho);background:var(--verm-bg)}
 .error-msg{font-size:11px;color:var(--vermelho);margin-top:4px;font-weight:600;display:none}
 
 /* ── RADIO ── */
-.radio-opt{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  background:var(--branco);
-  border:1px solid var(--borda);
-  border-radius:4px;
-  padding:11px 14px;
-  cursor:pointer;
-  transition:all .15s;
-  user-select:none;
-  -webkit-tap-highlight-color:transparent;
-  box-sizing: border-box;
-  overflow: hidden;
-  box-shadow: inset 3px 0 0 transparent; /* ← Borda interna */
-}
-
-.radio-opt.sel{
-  background:var(--sel-bg);
-  border-color:var(--sel-bd);
-  box-shadow: inset 3px 0 0 var(--vermelho); /* ← Borda vermelha ao selecionar */
-}
+.radio-group{display:flex;flex-direction:column;gap:5px}
+.radio-opt{display:flex;align-items:center;gap:11px;background:var(--branco);border:1px solid var(--borda);border-left:3px solid transparent;border-radius:4px;padding:11px 14px;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.radio-opt:hover{background:var(--creme);border-color:var(--creme-brd)}
+.radio-opt.sel{background:var(--sel-bg);border-color:var(--sel-bd);border-left-color:var(--vermelho)}
+.radio-opt input{display:none}
+.radio-mk{width:16px;height:16px;border:1.5px solid var(--borda);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.radio-opt.sel .radio-mk{border-color:var(--vermelho);background:var(--vermelho)}
+.radio-opt.sel .radio-mk::after{content:'';width:5px;height:5px;background:white;border-radius:50%}
+.opt-lbl{font-size:14px;font-weight:400;color:var(--txt-sec);transition:color .15s}
+.radio-opt.sel .opt-lbl{color:var(--txt);font-weight:500}
 
 /* ── CHECK ── */
-.check-opt{
-  display:flex;
-  align-items:center;
-  gap:11px;
-  background:var(--branco);
-  border:1px solid var(--borda);
-  border-radius:4px;
-  padding:11px 14px;
-  cursor:pointer;
-  transition:all .15s;
-  user-select:none;
-  -webkit-tap-highlight-color:transparent;
-  box-sizing: border-box;
-  overflow: hidden;
-  box-shadow: inset 3px 0 0 transparent; /* ← Borda interna */
-}
-
-.check-opt.sel{
-  background:var(--sel-bg);
-  border-color:var(--sel-bd);
-  box-shadow: inset 3px 0 0 var(--vermelho); /* ← Borda vermelha ao selecionar */
-}
+.check-group{display:flex;flex-direction:column;gap:5px}
+.check-opt{display:flex;align-items:center;gap:11px;background:var(--branco);border:1px solid var(--borda);border-left:3px solid transparent;border-radius:4px;padding:11px 14px;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
+.check-opt:hover{background:var(--creme);border-color:var(--creme-brd)}
+.check-opt.sel{background:var(--sel-bg);border-color:var(--sel-bd);border-left-color:var(--vermelho)}
+.check-opt input{display:none}
+.check-mk{width:16px;height:16px;border:1.5px solid var(--borda);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.check-opt.sel .check-mk{border-color:var(--vermelho);background:var(--vermelho)}
+.check-opt.sel .check-mk::after{content:'✓';color:white;font-size:10px;font-weight:700;line-height:1}
+.check-opt.sel .opt-lbl{color:var(--txt);font-weight:500}
 
 /* ── PILLS ── */
 .pill-group{display:flex;flex-wrap:wrap;gap:5px}
