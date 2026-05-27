@@ -20,16 +20,8 @@
     border-radius: 12px; 
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
-  h1 { 
-    color: #1A0A00; 
-    margin-bottom: 8px;
-    font-size: 32px;
-  }
-  .subtitle { 
-    color: #8B6040; 
-    margin-bottom: 30px;
-    font-size: 14px;
-  }
+  h1 { color: #1A0A00; margin-bottom: 8px; font-size: 32px; }
+  .subtitle { color: #8B6040; margin-bottom: 30px; font-size: 14px; }
   
   .select-box { 
     margin-bottom: 30px; 
@@ -54,15 +46,9 @@
     border-radius: 6px; 
     font-size: 16px; 
     background: white;
-    font-family: inherit;
     cursor: pointer;
   }
-  select:focus {
-    outline: none;
-    border-color: #C8102E;
-  }
   
-  /* Cards de Estatísticas */
   .stats { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
@@ -74,29 +60,12 @@
     padding: 25px; 
     border-radius: 8px; 
     border-left: 5px solid #C8102E;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
   }
   .stat-card.dourado { border-left-color: #D4A843; }
-  .stat-card h3 { 
-    margin: 0; 
-    font-size: 12px; 
-    color: #6B5040; 
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .stat-card .number { 
-    font-size: 42px; 
-    font-weight: 900; 
-    color: #1A0A00; 
-    margin: 10px 0 0 0;
-  }
-  .stat-card .sub {
-    font-size: 13px;
-    color: #8B6040;
-    margin-top: 5px;
-  }
+  .stat-card h3 { margin: 0; font-size: 12px; color: #6B5040; text-transform: uppercase; }
+  .stat-card .number { font-size: 42px; font-weight: 900; color: #1A0A00; margin: 10px 0 0 0; }
+  .stat-card .sub { font-size: 13px; color: #8B6040; margin-top: 5px; }
   
-  /* Seções por chance */
   .section {
     margin-bottom: 35px;
     background: #FAF8F5;
@@ -123,118 +92,44 @@
     font-size: 14px;
     font-weight: 700;
   }
-  .badge.dourado { background: #D4A843; }
-  .badge.verde { background: #2D6A3A; }
   
-  /* Tabela */
-  table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    background: white;
-    border-radius: 6px;
-    overflow: hidden;
-  }
+  table { width: 100%; border-collapse: collapse; background: white; }
   th { 
     background: linear-gradient(135deg, #F2EAD8 0%, #D8C8A8 100%); 
     padding: 14px; 
     text-align: left; 
     font-weight: 700; 
     color: #1A0A00;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
   }
-  td { 
-    padding: 14px; 
-    border-bottom: 1px solid #E0D0B8;
-    font-size: 15px;
+  td { padding: 14px; border-bottom: 1px solid #E0D0B8; }
+  .nome { font-weight: 600; }
+  .telefone { color: #6B5040; font-family: monospace; }
+  
+  .error-box {
+    background: #FFF0EE;
+    border: 2px solid #C8102E;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    color: #8B0015;
   }
-  tr:hover { 
-    background: #FFF8F0; 
-  }
-  tr:last-child td {
-    border-bottom: none;
-  }
-  .nome {
-    font-weight: 600;
-    color: #1A0A00;
-  }
-  .telefone {
-    color: #6B5040;
-    font-family: monospace;
-    font-size: 14px;
-  }
-  .chance {
-    font-weight: 700;
-    font-size: 16px;
-  }
-  .chance-100 { color: #2D6A3A; }
-  .chance-75 { color: #D4A843; }
-  .chance-50 { color: #FF9800; }
-  .chance-25 { color: #FF5722; }
-  .chance-0 { color: #C8102E; }
+  .error-box h3 { margin-bottom: 10px; }
   
   .btn { 
-    background: linear-gradient(135deg, #1A0A00 0%, #2A1000 100%); 
+    background: #1A0A00; 
     color: #D4A843; 
     padding: 14px 28px; 
     border: none; 
     border-radius: 6px; 
     cursor: pointer; 
-    font-weight: 700; 
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-weight: 700;
     margin-top: 20px;
-    transition: transform 0.2s;
-  }
-  .btn:hover { 
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  }
-  
-  .loading { 
-    text-align: center; 
-    padding: 60px 20px; 
-    color: #8B6040;
-    font-size: 16px;
-  }
-  .spinner {
-    border: 4px solid #F2EAD8;
-    border-top: 4px solid #C8102E;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
   }
   
   .hidden { display: none; }
-  .empty {
-    text-align: center;
-    padding: 40px;
-    color: #8B6040;
-    font-style: italic;
-    font-size: 15px;
-  }
+  .empty { text-align: center; padding: 40px; color: #8B6040; font-style: italic; }
   
-  @media print {
-    .select-box, .btn { display: none; }
-    .container { box-shadow: none; }
-    body { background: white; }
-    .section { break-inside: avoid; }
-  }
-  
-  @media (max-width: 768px) {
-    .stats { grid-template-columns: 1fr 1fr; }
-    .container { padding: 20px; }
-    table { font-size: 12px; }
-    th, td { padding: 10px; }
-  }
+  @media print { .select-box, .btn { display: none; } }
 </style>
 </head>
 <body>
@@ -246,17 +141,13 @@
   <div class="select-box">
     <label for="alaSelect">🎭 Selecione a Ala/Departamento:</label>
     <select id="alaSelect">
-      <option value="">Carregando alas...</option>
+      <option value="">Carregando...</option>
     </select>
   </div>
   
-  <div id="loading" class="loading">
-    <div class="spinner"></div>
-    <p>Carregando dados da ala...</p>
-  </div>
+  <div id="errorContainer"></div>
   
   <div id="dashboard" class="hidden">
-    <!-- Estatísticas Gerais -->
     <div class="stats">
       <div class="stat-card">
         <h3>Total de Membros</h3>
@@ -265,73 +156,51 @@
       <div class="stat-card dourado">
         <h3>% Mulheres</h3>
         <p class="number" id="pctMulheres">0%</p>
-        <p class="sub" id="totalMulheres">0 pessoas</p>
+        <p class="sub" id="totalMulheres">0</p>
       </div>
       <div class="stat-card dourado">
         <h3>% Homens</h3>
         <p class="number" id="pctHomens">0%</p>
-        <p class="sub" id="totalHomens">0 pessoas</p>
+        <p class="sub" id="totalHomens">0</p>
       </div>
       <div class="stat-card">
         <h3>Média de Idade</h3>
         <p class="number" id="idadeMedia">0</p>
-        <p class="sub">anos</p>
       </div>
     </div>
     
-    <!-- 100% -->
     <div class="section">
-      <div class="section-title">
-        ✅ Chance de Desfile: 100%
-        <span class="badge verde" id="count100">0</span>
-      </div>
+      <div class="section-title">✅ 100% <span class="badge" id="count100">0</span></div>
       <div id="lista100" class="empty">Nenhum participante</div>
     </div>
     
-    <!-- 75% -->
     <div class="section">
-      <div class="section-title">
-        👍 Chance de Desfile: 75%
-        <span class="badge dourado" id="count75">0</span>
-      </div>
+      <div class="section-title">👍 75% <span class="badge" id="count75">0</span></div>
       <div id="lista75" class="empty">Nenhum participante</div>
     </div>
     
-    <!-- 50% -->
     <div class="section">
-      <div class="section-title">
-        ⚠️ Chance de Desfile: 50%
-        <span class="badge" id="count50">0</span>
-      </div>
+      <div class="section-title">⚠️ 50% <span class="badge" id="count50">0</span></div>
       <div id="lista50" class="empty">Nenhum participante</div>
     </div>
     
-    <!-- 25% -->
     <div class="section">
-      <div class="section-title">
-        🔻 Chance de Desfile: 25%
-        <span class="badge" id="count25">0</span>
-      </div>
+      <div class="section-title">🔻 25% <span class="badge" id="count25">0</span></div>
       <div id="lista25" class="empty">Nenhum participante</div>
     </div>
     
-    <!-- 0% -->
     <div class="section">
-      <div class="section-title">
-        ❌ Chance de Desfile: 0%
-        <span class="badge" style="background: #C8102E;" id="count0">0</span>
-      </div>
+      <div class="section-title">❌ 0% <span class="badge" id="count0">0</span></div>
       <div id="lista0" class="empty">Nenhum participante</div>
     </div>
     
-    <div style="text-align: center;">
-      <button class="btn" onclick="window.print()">📄 Imprimir Relatório</button>
-    </div>
+    <button class="btn" onclick="window.print()">📄 Imprimir</button>
   </div>
 </div>
 
 <script>
-const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbw3jOC7u0aQVXHCA-cx2gCyYDgnY83VvbiYsOUueYLauby_t3cwB85V_op6xUesdCTXIg/exec';
+// ⚠️ COLOQUE AQUI A URL DO SEU WEB APP DO GOOGLE APPS SCRIPT
+const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzXk27Dm3E2fooKsrdKEwO-vZoUwcig745juNnIbEkz4IOIhR8Iav36RZqqu2RnvPNk9Q/exec';
 
 const ALAS = [
   'Comissão de Frente', 'Dep. Casais', 'Destaque de Chão', 'Composição',
@@ -342,7 +211,9 @@ const ALAS = [
   'Ala Portal', 'Ala Sítio', 'Ala Anastácio', 'Ala Ziriguidum', 'Ala Passistas', 'Ala Convidados'
 ];
 
+// Preencher select
 const select = document.getElementById('alaSelect');
+select.innerHTML = '<option value="">Selecione uma ala...</option>';
 ALAS.forEach(ala => {
   const opt = document.createElement('option');
   opt.value = ala;
@@ -356,25 +227,46 @@ async function carregarRelatorio() {
   const ala = select.value;
   if (!ala) return;
   
-  document.getElementById('loading').classList.remove('hidden');
-  document.getElementById('dashboard').classList.add('hidden');
-  
   try {
-    const response = await fetch(`${URL_SCRIPT}?action=relatorioAla&ala=${encodeURIComponent(ala)}`);
-    const dados = await response.json();
+    // Testa se a URL está acessível
+    const testUrl = URL_SCRIPT + '?action=relatorioAla&ala=' + encodeURIComponent(ala);
+    console.log('🔍 Tentando acessar:', testUrl);
     
-    if (dados.error) {
-      alert('Erro: ' + dados.error);
-      return;
+    const response = await fetch(testUrl, {
+      method: 'GET',
+      mode: 'cors'
+    });
+    
+    if (!response.ok) {
+      throw new Error('Servidor retornou: ' + response.status + ' ' + response.statusText);
     }
     
-    console.log('Dados recebidos:', dados); // Para debugar no F12
+    const dados = await response.json();
+    console.log('✅ Dados recebidos:', dados);
+    
+    if (dados.error) {
+      throw new Error(dados.error);
+    }
+    
     exibirRelatorio(dados.membros || [], ala);
+    
   } catch (err) {
-    alert('Erro ao carregar dados: ' + err.message);
-    console.error(err);
-  } finally {
-    document.getElementById('loading').classList.add('hidden');
+    console.error('❌ Erro:', err);
+    document.getElementById('errorContainer').innerHTML = `
+      <div class="error-box">
+        <h3>⚠️ Erro ao carregar dados</h3>
+        <p><strong>Mensagem:</strong> ${err.message}</p>
+        <p style="margin-top: 10px;"><strong>O que verificar:</strong></p>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+          <li>A URL do Google Apps Script está correta?</li>
+          <li>O Web App está implantado como "Qualquer pessoa"?</li>
+          <li>Você fez uma NOVA IMPLANTAÇÃO após atualizar o código?</li>
+        </ul>
+        <p style="margin-top: 10px; font-size: 12px;">
+          URL usada: <code>${URL_SCRIPT}</code>
+        </p>
+      </div>
+    `;
   }
 }
 
@@ -410,24 +302,17 @@ function exibirRelatorio(membros, ala) {
   const idades = membros.map(m => calcularIdade(m.dataNascimento)).filter(id => id !== null);
   document.getElementById('idadeMedia').textContent = idades.length > 0 ? Math.round(idades.reduce((a, b) => a + b, 0) / idades.length) : 0;
   
-  // Agrupamento Inteligente
   const grupos = { '100%': [], '75%': [], '50%': [], '25%': [], '0%': [] };
   
   membros.forEach(m => {
-    // Normaliza a chance: remove espaços, garante que tem %
     let chance = (m.chanceDesfile || '0%').toString().trim();
     if (!chance.includes('%') && ['100','75','50','25','0'].includes(chance)) {
       chance = chance + '%';
     }
-    if (grupos[chance]) {
-      grupos[chance].push(m);
-    } else {
-      // Se vier algo diferente (ex: "N/A"), joga para 0% para não perder
-      grupos['0%'].push(m);
-    }
+    if (grupos[chance]) grupos[chance].push(m);
+    else grupos['0%'].push(m);
   });
   
-  // Ordena alfabeticamente
   Object.values(grupos).forEach(lista => lista.sort((a, b) => (a.nome || '').localeCompare(b.nome || '')));
   
   document.getElementById('count100').textContent = grupos['100%'].length;
@@ -453,19 +338,13 @@ function renderizarLista(elementId, membros, chance) {
   }
   container.innerHTML = `
     <table>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Telefone</th>
-          <th>Chance</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Nome</th><th>Telefone</th><th>Chance</th></tr></thead>
       <tbody>
         ${membros.map(m => `
           <tr>
             <td class="nome">${m.nome || '-'}</td>
             <td class="telefone">${m.whatsapp || '-'}</td>
-            <td class="chance chance-${chance.replace('%', '')}">${chance}</td>
+            <td>${chance}</td>
           </tr>
         `).join('')}
       </tbody>
@@ -473,3 +352,6 @@ function renderizarLista(elementId, membros, chance) {
   `;
 }
 </script>
+
+</body>
+</html>
