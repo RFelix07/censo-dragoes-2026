@@ -1,1 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Relatório por Ala - Dragões da Real</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { 
+    font-family: 'Barlow', 'Segoe UI', sans-serif; 
+    background: linear-gradient(135deg, #F7F4EF 0%, #F2EAD8 100%); 
+    padding: 12px; 
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .container { 
+    max-width: 1100px; 
+    margin: 0 auto; 
+    background: white; 
+    padding: 20px 16px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  h1 { 
+    color: #1A0A00; 
+    margin-bottom: 6px; 
+    font-size: 24px;
+    text-align: center;
+  }
+  .subtitle { 
+    color: #8B6040; 
+    margin-bottom: 24px; 
+    font-size: 13px;
+    text-align: center;
+  }
+  
+  .select-box { 
+    margin-bottom: 24px; 
+    background: #FFF8F0;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #E0D0B8;
+  }
+  label { 
+    display: block; 
+    font-weight: 700; 
+    margin-bottom: 8px; 
+    color: #1A0A00;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  select { 
+    width: 100%; 
+    padding: 12px 14px; 
+    border: 2px solid #D4A843; 
+    border-radius: 6px; 
+    font-size: 15px; 
+    background: white;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%238B6040'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+  select:focus {
+    outline: none;
+    border-color: #C8102E;
+    box-shadow: 0 0 0 3px rgba(200,16,46,0.1);
+  }
+  
+  .stats { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px; 
+    margin-bottom: 30px; 
+  }
+  .stat-card { 
+    background: linear-gradient(135deg, #FFF0EE 0%, #F2EAD8 100%); 
+    padding: 16px 12px; 
+    border-radius: 8px; 
+    border-left: 4px solid #C8102E;
+    text-align: center;
+  }
+  .stat-card.dourado { border-left-color: #D4A843; }
+  .stat-card h3 { 
+    margin: 0; 
+    font-size: 10px; 
+    color: #6B5040; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .stat-card .number { 
+    font-size: 28px; 
+    font-weight: 900; 
+    color: #1A0A00; 
+    margin: 6px 0 0 0;
+    line-height: 1;
+  }
+  .stat-card .sub { 
+    font-size: 11px; 
+    color: #8B6040; 
+    margin-top: 3px;
+  }
+  
+  .section {
+    margin-bottom: 24px;
+    background: #FAF8F5;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #E0D0B8;
+  }
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1A0A00;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #D4A843;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    background: white;
+    min-width: 280px;
+    font-size: 13px;
+  }
+  th { 
+    background: linear-gradient(135deg, #F2EAD8 0%, #D8C8A8 100%); 
+    padding: 10px 8px; 
+    text-align: left; 
+    font-weight: 700; 
+    color: #1A0A00;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+    z-index: 1;
+  }
+  td { 
+    padding: 10px 8px; 
+    border-bottom: 1px solid #E0D0B8; 
+    white-space: nowrap;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #FFF8F0; }
+  .nome { font-weight: 600; color: #1A0A00; }
+  .telefone { color: #6B5040; font-family: monospace; font-size: 12px; }
+  .genero { font-size: 12px; color: #8B6040; }
+  
+  .error-box {
+    background: #FFF0EE;
+    border: 2px solid #C8102E;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    color: #8B0015;
+    font-size: 13px;
+  }
+  .error-box h3 { margin-bottom: 8px; font-size: 14px; }
+  .error-box ul { padding-left: 20px; margin: 8px 0; }
+  .error-box li { margin: 4px 0; }
+  
+  .btn { 
+    background: #1A0A00; 
+    color: #D4A843; 
+    padding: 12px 20px; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: 700;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 200px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .btn:active { transform: scale(0.98); }
+  
+  .hidden { display: none; }
+  .empty { 
+    text-align: center; 
+    padding: 30px 20px; 
+    color: #8B6040; 
+    font-style: italic;
+    font-size: 13px;
+  }
+  
+  /* ── RESPONSIVIDADE MOBILE ── */
+  @media (max-width: 480px) {
+    body { padding: 8px; font-size: 13px; }
+    .container { padding: 16px 12px; border-radius: 8px; }
+    h1 { font-size: 20px; }
+    .subtitle { font-size: 12px; margin-bottom: 20px; }
+    
+    .select-box { padding: 12px; margin-bottom: 20px; }
+    select { font-size: 14px; padding: 10px 12px; }
+    
+    .stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-card { padding: 12px 8px; }
+    .stat-card .number { font-size: 24px; }
+    .stat-card .sub { font-size: 10px; }
+    
+    .section { padding: 12px; margin-bottom: 20px; }
+    .section-title { font-size: 14px; }
+    
+    table { font-size: 12px; }
+    th, td { padding: 8px 6px; }
+    .nome { font-size: 13px; }
+    .telefone { font-size: 11px; }
+    
+    .btn { padding: 10px 16px; font-size: 12px; }
+  }
+  
+  @media (min-width: 768px) {
+    .stats { grid-template-columns: repeat(4, 1fr); }
+    .stat-card { padding: 20px; }
+    .stat-card .number { font-size: 32px; }
+  }
+  
+  @media print {
+    .select-box, .btn { display: none; }
+    .container { box-shadow: none; padding: 0; }
+    body { background: white; padding: 0; }
+    .section { break-inside: avoid; }
+    .table-wrapper { overflow: visible; margin: 0; padding: 0; }
+  }
+</style>
+</head>
+<body>
 
+<div class="container">
+  <h1>📊 Relatório por Ala</h1>
+  <p class="subtitle">Censo Carnaval 2027 - Dragões da Real</p>
+  
+  <div class="select-box">
+    <label for="alaSelect">🎭 Selecione a Ala/Departamento:</label>
+    <select id="alaSelect">
+      <option value="">Carregando...</option>
+    </select>
+  </div>
+  
+  <div id="errorContainer"></div>
+  
+  <div id="dashboard" class="hidden">
+    <div class="stats">
+      <div class="stat-card">
+        <h3>Total de Membros</h3>
+        <p class="number" id="totalMembros">0</p>
+      </div>
+      <div class="stat-card dourado">
+        <h3>% Mulheres</h3>
+        <p class="number" id="pctMulheres">0%</p>
+        <p class="sub" id="totalMulheres">0</p>
+      </div>
+      <div class="stat-card dourado">
+        <h3>% Homens</h3>
+        <p class="number" id="pctHomens">0%</p>
+        <p class="sub" id="totalHomens">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Média de Idade</h3>
+        <p class="number" id="idadeMedia">0</p>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-title">👥 Membros da Ala</div>
+      <div id="listaCompleta" class="empty">Nenhum participante cadastrado</div>
+    </div>
+    
+    <button class="btn" onclick="window.print()">📄 Imprimir</button>
+  </div>
+</div>
+
+<script>
+// ⚠️ URL do seu Web App do Google Apps Script
+const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyCYkuQ-Dj7svJFcm1JGilavfmkeigPQNO73Lbza2wVTwfhODSmrGUcWFyZhFVkRUKQOw/exec';
+
+const ALAS = [
+  'Comissão de Frente', 'Dep. Casais', 'Destaque de Chão', 'Composição',
+  'Destaques', 'Diretoria', 'Harmonia', 'Ala Carnareal', 'Ala Comunidade',
+  'Bateria', 'Ala Guardiões', 'Ala Baianas', 'Ala Jovens', 'Ala Zona Sul',
+  'Ala Pirituba', 'Ala Oz', 'Ala Atibaia', 'Ala Caverna', 'Ala Amigos da Vila',
+  'Ala Amigos do Samba', 'Ala Explosão', 'Ala Tamujuntu', 'Ala Avalanche',
+  'Ala Portal', 'Ala Sítio', 'Ala Anastácio', 'Ala Ziriguidum', 'Ala Passistas', 'Ala Convidados'
+];
+
+// Preencher select
+const select = document.getElementById('alaSelect');
+select.innerHTML = '<option value="">Selecione uma ala...</option>';
+ALAS.forEach(ala => {
+  const opt = document.createElement('option');
+  opt.value = ala;
+  opt.textContent = ala;
+  select.appendChild(opt);
+});
+
+select.addEventListener('change', carregarRelatorio);
+
+async function carregarRelatorio() {
+  const ala = select.value;
+  if (!ala) return;
+  
+  try {
+    const testUrl = URL_SCRIPT + '?action=relatorioAla&ala=' + encodeURIComponent(ala);
+    console.log('🔍 Tentando acessar:', testUrl);
+    
+    const response = await fetch(testUrl, { method: 'GET', mode: 'cors' });
+    
+    if (!response.ok) {
+      throw new Error('Servidor retornou: ' + response.status + ' ' + response.statusText);
+    }
+    
+    const dados = await response.json();
+    console.log('✅ Dados recebidos:', dados);
+    
+    if (dados.error) throw new Error(dados.error);
+    
+    exibirRelatorio(dados.membros || [], ala);
+    
+  } catch (err) {
+    console.error('❌ Erro:', err);
+    document.getElementById('errorContainer').innerHTML = `
+      <div class="error-box">
+        <h3>⚠️ Erro ao carregar dados</h3>
+        <p><strong>Mensagem:</strong> ${err.message}</p>
+        <p style="margin-top:10px"><strong>O que verificar:</strong></p>
+        <ul>
+          <li>URL do Google Apps Script correta?</li>
+          <li>Web App implantado como "Qualquer pessoa"?</li>
+          <li>Nova implantação após atualizar código?</li>
+        </ul>
+        <p style="margin-top:10px;font-size:11px">URL: <code style="word-break:break-all">${URL_SCRIPT}</code></p>
+      </div>
+    `;
+  }
+}
+
+function calcularIdade(dataNascimento) {
+  if (!dataNascimento) return null;
+  const hoje = new Date();
+  let nasc;
+  if (typeof dataNascimento === 'string') {
+    const partes = dataNascimento.split('/');
+    if (partes.length === 3) nasc = new Date(partes[2], partes[1] - 1, partes[0]);
+    else nasc = new Date(dataNascimento);
+  } else {
+    nasc = new Date(dataNascimento);
+  }
+  if (isNaN(nasc.getTime())) return null;
+  let idade = hoje.getFullYear() - nasc.getFullYear();
+  const mes = hoje.getMonth() - nasc.getMonth();
+  if (mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())) idade--;
+  return idade;
+}
+
+function exibirRelatorio(membros, ala) {
+  const total = membros.length;
+  const mulheres = membros.filter(m => m.genero === 'Feminino').length;
+  const homens = membros.filter(m => m.genero === 'Masculino').length;
+  
+  document.getElementById('totalMembros').textContent = total;
+  document.getElementById('totalMulheres').textContent = mulheres + ' pessoa' + (mulheres !== 1 ? 's' : '');
+  document.getElementById('totalHomens').textContent = homens + ' pessoa' + (homens !== 1 ? 's' : '');
+  document.getElementById('pctMulheres').textContent = total > 0 ? Math.round((mulheres/total)*100) + '%' : '0%';
+  document.getElementById('pctHomens').textContent = total > 0 ? Math.round((homens/total)*100) + '%' : '0%';
+  
+  const idades = membros.map(m => calcularIdade(m.dataNascimento)).filter(id => id !== null);
+  document.getElementById('idadeMedia').textContent = idades.length > 0 ? Math.round(idades.reduce((a, b) => a + b, 0) / idades.length) : 0;
+  
+  // Ordenar membros por nome (ordem alfabética)
+  const membrosOrdenados = [...membros].sort((a, b) => 
+    (a.nome || '').localeCompare(b.nome || '', 'pt-BR')
+  );
+  
+  renderizarListaCompleta('listaCompleta', membrosOrdenados);
+  
+  document.getElementById('dashboard').classList.remove('hidden');
+}
+
+function renderizarListaCompleta(elementId, membros) {
+  const container = document.getElementById(elementId);
+  if (membros.length === 0) {
+    container.innerHTML = '<div class="empty">Nenhum participante cadastrado</div>';
+    return;
+  }
+  container.innerHTML = `
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Gênero</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${membros.map(m => `
+            <tr>
+              <td class="nome">${m.nome || '-'}</td>
+              <td class="telefone">${m.whatsapp || '-'}</td>
+              <td class="genero">${m.genero === 'Feminino' ? '♀' : m.genero === 'Masculino' ? '♂' : '-'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
